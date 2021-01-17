@@ -1,0 +1,15 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<beans xmlns="http://www.springframework.org/schema/beans"
+       xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+       xsi:schemaLocation="http://www.springframework.org/schema/beans http://www.springframework.org/schema/beans/spring-beans.xsd">
+
+    <bean id="beanDemo" class="cn.comesaday.coe.demo.bean.BeanDemo">
+        <property name="age" value="13"></property>
+        <property name="name" value="张3"></property>
+    </bean>
+
+    <bean id="beanDemo2" class="cn.comesaday.coe.demo.bean.BeanDemo">
+        <property name="age" value="14"></property>
+        <property name="name" value="张4"></property>
+    </bean>
+</beans>
