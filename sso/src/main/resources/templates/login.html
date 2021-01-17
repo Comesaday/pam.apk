@@ -1,0 +1,28 @@
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml" xmlns:th="http://www.thymeleaf.org">
+<head>
+    <title>Spring Security Login </title>
+    <script type="text/javascript" th:src="@{/static/js/jquery-3.5.1.min.js}"></script>
+    <script th:inline="javascript" type="text/javascript">
+        var ctx  = [[@{/}]];
+    </script>
+    <script type="text/javascript" th:src="@{/static/js/login.js}"></script>
+    <link rel="stylesheet" type="text/css" th:href="@{/static/css/login.css}">
+</head>
+<body>
+<form th:action="@{/login}" id="loginForm" method="post">
+    <div>
+        <label> 用户名: <input type="text" name="username"/></label>
+    </div>
+    <div>
+        <label> 密  码: <input type="text" name="password"/></label>
+    </div>
+    <div>
+        <input type="button" id="loginBtn" value="登录"/>
+    </div>
+    <div>
+        <p class="message"></p>
+    </div>
+</form>
+</body>
+</html>
