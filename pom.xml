@@ -1,0 +1,92 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+         xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 https://maven.apache.org/xsd/maven-4.0.0.xsd">
+    <modelVersion>4.0.0</modelVersion>
+
+    <!-- pom父版本依赖 -->
+    <parent>
+        <groupId>cn.comesaday</groupId>
+        <artifactId>pam</artifactId>
+        <version>0.0.1</version>
+    </parent>
+
+    <groupId>cn.comesaday</groupId>
+    <artifactId>pam.apk</artifactId>
+    <version>0.0.1</version>
+    <name>pam.apk</name>
+    <packaging>pom</packaging>
+    <description>Demo project for Spring Boot</description>
+
+    <properties>
+        <pam.coe.version>0.0.1</pam.coe.version>
+    </properties>
+
+    <!-- jpa封装核心starter -->
+    <dependencies>
+        <dependency>
+            <groupId>cn.comesaday</groupId>
+            <artifactId>pam.coe</artifactId>
+            <version>${pam.coe.version}</version>
+        </dependency>
+    </dependencies>
+
+    <!-- 项目多环境配置 -->
+    <profiles>
+        <profile>
+            <id>dev</id>
+            <activation>
+                <activeByDefault>true</activeByDefault>
+            </activation>
+            <properties>
+                <profile.active>dev</profile.active>
+            </properties>
+        </profile>
+        <profile>
+            <id>pro</id>
+            <properties>
+                <profile.active>pro</profile.active>
+            </properties>
+        </profile>
+        <profile>
+            <id>test</id>
+            <properties>
+                <profile.active>test</profile.active>
+            </properties>
+        </profile>
+    </profiles>
+
+    <build>
+        <resources>
+            <!-- 多环境配置文件 -->
+            <resource>
+                <directory>src/main/resources</directory>
+                <excludes>
+                    <exclude>profiles/dev/*</exclude>
+                    <exclude>profiles/prod/*</exclude>
+                    <exclude>profiles/test/*</exclude>
+                </excludes>
+                <filtering>true</filtering>
+            </resource>
+            <!-- 动态配置打包 -->
+            <resource>
+                <directory>src/main/resources/profiles/${profile.active}</directory>
+            </resource>
+        </resources>
+        <plugins>
+            <plugin>
+                <groupId>org.springframework.boot</groupId>
+                <artifactId>spring-boot-maven-plugin</artifactId>
+                <configuration>
+                    <layout>ZIP</layout>
+                </configuration>
+                <executions>
+                    <execution>
+                        <goals>
+                            <goal>repackage</goal>
+                        </goals>
+                    </execution>
+                </executions>
+            </plugin>
+        </plugins>
+    </build>
+</project>
