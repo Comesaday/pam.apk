@@ -21,14 +21,33 @@
     </properties>
 
     <dependencies>
+        <!-- activiti启动器 -->
         <dependency>
             <groupId>org.activiti</groupId>
             <artifactId>activiti-spring-boot-starter-basic</artifactId>
             <version>${activiti.version}</version>
         </dependency>
+        <!--activiti在线设计器-->
         <dependency>
-            <groupId>org.springframework.boot</groupId>
-            <artifactId>spring-boot-starter-thymeleaf</artifactId>
+            <groupId>org.activiti</groupId>
+            <artifactId>activiti-modeler</artifactId>
+            <version>5.22.0</version>
+        </dependency>
+        <dependency>
+            <groupId>org.apache.xmlgraphics</groupId>
+            <artifactId>batik-transcoder</artifactId>
+            <version>1.7</version>
+        </dependency>
+        <dependency>
+            <groupId>org.apache.xmlgraphics</groupId>
+            <artifactId>batik-codec</artifactId>
+            <version>1.7</version>
+        </dependency>
+        <!--activiti数据格式-->
+        <dependency>
+            <groupId>org.activiti</groupId>
+            <artifactId>activiti-json-converter</artifactId>
+            <version>${activiti.version}</version>
         </dependency>
     </dependencies>
 </project>
