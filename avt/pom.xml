@@ -21,6 +21,11 @@
     </properties>
 
     <dependencies>
+        <!-- thymeleaf -->
+        <dependency>
+            <groupId>org.springframework.boot</groupId>
+            <artifactId>spring-boot-starter-thymeleaf</artifactId>
+        </dependency>
         <!-- activiti启动器 -->
         <dependency>
             <groupId>org.activiti</groupId>
@@ -31,6 +36,12 @@
         <dependency>
             <groupId>org.activiti</groupId>
             <artifactId>activiti-modeler</artifactId>
+            <version>5.22.0</version>
+        </dependency>
+        <!-- Activiti 流程图 -->
+        <dependency>
+            <groupId>org.activiti</groupId>
+            <artifactId>activiti-diagram-rest</artifactId>
             <version>5.22.0</version>
         </dependency>
         <dependency>
