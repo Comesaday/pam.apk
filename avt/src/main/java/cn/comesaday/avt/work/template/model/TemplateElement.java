@@ -16,7 +16,7 @@ import javax.persistence.Table;
 @Table(name = "AVT_TEMPLATE_ELEMENT")
 public class TemplateElement extends IdEntity {
 
-    // 流程模板code
+    // 流程类别code即模板code
     private String templateCode;
 
     // 表单元素code

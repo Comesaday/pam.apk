@@ -24,7 +24,7 @@ public class ProcessElement extends IdEntity {
 
     private Long parentId;
 
-    // 顶层元素-基本表单元素：1，流程类别：2，流程模板：3
+    // 顶层元素-基本表单元素：1，流程类别：2
     private int type;
 
     public String getCode() {

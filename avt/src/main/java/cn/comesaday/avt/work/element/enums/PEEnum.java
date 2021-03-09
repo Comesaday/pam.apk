@@ -12,8 +12,7 @@ import cn.comesaday.coe.common.constant.NumConstant;
 public enum PEEnum {
 
     PROCESS_ELEMENT(NumConstant.I1, "ELEMENT", "流程元素"),
-    PROCESS_CATEGORY(NumConstant.I2, "CATEGORY", "流程类别"),
-    PROCESS_TEMPLATE(NumConstant.I3, "TEMPLATE", "流程模板");
+    PROCESS_CATEGORY(NumConstant.I2, "CATEGORY", "流程类别");
 
     private final int type;
 
