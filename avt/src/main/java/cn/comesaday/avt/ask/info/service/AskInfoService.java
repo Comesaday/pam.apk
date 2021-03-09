@@ -1,4 +1,4 @@
-package cn.comesaday.avt.leave.service;
+package cn.comesaday.avt.ask.info.service;
 
 import org.springframework.stereotype.Service;
 
@@ -11,5 +11,5 @@ import org.springframework.stereotype.Service;
  */
 
 @Service
-public interface AskForLeaveService {
+public interface AskInfoService {
 }

@@ -1,6 +1,6 @@
-package cn.comesaday.avt.leave.manager;
+package cn.comesaday.avt.ask.info.manager;
 
-import cn.comesaday.avt.leave.model.AskForLeave;
+import cn.comesaday.avt.ask.info.model.AskInfo;
 import org.springframework.data.repository.Repository;
 
 /**
@@ -11,6 +11,6 @@ import org.springframework.data.repository.Repository;
  * @CreateAt: 2021-03-08 15:26
  */
 
-public interface AskForLeaveManager extends Repository<AskForLeave, Long> {
+public interface AskInfoManager extends Repository<AskInfo, Long> {
 
 }

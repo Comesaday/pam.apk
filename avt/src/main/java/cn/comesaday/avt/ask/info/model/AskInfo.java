@@ -1,26 +1,32 @@
-package cn.comesaday.avt.leave.model;
+package cn.comesaday.avt.ask.info.model;
 
 import cn.comesaday.coe.core.basic.model.IdEntity;
 
-import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.Table;
 
 /**
- * <描述> 请假申请主表
+ * <描述> 申请主表
  * <详细背景>
  *
  * @author: ChenWei
  * @CreateAt: 2021-03-08 15:23
  */
 @Entity
-@Table(name = "ask_for_leave")
-public class AskForLeave extends IdEntity {
+@Table(name = "AVT_ASK_INFO")
+public class AskInfo extends IdEntity {
 
+    // 申请人ID
     private Long userId;
 
-    @Column
+    // 申请人姓名
     private String userName;
+
+    // 流程类别code
+    private String pcCode;
+
+    // 申请内容id
+    private Long askFormId;
 
     public Long getUserId() {
         return userId;
@@ -36,5 +42,13 @@ public class AskForLeave extends IdEntity {
 
     public void setUserName(String userName) {
         this.userName = userName;
+    }
+
+    public String getPcCode() {
+        return pcCode;
+    }
+
+    public void setPcCode(String pcCode) {
+        this.pcCode = pcCode;
     }
 }

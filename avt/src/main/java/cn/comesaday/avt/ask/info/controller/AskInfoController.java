@@ -1,7 +1,5 @@
-package cn.comesaday.avt.leave.controller;
+package cn.comesaday.avt.ask.info.controller;
 
-import org.activiti.engine.ProcessEngine;
-import org.activiti.engine.ProcessEngines;
 import org.activiti.engine.RepositoryService;
 import org.activiti.engine.repository.DeploymentBuilder;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -20,7 +18,7 @@ import java.util.Map;
  */
 @Controller
 @RequestMapping("/leave")
-public class AskForLeaveController {
+public class AskInfoController {
 
     @Autowired
     private RepositoryService repositoryService;
