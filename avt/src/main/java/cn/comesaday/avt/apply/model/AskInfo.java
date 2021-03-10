@@ -17,10 +17,10 @@ import javax.persistence.Table;
 public class AskInfo extends IdEntity {
 
     // 申请人ID
-    private Long userId;
+    private Long applyId;
 
     // 申请人姓名
-    private String userName;
+    private String applyName;
 
     // 流程类别code
     private String pcCode;
@@ -28,20 +28,26 @@ public class AskInfo extends IdEntity {
     // 申请内容id
     private Long askFormId;
 
-    public Long getUserId() {
-        return userId;
+    // 当前环节ID
+    private Long curTrackId;
+
+    // 流程实例ID
+    private Long processId;
+
+    public Long getApplyId() {
+        return applyId;
     }
 
-    public void setUserId(Long userId) {
-        this.userId = userId;
+    public void setApplyId(Long applyId) {
+        this.applyId = applyId;
     }
 
-    public String getUserName() {
-        return userName;
+    public String getApplyName() {
+        return applyName;
     }
 
-    public void setUserName(String userName) {
-        this.userName = userName;
+    public void setApplyName(String applyName) {
+        this.applyName = applyName;
     }
 
     public String getPcCode() {
@@ -50,5 +56,29 @@ public class AskInfo extends IdEntity {
 
     public void setPcCode(String pcCode) {
         this.pcCode = pcCode;
+    }
+
+    public Long getAskFormId() {
+        return askFormId;
+    }
+
+    public void setAskFormId(Long askFormId) {
+        this.askFormId = askFormId;
+    }
+
+    public Long getCurTrackId() {
+        return curTrackId;
+    }
+
+    public void setCurTrackId(Long curTrackId) {
+        this.curTrackId = curTrackId;
+    }
+
+    public Long getProcessId() {
+        return processId;
+    }
+
+    public void setProcessId(Long processId) {
+        this.processId = processId;
     }
 }

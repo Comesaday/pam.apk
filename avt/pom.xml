@@ -17,7 +17,7 @@
     <description>Demo project for Spring Boot</description>
 
     <properties>
-        <activiti.version>6.0.0</activiti.version>
+        <activiti.version>5.22.0</activiti.version>
     </properties>
 
     <dependencies>
@@ -36,13 +36,13 @@
         <dependency>
             <groupId>org.activiti</groupId>
             <artifactId>activiti-modeler</artifactId>
-            <version>5.22.0</version>
+            <version>${activiti.version}</version>
         </dependency>
         <!-- Activiti 流程图 -->
         <dependency>
             <groupId>org.activiti</groupId>
             <artifactId>activiti-diagram-rest</artifactId>
-            <version>5.22.0</version>
+            <version>${activiti.version}</version>
         </dependency>
         <dependency>
             <groupId>org.apache.xmlgraphics</groupId>

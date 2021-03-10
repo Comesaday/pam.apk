@@ -6,8 +6,9 @@ import cn.comesaday.coe.common.constant.NumConstant;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.databind.node.ObjectNode;
 import org.activiti.editor.constants.ModelDataJsonConstants;
-import org.activiti.engine.impl.RepositoryServiceImpl;
+import org.activiti.engine.RepositoryService;
 import org.activiti.engine.repository.Model;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 /**
@@ -18,11 +19,14 @@ import org.springframework.stereotype.Service;
  * @CreateAt: 2021-03-09 14:05
  */
 @Service
-public class PCreateServiceImpl extends RepositoryServiceImpl implements PCreateService {
+public class PCreateServiceImpl implements PCreateService {
+
+    @Autowired
+    private RepositoryService repositoryService;
 
     @Override
     public Model createNewModel(ProcessElement element) {
-        Model model = super.newModel();
+        Model model = repositoryService.newModel();
         model.setName(element.getName());
         model.setKey(element.getCode());
         model.setCategory(element.getCode());
@@ -32,7 +36,7 @@ public class PCreateServiceImpl extends RepositoryServiceImpl implements PCreate
         modelNode.put(ModelDataJsonConstants.MODEL_DESCRIPTION, element.getRemark());
         modelNode.put(ModelDataJsonConstants.MODEL_REVISION, model.getVersion());
         model.setMetaInfo(modelNode.toString());
-        saveModel(model);
+        repositoryService.saveModel(model);
         return model;
     }
 }

@@ -16,5 +16,36 @@ import javax.persistence.Table;
 @Table(name = "AVT_ASK_FORM_DATA")
 public class AskFormData extends IdEntity {
 
+    // 模板元素code
+    private String elemCode;
 
+    // 模板元素名称
+    private String elemName;
+
+    // 申请人填写
+    private String userFill;
+
+    public String getElemCode() {
+        return elemCode;
+    }
+
+    public void setElemCode(String elemCode) {
+        this.elemCode = elemCode;
+    }
+
+    public String getElemName() {
+        return elemName;
+    }
+
+    public void setElemName(String elemName) {
+        this.elemName = elemName;
+    }
+
+    public String getUserFill() {
+        return userFill;
+    }
+
+    public void setUserFill(String userFill) {
+        this.userFill = userFill;
+    }
 }

@@ -34,7 +34,6 @@ public class AskInfoController {
         DeploymentBuilder builder = repositoryService.createDeployment();
         builder.addClasspathResource("/processes/ask_for_leave.bpmn.xml");
         String id = builder.deploy().getId();
-        repositoryService.setDeploymentKey(id, "ask_for_leave");
     }
 
     public void apply() {

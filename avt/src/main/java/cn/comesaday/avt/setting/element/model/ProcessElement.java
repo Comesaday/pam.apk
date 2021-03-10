@@ -28,7 +28,7 @@ public class ProcessElement extends IdEntity {
     private String extField;
 
     // 顶层元素-自增
-    private int type;
+    private Integer type;
 
     public String getCode() {
         return code;
@@ -62,11 +62,11 @@ public class ProcessElement extends IdEntity {
         this.extField = extField;
     }
 
-    public int getType() {
+    public Integer getType() {
         return type;
     }
 
-    public void setType(int type) {
+    public void setType(Integer type) {
         this.type = type;
     }
 
