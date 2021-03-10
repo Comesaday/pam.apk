@@ -189,7 +189,7 @@ activitiModeler
 	                };
 	
 	                // Window resize hook
-	                cn.comesaday.avt.config.element($window).bind('resize', function() {
+	                angular.element($window).bind('resize', function() {
 	                    $rootScope.safeApply(updateWindowSize());
 	                });
 	

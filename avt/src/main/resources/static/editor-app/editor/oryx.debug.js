@@ -2100,9 +2100,9 @@ if(!ORYX) var ORYX = {};
 
 ORYX = Object.extend(ORYX, {
 
-	//set the path in the setting.js file!!!!
+	//set the path in the config.js file!!!!
 	PATH: ORYX.CONFIG.ROOT_PATH,
-	//CONFIGURATION: "setting.js",
+	//CONFIGURATION: "config.js",
 
 	URLS: [],
 
@@ -2187,7 +2187,7 @@ ORYX = Object.extend(ORYX, {
 
 	/**
 	 * Second bootstrapping layer. The oryx configuration is checked. When not
-	 * yet loaded, setting.js is being requested from the server. A repeated
+	 * yet loaded, config.js is being requested from the server. A repeated
 	 * error in retrieving the configuration will result in an error to be
 	 * thrown after a certain time of retries. Once the configuration is there,
 	 * all urls that are registered with oryx loading are being requested from
@@ -11875,9 +11875,9 @@ ORYX.Editor = {
 		}
 		
 		// when there is a template, inherit the properties.
-		if(cn.comesaday.avt.config.template) {
+		if(option.template) {
 
-			newShapeObject._jsonStencil.properties = cn.comesaday.avt.config.template._jsonStencil.properties;
+			newShapeObject._jsonStencil.properties = option.template._jsonStencil.properties;
 			newShapeObject.postProcessProperties();
 		}
 
@@ -12398,7 +12398,7 @@ ORYX.Editor = Clazz.extend(ORYX.Editor);
 /**
  * Creates a new ORYX.Editor instance by fetching a model from given url and passing it to the constructur
  * @param {String} modelUrl The JSON URL of a model.
- * @param {Object} setting Editor setting passed to the constructur, merged with the response of the request to modelUrl
+ * @param {Object} config Editor config passed to the constructur, merged with the response of the request to modelUrl
  */
 ORYX.Editor.createByUrl = function(modelUrl){
     new Ajax.Request(modelUrl, {
@@ -16503,7 +16503,7 @@ ORYX.Core.Edge = {
     addMarkers: function(defs){
         this._markers.each(function(marker){
             if (!defs.ownerDocument.getElementById(marker.value.id)) {
-                marker.value.element = defs.appendChild(cn.comesaday.avt.config.element);
+                marker.value.element = defs.appendChild(marker.value.element);
             }
         });
     },
@@ -16521,7 +16521,7 @@ ORYX.Core.Edge = {
                 this._markers.each(function(marker){
                     var foundMarker = defs.ownerDocument.getElementById(marker.value.id);
                     if (foundMarker) {
-                        marker.value.element = defs.removeChild(cn.comesaday.avt.config.element);
+                        marker.value.element = defs.removeChild(marker.value.element);
                     }
                 });
             }
@@ -22395,9 +22395,9 @@ ORYX.Plugins.Overlay = Clazz.extend({
 					}
 		
 					// If 
-					if( tmp.callback && cn.comesaday.avt.config.element){
+					if( tmp.callback && tmp.element){
 						// It has to be unregistered from the edge
-						cn.comesaday.avt.config.element.bounds.unregisterCallback( tmp.callback )
+						tmp.element.bounds.unregisterCallback( tmp.callback )
 					}
 							
 				}.bind(this))

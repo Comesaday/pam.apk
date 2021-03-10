@@ -38,7 +38,7 @@ KISBPM.TOOLBAR_CONFIG = {
             "cssClass" : "editor-icon editor-icon-cut",
             "action" : "KISBPM.TOOLBAR.ACTIONS.cut",
             "enabled" : false,
-            "enabledAction" : "cn.comesaday.avt.config.element"
+            "enabledAction" : "element"
         },
         {
             "type" : "button",
@@ -46,7 +46,7 @@ KISBPM.TOOLBAR_CONFIG = {
             "cssClass" : "editor-icon editor-icon-copy",
             "action" : "KISBPM.TOOLBAR.ACTIONS.copy",
             "enabled" : false,
-            "enabledAction" : "cn.comesaday.avt.config.element"
+            "enabledAction" : "element"
         },
         {
             "type" : "button",
@@ -61,7 +61,7 @@ KISBPM.TOOLBAR_CONFIG = {
             "cssClass" : "editor-icon editor-icon-delete",
             "action" : "KISBPM.TOOLBAR.ACTIONS.deleteItem",
             "enabled" : false,
-            "enabledAction" : "cn.comesaday.avt.config.element"
+            "enabledAction" : "element"
         },
         {
             "type" : "separator",
@@ -93,7 +93,7 @@ KISBPM.TOOLBAR_CONFIG = {
             "cssClass" : "editor-icon editor-icon-align-vertical",
             "action" : "KISBPM.TOOLBAR.ACTIONS.alignVertical",
             "enabled" : false,
-            "enabledAction" : "cn.comesaday.avt.config.element",
+            "enabledAction" : "element",
             "minSelectionCount" : 2
         },
         {
@@ -101,7 +101,7 @@ KISBPM.TOOLBAR_CONFIG = {
             "title" : "TOOLBAR.ACTION.ALIGNHORIZONTAL",
             "cssClass" : "editor-icon editor-icon-align-horizontal",
             "action" : "KISBPM.TOOLBAR.ACTIONS.alignHorizontal",
-            "enabledAction" : "cn.comesaday.avt.config.element",
+            "enabledAction" : "element",
             "enabled" : false,
             "minSelectionCount" : 2
         },
@@ -110,7 +110,7 @@ KISBPM.TOOLBAR_CONFIG = {
             "title" : "TOOLBAR.ACTION.SAMESIZE",
             "cssClass" : "editor-icon editor-icon-same-size",
             "action" : "KISBPM.TOOLBAR.ACTIONS.sameSize",
-            "enabledAction" : "cn.comesaday.avt.config.element",
+            "enabledAction" : "element",
             "enabled" : false,
             "minSelectionCount" : 2
         },

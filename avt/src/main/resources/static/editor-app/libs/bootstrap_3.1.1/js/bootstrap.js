@@ -1353,7 +1353,7 @@ if (typeof jQuery === 'undefined') { throw new Error('Bootstrap\'s JavaScript re
   }
 
   Tooltip.prototype.tip = function () {
-    return this.$tip = this.$tip || $(cn.comesaday.avt.config.template)
+    return this.$tip = this.$tip || $(this.options.template)
   }
 
   Tooltip.prototype.arrow = function () {
@@ -1497,7 +1497,7 @@ if (typeof jQuery === 'undefined') { throw new Error('Bootstrap\'s JavaScript re
   }
 
   Popover.prototype.tip = function () {
-    if (!this.$tip) this.$tip = $(cn.comesaday.avt.config.template)
+    if (!this.$tip) this.$tip = $(this.options.template)
     return this.$tip
   }
 

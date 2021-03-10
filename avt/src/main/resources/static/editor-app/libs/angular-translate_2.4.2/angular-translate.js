@@ -773,7 +773,7 @@ angular.module('pascalprecht.translate').factory('$translateDefaultInterpolation
           var result = {};
           for (var key in params) {
             if (Object.prototype.hasOwnProperty.call(params, key)) {
-              result[key] = cn.comesaday.avt.config.element('<div></div>').text(params[key]).html();
+              result[key] = angular.element('<div></div>').text(params[key]).html();
             }
           }
           return result;

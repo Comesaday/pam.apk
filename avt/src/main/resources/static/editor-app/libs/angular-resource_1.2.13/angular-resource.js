@@ -105,7 +105,7 @@ function shallowClearAndCopy(src, dst) {
  *
  * @param {Object.<Object>=} actions Hash with declaration of custom action that should extend the
  *   default set of resource actions. The declaration should be created in the format of {@link
- *   ng.$http#usage_parameters $http.setting}:
+ *   ng.$http#usage_parameters $http.config}:
  *
  *       {action1: {method:?, params:?, isArray:?, headers:?, ...},
  *        action2: {method:?, params:?, isArray:?, headers:?, ...},
@@ -371,7 +371,7 @@ angular.module('ngResource', ['ng']).
     Route.prototype = {
       setUrlParams: function(config, params, actionUrl) {
         var self = this,
-            url = actionUrl || cn.comesaday.avt.config.template,
+            url = actionUrl || self.template,
             val,
             encodedVal;
 

@@ -830,10 +830,10 @@ angular.mock.dump = function(object) {
     var out;
 
     if (angular.isElement(object)) {
-      object = cn.comesaday.avt.config.element(object);
-      out = cn.comesaday.avt.config.element('<div></div>');
+      object = angular.element(object);
+      out = angular.element('<div></div>');
       angular.forEach(object, function(element) {
-        out.append(cn.comesaday.avt.config.element(element).clone());
+        out.append(angular.element(element).clone());
       });
       out = out.html();
     } else if (angular.isArray(object)) {
@@ -1692,7 +1692,7 @@ angular.mock.$TimeoutDecorator = function($delegate, $browser) {
  */
 angular.mock.$RootElementProvider = function() {
   this.$get = function() {
-    return cn.comesaday.avt.config.element('<div ng-app></div>');
+    return angular.element('<div ng-app></div>');
   };
 };
 
@@ -1908,13 +1908,13 @@ angular.mock.e2e.$httpBackendDecorator =
 
 angular.mock.clearDataCache = function() {
   var key,
-      cache = cn.comesaday.avt.config.element.cache;
+      cache = angular.element.cache;
 
   for(key in cache) {
     if (Object.prototype.hasOwnProperty.call(cache,key)) {
       var handle = cache[key].handle;
 
-      handle && cn.comesaday.avt.config.element(handle.elem).off();
+      handle && angular.element(handle.elem).off();
       delete cache[key];
     }
   }
@@ -1948,8 +1948,8 @@ if(window.jasmine || window.mocha) {
     angular.mock.clearDataCache();
 
     // clean up jquery's fragment cache
-    angular.forEach(cn.comesaday.avt.config.element.fragments, function(val, key) {
-      delete cn.comesaday.avt.config.element.fragments[key];
+    angular.forEach(angular.element.fragments, function(val, key) {
+      delete angular.element.fragments[key];
     });
 
     MockXhr.$$lastInstance = null;

@@ -112,7 +112,7 @@
             this.ranges = {};
 
             this.opens = 'right';
-            if (cn.comesaday.avt.config.element.hasClass('pull-right'))
+            if (this.element.hasClass('pull-right'))
                 this.opens = 'left';
 
             this.buttonClasses = ['btn', 'btn-small'];
@@ -261,8 +261,8 @@
 
             //if no start/end dates set, check if an input element contains initial values
             if (typeof options.startDate === 'undefined' && typeof options.endDate === 'undefined') {
-                if ($(cn.comesaday.avt.config.element).is('input[type=text]')) {
-                    var val = $(cn.comesaday.avt.config.element).val();
+                if ($(this.element).is('input[type=text]')) {
+                    var val = $(this.element).val();
                     var split = val.split(this.separator);
                     start = end = null;
                     if (split.length == 2) {
@@ -418,10 +418,10 @@
         },
 
         updateFromControl: function () {
-            if (!cn.comesaday.avt.config.element.is('input')) return;
-            if (!cn.comesaday.avt.config.element.val().length) return;
+            if (!this.element.is('input')) return;
+            if (!this.element.val().length) return;
 
-            var dateString = cn.comesaday.avt.config.element.val().split(this.separator),
+            var dateString = this.element.val().split(this.separator),
                 start = null,
                 end = null;
 
@@ -431,7 +431,7 @@
             }
 
             if (this.singleDatePicker || start === null || end === null) {
-                start = moment(cn.comesaday.avt.config.element.val(), this.format);
+                start = moment(this.element.val(), this.format);
                 end = start;
             }
 
@@ -465,8 +465,8 @@
 
             if (this.opens == 'left') {
                 this.container.css({
-                    top: cn.comesaday.avt.config.element.offset().top + cn.comesaday.avt.config.element.outerHeight() - parentOffset.top,
-                    right: $(window).width() - cn.comesaday.avt.config.element.offset().left - cn.comesaday.avt.config.element.outerWidth() - parentOffset.left,
+                    top: this.element.offset().top + this.element.outerHeight() - parentOffset.top,
+                    right: $(window).width() - this.element.offset().left - this.element.outerWidth() - parentOffset.left,
                     left: 'auto'
                 });
                 if (this.container.offset().left < 0) {
@@ -477,8 +477,8 @@
                 }
             } else {
                 this.container.css({
-                    top: cn.comesaday.avt.config.element.offset().top + cn.comesaday.avt.config.element.outerHeight() - parentOffset.top,
-                    left: cn.comesaday.avt.config.element.offset().left - parentOffset.left,
+                    top: this.element.offset().top + this.element.outerHeight() - parentOffset.top,
+                    left: this.element.offset().left - parentOffset.left,
                     right: 'auto'
                 });
                 if (this.container.offset().left + this.container.outerWidth() > $(window).width()) {
@@ -491,7 +491,7 @@
         },
 
         toggle: function (e) {
-            if (cn.comesaday.avt.config.element.hasClass('active')) {
+            if (this.element.hasClass('active')) {
                 this.hide();
             } else {
                 this.show();
@@ -499,7 +499,7 @@
         },
 
         show: function (e) {
-            cn.comesaday.avt.config.element.addClass('active');
+            this.element.addClass('active');
             this.container.show();
             this.move();
 
@@ -513,7 +513,7 @@
                 // and also close when focus changes to outside the picker (eg. tabbing between controls)
                 .on('focusin.daterangepicker', this._outsideClickProxy);
 
-            cn.comesaday.avt.config.element.trigger('show.daterangepicker', this);
+            this.element.trigger('show.daterangepicker', this);
         },
 
         outsideClick: function (e) {
@@ -521,7 +521,7 @@
             // if the page is clicked anywhere except within the daterangerpicker/button
             // itself then call this.hide()
             if (
-                target.closest(cn.comesaday.avt.config.element).length ||
+                target.closest(this.element).length ||
                 target.closest(this.container).length ||
                 target.closest('.calendar-date').length
                 ) return;
@@ -534,7 +534,7 @@
                 .off('click.daterangepicker', this._outsideClickProxy)
                 .off('focusin.daterangepicker', this._outsideClickProxy);
 
-            cn.comesaday.avt.config.element.removeClass('active');
+            this.element.removeClass('active');
             this.container.hide();
 
             if (!this.startDate.isSame(this.oldStartDate) || !this.endDate.isSame(this.oldEndDate))
@@ -543,7 +543,7 @@
             this.oldStartDate = this.startDate.clone();
             this.oldEndDate = this.endDate.clone();
 
-            cn.comesaday.avt.config.element.trigger('hide.daterangepicker', this);
+            this.element.trigger('hide.daterangepicker', this);
         },
 
         enterRange: function (e) {
@@ -568,10 +568,10 @@
         },
 
         updateInputText: function() {
-            if (cn.comesaday.avt.config.element.is('input') && !this.singleDatePicker) {
-                cn.comesaday.avt.config.element.val(this.startDate.format(this.format) + this.separator + this.endDate.format(this.format));
-            } else if (cn.comesaday.avt.config.element.is('input')) {
-                cn.comesaday.avt.config.element.val(this.startDate.format(this.format));
+            if (this.element.is('input') && !this.singleDatePicker) {
+                this.element.val(this.startDate.format(this.format) + this.separator + this.endDate.format(this.format));
+            } else if (this.element.is('input')) {
+                this.element.val(this.startDate.format(this.format));
             }
         },
 
@@ -599,7 +599,7 @@
 
                 this.hideCalendars();
                 this.hide();
-                cn.comesaday.avt.config.element.trigger('apply.daterangepicker', this);
+                this.element.trigger('apply.daterangepicker', this);
             }
         },
 
@@ -700,7 +700,7 @@
         clickApply: function (e) {
             this.updateInputText();
             this.hide();
-            cn.comesaday.avt.config.element.trigger('apply.daterangepicker', this);
+            this.element.trigger('apply.daterangepicker', this);
         },
 
         clickCancel: function (e) {
@@ -710,7 +710,7 @@
             this.updateView();
             this.updateCalendars();
             this.hide();
-            cn.comesaday.avt.config.element.trigger('cancel.daterangepicker', this);
+            this.element.trigger('cancel.daterangepicker', this);
         },
 
         updateMonthYear: function (e) {
@@ -1006,8 +1006,8 @@
         remove: function() {
 
             this.container.remove();
-            cn.comesaday.avt.config.element.off('.daterangepicker');
-            cn.comesaday.avt.config.element.removeData('daterangepicker');
+            this.element.off('.daterangepicker');
+            this.element.removeData('daterangepicker');
 
         }
 

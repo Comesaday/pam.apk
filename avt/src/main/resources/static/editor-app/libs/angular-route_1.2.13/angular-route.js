@@ -525,7 +525,7 @@ function $RouteProvider(){
                     $injector.get(value) : $injector.invoke(value);
               });
 
-              if (angular.isDefined(template = cn.comesaday.avt.config.template)) {
+              if (angular.isDefined(template = next.template)) {
                 if (angular.isFunction(template)) {
                   template = template(next.params);
                 }
@@ -827,7 +827,7 @@ function ngViewFactory(   $route,   $anchorScroll,   $animate) {
     restrict: 'ECA',
     terminal: true,
     priority: 400,
-    transclude: 'cn.comesaday.avt.config.element',
+    transclude: 'element',
     link: function(scope, $element, attr, ctrl, $transclude) {
         var currentScope,
             currentElement,

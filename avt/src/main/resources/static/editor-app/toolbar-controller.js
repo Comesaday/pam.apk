@@ -137,7 +137,7 @@ angular.module('activitiModeler')
         		for(var i = 0; i < $scope.items.length; i++) 
         		{
                     var item = $scope.items[i];
-                    if (item.enabledAction && item.enabledAction === 'cn.comesaday.avt.config.element')
+                    if (item.enabledAction && item.enabledAction === 'element')
                     {
                     	var minLength = 1;
                     	if(item.minSelectionCount) {
