@@ -1,4 +1,4 @@
-{
+﻿{
   "description": "BPMN process editor",
   "namespace": "http://b3mn.org/stencilset/bpmn2.0#",
   "propertyPackages": [{
