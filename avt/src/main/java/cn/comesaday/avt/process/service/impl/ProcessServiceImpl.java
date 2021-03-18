@@ -1,5 +1,7 @@
 package cn.comesaday.avt.process.service.impl;
 
+import cn.comesaday.avt.matter.model.Matter;
+import cn.comesaday.avt.matter.service.MatterService;
 import cn.comesaday.avt.process.service.ProcessService;
 import cn.comesaday.avt.setting.dict.model.Dict;
 import cn.comesaday.avt.setting.dict.model.DictExt;
@@ -41,34 +43,34 @@ public class ProcessServiceImpl implements ProcessService {
     @Autowired
     private DictExtService dictExtService;
 
+    @Autowired
+    private MatterService matterService;
+
     /**
      * <说明> 创建流程模型
-     * @param code 模型code即流程类别code
+     * @param matterId 事项ID
      * @author ChenWei
      * @date 2021/3/16 14:12
      * @return Model
      */
     @Override
-    public Model createModel(String code) throws Exception {
-        // 流程类别是否创建
-        Dict dict = new Dict();
-        dict.setCode(code);
-        List<Dict> dicts = dictService.findAll(dict);
-        if (CollectionUtils.isEmpty(dicts)) {
-            throw new PamException("未创建的流程类别");
+    public Model createModel(Long matterId) throws Exception {
+        // 事项是否创建
+        Matter matter = matterService.findOne(matterId);
+        if (null == matter) {
+            throw new PamException("未查找到该事项");
         }
 
         // 流程model是否创建
-        dict = dicts.get(NumConstant.I0);
-        if (null != dict.getExtId()) {
+        if (null != matter.getModelId()) {
             throw new PamException("流程模型已创建");
         }
 
         // 创建保存流程model
-        Model model = this.createNewModel(dict);
-        DictExt dictExt = dictExtService.createModelExt(model.getId());
-        dict.setExtId(dictExt.getId());
-        dictService.saveAndUpdate(dict);
+        Model model = this.createNewModel(matter);
+        matter.setModelId(model.getId());
+        matter.setStatus(NumConstant.I3);
+        matterService.saveOrUpdate(matter);
         //完善ModelEditorSource
         ObjectNode editorNode = new ObjectMapper().createObjectNode();
         editorNode.put("id", "canvas");
@@ -83,20 +85,20 @@ public class ProcessServiceImpl implements ProcessService {
 
     /**
      * <说明> 模型信息初始化
-     * @param dict Dict
+     * @param matter Matter
      * @author ChenWei
      * @date 2021/3/16 14:13
      * @return Model
      */
-    public Model createNewModel(Dict dict) {
+    public Model createNewModel(Matter matter) {
         Model model = repositoryService.newModel();
-        model.setName(dict.getName());
-        model.setKey(dict.getCode());
-        model.setCategory(dict.getCode());
+        model.setName(matter.getName());
+        model.setKey(matter.getCode());
+        model.setCategory(matter.getCode());
         model.setVersion(NumConstant.I1);
         ObjectNode modelNode = new ObjectMapper().createObjectNode();
-        modelNode.put(ModelDataJsonConstants.MODEL_NAME, dict.getName());
-        modelNode.put(ModelDataJsonConstants.MODEL_DESCRIPTION, dict.getRemark());
+        modelNode.put(ModelDataJsonConstants.MODEL_NAME, matter.getName());
+        modelNode.put(ModelDataJsonConstants.MODEL_DESCRIPTION, matter.getRemark());
         modelNode.put(ModelDataJsonConstants.MODEL_REVISION, model.getVersion());
         model.setMetaInfo(modelNode.toString());
         repositoryService.saveModel(model);

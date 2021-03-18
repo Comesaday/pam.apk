@@ -21,7 +21,16 @@ public class Matter extends IdEntity {
 
     private String remark;
 
-    // 0暂存 1生成 2已配置表单 3已配置流程 4发布
+    // 事项类型
+    private String type;
+
+    // 事项流程modelID
+    private String modelId;
+
+    // 事项流程部署ID
+    private String deployId;
+
+    // 0暂存 1保存 2已配置表单 3流程已定义 4流程已部署 5事项开启 6事项关闭
     private Integer status;
 
     public String getCode() {
@@ -48,11 +57,35 @@ public class Matter extends IdEntity {
         this.remark = remark;
     }
 
+    public String getType() {
+        return type;
+    }
+
+    public void setType(String type) {
+        this.type = type;
+    }
+
     public Integer getStatus() {
         return status;
     }
 
     public void setStatus(Integer status) {
         this.status = status;
+    }
+
+    public String getModelId() {
+        return modelId;
+    }
+
+    public void setModelId(String modelId) {
+        this.modelId = modelId;
+    }
+
+    public String getDeployId() {
+        return deployId;
+    }
+
+    public void setDeployId(String deployId) {
+        this.deployId = deployId;
     }
 }

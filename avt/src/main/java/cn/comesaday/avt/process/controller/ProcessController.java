@@ -1,8 +1,9 @@
 package cn.comesaday.avt.process.controller;
 
+import cn.comesaday.avt.matter.service.MatterService;
 import cn.comesaday.avt.process.service.ProcessService;
 import cn.comesaday.coe.core.basic.bean.result.JsonResult;
-import org.activiti.engine.RepositoryService;
+import cn.comesaday.coe.core.basic.exception.PamException;
 import org.activiti.engine.repository.Deployment;
 import org.activiti.engine.repository.Model;
 import org.slf4j.Logger;
@@ -29,30 +30,20 @@ public class ProcessController {
     private ProcessService processService;
 
     @Autowired
-    private RepositoryService repositoryService;
-
-    public JsonResult list() {
-        JsonResult result = new JsonResult();
-        try {
-        } catch (Exception e) {
-            logger.error("查询异常list：{}", e.getMessage(), e);
-            result.setError("查询异常list：" + e);
-        }
-        return result;
-    }
+    private MatterService matterService;
 
     /**
      * <说明> 创建流程
-     * @param code 流程类别code
+     * @param matterId 事项ID
      * @author ChenWei
      * @date 2021/3/16 15:14
      * @return JsonResult
      */
-    @RequestMapping("/create/{code}")
-    public JsonResult create(@PathVariable(name = "code") String code) {
+    @RequestMapping("/create/{matterId}")
+    public JsonResult create(@PathVariable(name = "matterId") Long matterId) {
         JsonResult result = new JsonResult();
         try {
-            Model model = processService.createModel(code);
+            Model model = processService.createModel(matterId);
             String url = "/static/modeler.html?modelId=" + model.getId();
             result.setSuccess("流程创建成功", url);
         } catch (Exception e) {
@@ -74,6 +65,10 @@ public class ProcessController {
         JsonResult result = new JsonResult();
         try {
             Deployment deploy = processService.deploymentModel(modelId);
+            if (null == deploy) {
+                throw new PamException("流程部署失败");
+            }
+            matterService.deploy(modelId, deploy.getId());
             result.setSuccess("流程部署成功", deploy);
         } catch (Exception e) {
             logger.error("流程部署失败：{}", e.getMessage(), e);
@@ -81,6 +76,4 @@ public class ProcessController {
         }
         return result;
     }
-
-
 }

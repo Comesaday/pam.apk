@@ -37,7 +37,7 @@ public class DictController {
         List<Dict> dicts = dictService.findAll(dict);
         model.addAttribute("dicts", dicts);
         return "dict/index";
-}
+    }
 
     /**
      * <说明> 编辑数据字典

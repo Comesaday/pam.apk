@@ -11,7 +11,7 @@ import org.activiti.engine.repository.Model;
  */
 public interface ProcessService {
 
-    Model createModel(String code) throws Exception;
+    Model createModel(Long matterId) throws Exception;
 
     Deployment deploymentModel(String modelId) throws Exception;
 }

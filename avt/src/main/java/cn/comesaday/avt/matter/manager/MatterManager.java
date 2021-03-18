@@ -7,7 +7,7 @@ import cn.comesaday.coe.core.jpa.bean.repository.MyRepository;
  * <描述> MatterManager
  * <详细背景>
  * @author: ChenWei
- * @CreateAt: 2021-03-18 16:22
+ * @CreateAt: 2021-03-18 17:31
  */
 public interface MatterManager extends MyRepository<Matter, Long> {
 }
