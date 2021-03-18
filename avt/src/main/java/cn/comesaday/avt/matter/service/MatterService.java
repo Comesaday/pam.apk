@@ -18,5 +18,5 @@ public interface MatterService {
 
     void saveOrUpdate(Matter matter);
 
-    void deploy(String modelId, String deployId);
+    Matter findByModelId(String modelId);
 }

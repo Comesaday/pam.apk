@@ -3,7 +3,6 @@ package cn.comesaday.avt.matter.service.impl;
 import cn.comesaday.avt.matter.manager.MatterManager;
 import cn.comesaday.avt.matter.model.Matter;
 import cn.comesaday.avt.matter.service.MatterService;
-import cn.comesaday.coe.common.constant.NumConstant;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Example;
 import org.springframework.stereotype.Service;
@@ -39,11 +38,10 @@ public class MatterServiceImpl implements MatterService {
     }
 
     @Override
-    public void deploy(String modelId, String deployId) {
+    public Matter findByModelId(String modelId) {
         Matter matter = new Matter();
         matter.setModelId(modelId);
-        matter.setDeployId(deployId);
-        matter.setStatus(NumConstant.I4);
-        matterManager.save(matter);
+        Example<Matter> example = Example.of(matter);
+        return matterManager.findOne(example).orElse(new Matter());
     }
 }

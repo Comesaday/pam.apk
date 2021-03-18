@@ -1,7 +1,9 @@
 package cn.comesaday.avt.process.controller;
 
+import cn.comesaday.avt.matter.model.Matter;
 import cn.comesaday.avt.matter.service.MatterService;
 import cn.comesaday.avt.process.service.ProcessService;
+import cn.comesaday.coe.common.constant.NumConstant;
 import cn.comesaday.coe.core.basic.bean.result.JsonResult;
 import cn.comesaday.coe.core.basic.exception.PamException;
 import org.activiti.engine.repository.Deployment;
@@ -9,6 +11,7 @@ import org.activiti.engine.repository.Model;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.util.StringUtils;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
@@ -60,15 +63,21 @@ public class ProcessController {
      * @date 2021/3/8 17:55
      * @return JsonResult
      */
-    @RequestMapping("/deployment/{modelId}")
-    public JsonResult deployment(@PathVariable(name = "modelId") String modelId) {
+    @RequestMapping("/deploy/{modelId}")
+    public JsonResult deploy(@PathVariable(name = "modelId") String modelId) {
         JsonResult result = new JsonResult();
         try {
-            Deployment deploy = processService.deploymentModel(modelId);
-            if (null == deploy) {
-                throw new PamException("流程部署失败");
+            Matter matter = matterService.findByModelId(modelId);
+            if (NumConstant.I3 != matter.getStatus()) {
+                throw new PamException("流程尚未定义");
             }
-            matterService.deploy(modelId, deploy.getId());
+            if (!StringUtils.isEmpty(matter.getDeployId())) {
+                throw new PamException("流程已部署,请勿重复操作");
+            }
+            Deployment deploy = processService.deploymentModel(modelId);
+            matter.setStatus(NumConstant.I4);
+            matter.setDeployId(deploy.getId());
+            matterService.saveOrUpdate(matter);
             result.setSuccess("流程部署成功", deploy);
         } catch (Exception e) {
             logger.error("流程部署失败：{}", e.getMessage(), e);

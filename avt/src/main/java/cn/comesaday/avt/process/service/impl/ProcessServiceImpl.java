@@ -22,6 +22,7 @@ import org.activiti.engine.repository.Model;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.util.CollectionUtils;
+import org.springframework.util.StringUtils;
 
 import java.util.List;
 
@@ -62,7 +63,7 @@ public class ProcessServiceImpl implements ProcessService {
         }
 
         // 流程model是否创建
-        if (null != matter.getModelId()) {
+        if (!StringUtils.isEmpty(matter.getModelId())) {
             throw new PamException("流程模型已创建");
         }
 
