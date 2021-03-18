@@ -1,18 +1,23 @@
 package cn.comesaday.avt.apply.model;
 
+import cn.comesaday.coe.core.basic.model.IdEntity;
+
 import javax.persistence.Entity;
 import javax.persistence.Table;
+import java.util.UUID;
 
 /**
  * <描述> AskInfoTrack
  * <详细背景>
- *
  * @author: ChenWei
  * @CreateAt: 2021-03-09 17:39
  */
 @Entity
 @Table(name = "AVT_ASK_INFO_TRACK")
-public class AskInfoTrack extends AskInfo {
+public class AskInfoTrack extends IdEntity {
+
+    // 申请主表ID
+    private Long askId;
 
     // 环节code
     private String linkCode;
@@ -31,6 +36,17 @@ public class AskInfoTrack extends AskInfo {
 
     // 审核人姓名
     private String checkName;
+
+    // sessionId
+    private String sessionId = UUID.randomUUID().toString();
+
+    public Long getAskId() {
+        return askId;
+    }
+
+    public void setAskId(Long askId) {
+        this.askId = askId;
+    }
 
     public String getLinkCode() {
         return linkCode;
@@ -78,5 +94,13 @@ public class AskInfoTrack extends AskInfo {
 
     public void setCheckName(String checkName) {
         this.checkName = checkName;
+    }
+
+    public String getSessionId() {
+        return sessionId;
+    }
+
+    public void setSessionId(String sessionId) {
+        this.sessionId = sessionId;
     }
 }

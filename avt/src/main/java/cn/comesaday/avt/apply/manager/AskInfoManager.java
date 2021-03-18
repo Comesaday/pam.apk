@@ -10,7 +10,6 @@ import org.springframework.data.repository.Repository;
  * @author: ChenWei
  * @CreateAt: 2021-03-08 15:26
  */
-
 public interface AskInfoManager extends Repository<AskInfo, Long> {
 
 }

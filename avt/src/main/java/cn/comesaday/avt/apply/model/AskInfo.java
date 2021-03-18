@@ -8,7 +8,6 @@ import javax.persistence.Table;
 /**
  * <描述> 申请主表
  * <详细背景>
- *
  * @author: ChenWei
  * @CreateAt: 2021-03-08 15:23
  */
@@ -22,17 +21,23 @@ public class AskInfo extends IdEntity {
     // 申请人姓名
     private String applyName;
 
-    // 流程类别code
-    private String pcCode;
+    // 事项ID
+    private Long matterId;
 
-    // 申请内容id
-    private Long askFormId;
+    // 事项code
+    private String matterCode;
+
+    // 事项名称
+    private String matterName;
 
     // 当前环节ID
     private Long curTrackId;
 
     // 流程实例ID
     private Long processId;
+
+    // 0:暂存 1:发布
+    private boolean publish;
 
     public Long getApplyId() {
         return applyId;
@@ -50,20 +55,28 @@ public class AskInfo extends IdEntity {
         this.applyName = applyName;
     }
 
-    public String getPcCode() {
-        return pcCode;
+    public Long getMatterId() {
+        return matterId;
     }
 
-    public void setPcCode(String pcCode) {
-        this.pcCode = pcCode;
+    public void setMatterId(Long matterId) {
+        this.matterId = matterId;
     }
 
-    public Long getAskFormId() {
-        return askFormId;
+    public String getMatterCode() {
+        return matterCode;
     }
 
-    public void setAskFormId(Long askFormId) {
-        this.askFormId = askFormId;
+    public void setMatterCode(String matterCode) {
+        this.matterCode = matterCode;
+    }
+
+    public String getMatterName() {
+        return matterName;
+    }
+
+    public void setMatterName(String matterName) {
+        this.matterName = matterName;
     }
 
     public Long getCurTrackId() {
@@ -80,5 +93,13 @@ public class AskInfo extends IdEntity {
 
     public void setProcessId(Long processId) {
         this.processId = processId;
+    }
+
+    public boolean isPublish() {
+        return publish;
+    }
+
+    public void setPublish(boolean publish) {
+        this.publish = publish;
     }
 }

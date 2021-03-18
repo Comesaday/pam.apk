@@ -1,4 +1,4 @@
-package cn.comesaday.avt.apply.model;
+package cn.comesaday.avt.matter.model;
 
 import cn.comesaday.coe.core.basic.model.IdEntity;
 
@@ -6,39 +6,42 @@ import javax.persistence.Entity;
 import javax.persistence.Table;
 
 /**
- * <描述> 申请内容
+ * <描述> 表单模板
  * <详细背景>
  * @author: ChenWei
- * @CreateAt: 2021-03-08 20:07
+ * @CreateAt: 2021-03-08 20:00
  */
 @Entity
-@Table(name = "AVT_FORM_DATA")
-public class AskFormData extends IdEntity {
+@Table(name = "AVT_MATTER_SETTING")
+public class MatterSetting extends IdEntity {
 
-    // 申请主表ID
-    private Long askId;
+    // 事项id
+    private Long matterId;
 
-    // 元素ID
+    // 元素id
     private Long dictId;
 
-    // 模板元素code
+    // 表单元素code
     private String dictCode;
 
-    // 模板元素名称
+    // 表单元素名称
     private String dictName;
 
     // 表现样式
     private String style;
 
-    // 申请人填写
-    private String userFill;
+    // 是否必填
+    private Boolean required;
 
-    public Long getAskId() {
-        return askId;
+    // 排序
+    private int sort;
+
+    public Long getMatterId() {
+        return matterId;
     }
 
-    public void setAskId(Long askId) {
-        this.askId = askId;
+    public void setMatterId(Long matterId) {
+        this.matterId = matterId;
     }
 
     public Long getDictId() {
@@ -73,11 +76,19 @@ public class AskFormData extends IdEntity {
         this.style = style;
     }
 
-    public String getUserFill() {
-        return userFill;
+    public Boolean getRequired() {
+        return required;
     }
 
-    public void setUserFill(String userFill) {
-        this.userFill = userFill;
+    public void setRequired(Boolean required) {
+        this.required = required;
+    }
+
+    public int getSort() {
+        return sort;
+    }
+
+    public void setSort(int sort) {
+        this.sort = sort;
     }
 }

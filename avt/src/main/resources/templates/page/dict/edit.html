@@ -1,0 +1,14 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <title>Title</title>
+</head>
+<body>
+    <form th:action="@{save}">
+        编码：<input th:name="code" th:type="text">
+        名称：<input th:name="name" th:type="text">
+        <input th:type="submit">
+    </form>
+</body>
+</html>
