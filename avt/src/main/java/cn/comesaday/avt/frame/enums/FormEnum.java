@@ -1,23 +1,20 @@
-package cn.comesaday.avt.setting.dict.enums;
+package cn.comesaday.avt.frame.enums;
 
 /**
- * <描述> DictEnum
+ * <描述> FormEnum
  * <详细背景>
  * @author: ChenWei
  * @CreateAt: 2021-03-15 16:27
  */
-public enum DictEnum {
+public enum FormEnum {
 
-    INPUT("INPUT", "多选型", ""),
     OPTION("OPTION", "单选型", ""),
-    OPTIONS("OPTIONS", "多选型", ""),
+    RADIO("RADIO", "单选型", ""),
+    CHECKBOX("CHECKBOX", "多选型", ""),
     STRING("STRING", "字符型", ""),
     NUMBER("NUMBER", "整数型", ""),
     FLOAT("FLOAT", "单浮点型", ""),
-    DOUBLE("DOUBLE", "双浮点型", ""),
-
-    PROCESS("PROCESS", "流程类别", ""),
-    ASK_FOR_LEAVE("ASK_FOR_LEAVE", "员工请假", "");
+    DOUBLE("DOUBLE", "双浮点型", "");
 
     private final String code;
 
@@ -25,7 +22,7 @@ public enum DictEnum {
 
     private final String remark;
 
-    DictEnum(String code, String name, String remark) {
+    FormEnum(String code, String name, String remark) {
         this.code = code;
         this.name = name;
         this.remark = remark;

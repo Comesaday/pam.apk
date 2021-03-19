@@ -1,6 +1,5 @@
 package cn.comesaday.avt.setting.dict.controller;
 
-import cn.comesaday.avt.setting.dict.enums.DictEnum;
 import cn.comesaday.avt.setting.dict.model.Dict;
 import cn.comesaday.avt.setting.dict.service.DictService;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -88,8 +87,8 @@ public class DictController {
      */
     @RequestMapping("/list/process")
     public String listProcess(Model model) {
-        List<Dict> dicts = dictService.listProcess(DictEnum.PROCESS.getCode());
-        model.addAttribute("dicts", dicts);
+//        List<Dict> dicts = dictService.listProcess(FormEnum.PROCESS.getCode());
+//        model.addAttribute("dicts", dicts);
         return "dict/index";
     }
 }

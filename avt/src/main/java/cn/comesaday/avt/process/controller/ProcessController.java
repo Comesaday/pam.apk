@@ -1,5 +1,6 @@
 package cn.comesaday.avt.process.controller;
 
+import cn.comesaday.avt.frame.enums.MatterEnum;
 import cn.comesaday.avt.matter.model.Matter;
 import cn.comesaday.avt.matter.service.MatterService;
 import cn.comesaday.avt.process.service.ProcessService;
@@ -75,7 +76,7 @@ public class ProcessController {
                 throw new PamException("流程已部署,请勿重复操作");
             }
             Deployment deploy = processService.deploymentModel(modelId);
-            matter.setStatus(NumConstant.I4);
+            matter.setStatus(MatterEnum.DEPLOY.getStatus());
             matter.setDeployId(deploy.getId());
             matterService.saveOrUpdate(matter);
             result.setSuccess("流程部署成功", deploy);

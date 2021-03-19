@@ -2,12 +2,16 @@ package cn.comesaday.avt.matter.controller;
 
 import cn.comesaday.avt.matter.model.Matter;
 import cn.comesaday.avt.matter.service.MatterService;
+import cn.comesaday.avt.matter.vo.MatterSettingVo;
+import cn.comesaday.coe.core.basic.bean.result.JsonResult;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.ResponseBody;
 
+import java.util.Date;
 import java.util.List;
 
 /**
@@ -22,6 +26,32 @@ public class MatterController {
 
     @Autowired
     private MatterService matterService;
+
+    /**
+     * <说明> 事项表单配置
+     * @param settingVo MatterSettingVo
+     * @author ChenWei
+     * @date 2021/3/19 10:05
+     * @return java.lang.String
+     */
+    @RequestMapping("/setting")
+    public String setting(MatterSettingVo settingVo) {
+        matterService.setting(settingVo);
+        return "redirect:/matter/index";
+    }
+
+    /**
+     * <说明> 移除事项表单配置
+     * @param settingVo MatterSettingVo
+     * @author ChenWei
+     * @date 2021/3/19 10:05
+     * @return java.lang.String
+     */
+    @RequestMapping("/removeSetting")
+    public String removeSetting(MatterSettingVo settingVo) {
+        matterService.removeSetting(settingVo);
+        return "redirect:/matter/index";
+    }
 
     /**
      * <说明> 事项主页面
@@ -68,5 +98,14 @@ public class MatterController {
     public String save(Matter matter) {
         matterService.saveOrUpdate(matter);
         return "redirect:/matter/index";
+    }
+
+    @ResponseBody
+    @RequestMapping("/test")
+    public JsonResult test() {
+        Matter matter = matterService.findOne(1L);
+        matter.setCreateAt(new Date());
+        matterService.save(matter);
+        return new JsonResult();
     }
 }
