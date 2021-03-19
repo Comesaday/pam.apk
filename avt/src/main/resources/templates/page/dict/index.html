@@ -1,0 +1,24 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <title>数据字典主页面</title>
+</head>
+<body>
+    <a th:href="@{edit/null}">新增</a>
+    <table>
+        <tr>
+            <td>序号</td>
+            <td>编码</td>
+            <td>名称</td>
+            <td>操作</td>
+        </tr>
+        <tr th:each="dict, d:${dicts}">
+            <td th:text="${d.count}">序号</td>
+            <td th:text="${dict.code}">编码</td>
+            <td th:text="${dict.name}">名称</td>
+            <td>操作</td>
+        </tr>
+    </table>
+</body>
+</html>
