@@ -11,7 +11,6 @@ import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.ResponseBody;
 
-import java.util.Date;
 import java.util.List;
 
 /**
@@ -103,9 +102,10 @@ public class MatterController {
     @ResponseBody
     @RequestMapping("/test")
     public JsonResult test() {
-        Matter matter = matterService.findOne(1L);
-        matter.setCreateAt(new Date());
-        matterService.save(matter);
-        return new JsonResult();
+        JsonResult result = new JsonResult();
+        List<Matter> matters = matterService.findAllByProperty("isDeleted", false);
+        List<Matter> allLike = matterService.findAllLike("code", "ASK");
+        result.setData(matters);
+        return result;
     }
 }

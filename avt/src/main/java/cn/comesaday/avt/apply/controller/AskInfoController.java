@@ -1,6 +1,5 @@
 package cn.comesaday.avt.apply.controller;
 
-import cn.comesaday.coe.core.basic.bean.result.JsonResult;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
@@ -14,7 +13,4 @@ import org.springframework.web.bind.annotation.RestController;
 @RequestMapping("/ask")
 public class AskInfoController {
 
-    public JsonResult test() {
-        return new JsonResult();
-    }
 }
