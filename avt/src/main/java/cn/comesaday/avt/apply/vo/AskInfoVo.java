@@ -1,7 +1,6 @@
 package cn.comesaday.avt.apply.vo;
 
 import cn.comesaday.avt.apply.model.AskFormData;
-import cn.comesaday.avt.matter.vo.MatterVo;
 
 import java.util.Date;
 import java.util.List;
@@ -23,8 +22,8 @@ public class AskInfoVo {
     // 申请时间
     private Date askTime;
 
-    // 申请事项信息
-    private MatterVo matterVo;
+    // 申请事项id
+    private Long matterId;
 
     // 申请表单数据
     private List<AskFormData> askInfos;
@@ -53,12 +52,12 @@ public class AskInfoVo {
         this.askTime = askTime;
     }
 
-    public MatterVo getMatterVo() {
-        return matterVo;
+    public Long getMatterId() {
+        return matterId;
     }
 
-    public void setMatterVo(MatterVo matterVo) {
-        this.matterVo = matterVo;
+    public void setMatterId(Long matterId) {
+        this.matterId = matterId;
     }
 
     public List<AskFormData> getAskInfos() {

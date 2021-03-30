@@ -5,6 +5,7 @@ import cn.comesaday.avt.matter.manager.MatterSettingManager;
 import cn.comesaday.avt.matter.model.Matter;
 import cn.comesaday.avt.matter.model.MatterSetting;
 import cn.comesaday.avt.matter.vo.MatterSettingVo;
+import cn.comesaday.avt.matter.vo.MatterVo;
 import cn.comesaday.avt.setting.dict.manager.DictManager;
 import cn.comesaday.avt.setting.dict.model.Dict;
 import cn.comesaday.coe.common.constant.NumConstant;
@@ -34,7 +35,7 @@ public class MatterService extends BaseService<Matter, Long> {
     private DictManager dictManager;
 
     @Autowired
-    private MatterSettingManager matterSettingManager;
+    private MatterSettingService matterSettingService;
 
     public List<Matter> findAll(Matter matter) {
         Example<Matter> example = Example.of(matter);
@@ -69,13 +70,13 @@ public class MatterService extends BaseService<Matter, Long> {
             setting.setMatterId(matterId);
             setting.setDictId(elementId);
             Example<MatterSetting> example = Example.of(setting);
-            setting = matterSettingManager.findOne(example).orElse(new MatterSetting());
+            setting = matterSettingService.findOne(example).orElse(new MatterSetting());
             Dict dict = dictManager.getOne(elementId);
             setting.setDictCode(dict.getCode());
             setting.setDictName(dict.getName());
             setting.setStyle(dict.getStyle());
             setting.setSort(index + NumConstant.I1);
-            matterSettingManager.save(setting);
+            matterSettingService.save(setting);
         }
     }
 
@@ -86,6 +87,23 @@ public class MatterService extends BaseService<Matter, Long> {
         if (CollectionUtils.isEmpty(elementIds)) {
             return;
         }
-        matterSettingManager.deleteAll();
+        matterSettingService.deleteAll();
+    }
+
+    /**
+     * <说明> 查事项表单
+     * @param matterId 事项id
+     * @author ChenWei
+     * @date 2021/3/29 19:39
+     * @return cn.comesaday.avt.matter.vo.MatterVo
+     */
+    public MatterVo getMatter(Long matterId) {
+        MatterVo matterVo = new MatterVo();
+        Matter matter = this.findOne(matterId);
+        List<MatterSetting> settings = matterSettingService
+                .findAllByProperty("matterId", matterId);
+        matterVo.setMatter(matter);
+        matterVo.setElements(settings);
+        return matterVo;
     }
 }
