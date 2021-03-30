@@ -2,9 +2,18 @@
 <html lang="en" xmlns:th="http://www.thymeleaf.org">
 <head>
     <meta charset="UTF-8">
-    <title>Title</title>
+    <title th:text="${matterInfo.matter.name} + '申请'"></title>
 </head>
 <body>
-
+    <form name="frm" th:action="@{create}">
+        <input type="hidden" name="matterId" th:value="${matterInfo.matter.id}">
+        <div th:each="element,stat :${matterInfo.elements}">
+            <input type="hidden" th:name="'askInfos[' + ${stat.count} + '].dictCode'" th:value="${element.dictCode}">
+            <input type="hidden" th:name="'askInfos[' + ${stat.count} + '].dictId" th:value="${element.dictId}">
+            <input type="hidden" th:name="'askInfos[' + ${stat.count} + '].dictName" th:value="${element.dictName}">
+            <input th:name="'askInfos[' + ${stat.count} + '].userFill" th:type="${element.style}">
+        </div>
+        <input type="submit" name="提交申请">
+    </form>
 </body>
 </html>

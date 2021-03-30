@@ -34,7 +34,7 @@ public class MatterSetting extends IdEntity {
     private Boolean required;
 
     // 排序
-    private int sort;
+    private Integer sort;
 
     public Long getMatterId() {
         return matterId;
@@ -84,11 +84,11 @@ public class MatterSetting extends IdEntity {
         this.required = required;
     }
 
-    public int getSort() {
+    public Integer getSort() {
         return sort;
     }
 
-    public void setSort(int sort) {
+    public void setSort(Integer sort) {
         this.sort = sort;
     }
 }

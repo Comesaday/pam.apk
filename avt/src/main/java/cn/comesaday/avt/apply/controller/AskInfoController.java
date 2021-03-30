@@ -7,6 +7,7 @@ import cn.comesaday.avt.matter.service.MatterService;
 import cn.comesaday.avt.matter.vo.MatterVo;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.ui.Model;
+import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
@@ -26,15 +27,15 @@ public class AskInfoController {
     @Autowired
     private MatterService matterService;
 
-    @RequestMapping("/matter/{matterId}")
-    public String matter(Model model, Long matterId) {
+    @RequestMapping("/matter/apply/{matterId}")
+    public String apply(Model model, @PathVariable(name = "matterId") Long matterId) {
         MatterVo matterInfo = matterService.getMatter(matterId);
         model.addAttribute("matterInfo", matterInfo);
         return "ask/ask-edit";
     }
 
-    @RequestMapping("/matter/apply")
-    public String apply(AskInfoVo askInfoVo) {
+    @RequestMapping("/matter/create")
+    public String create(AskInfoVo askInfoVo) {
         AskInfo askInfo = askInfoService.apply(askInfoVo);
         return "ask/ask-view";
     }
