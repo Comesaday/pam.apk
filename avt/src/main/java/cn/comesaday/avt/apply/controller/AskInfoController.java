@@ -6,10 +6,10 @@ import cn.comesaday.avt.apply.vo.AskInfoVo;
 import cn.comesaday.avt.matter.service.MatterService;
 import cn.comesaday.avt.matter.vo.MatterVo;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RestController;
 
 /**
  * <描述> 请假controller
@@ -17,7 +17,7 @@ import org.springframework.web.bind.annotation.RestController;
  * @author: ChenWei
  * @CreateAt: 2021-03-08 16:10
  */
-@RestController
+@Controller
 @RequestMapping("/ask")
 public class AskInfoController {
 
