@@ -1,5 +1,7 @@
 package cn.comesaday.avt.apply.service;
 
+import cn.comesaday.avt.apply.model.AskProcess;
+import cn.comesaday.coe.core.basic.service.BaseService;
 import org.springframework.stereotype.Service;
 
 /**
@@ -9,7 +11,6 @@ import org.springframework.stereotype.Service;
  * @CreateAt: 2021-04-01 17:23
  */
 @Service
-public class AskProcessService {
+public class AskProcessService extends BaseService<AskProcess, Long> {
 
-    
 }

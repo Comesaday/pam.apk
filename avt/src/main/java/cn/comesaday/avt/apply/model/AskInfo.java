@@ -33,9 +33,6 @@ public class AskInfo extends IdEntity {
     // 当前环节ID
     private Long curTrackId;
 
-    // 流程实例ID
-    private Long processId;
-
     // 0:暂存 1:发布 2:处理中
     private Integer status;
 
@@ -85,14 +82,6 @@ public class AskInfo extends IdEntity {
 
     public void setCurTrackId(Long curTrackId) {
         this.curTrackId = curTrackId;
-    }
-
-    public Long getProcessId() {
-        return processId;
-    }
-
-    public void setProcessId(Long processId) {
-        this.processId = processId;
     }
 
     public Integer getStatus() {

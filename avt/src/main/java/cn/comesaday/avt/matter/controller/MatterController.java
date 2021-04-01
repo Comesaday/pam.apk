@@ -95,7 +95,7 @@ public class MatterController {
      * @return java.lang.String
      */
     public String save(Matter matter) {
-        matterService.saveOrUpdate(matter);
+        matterService.save(matter);
         return "redirect:/matter/index";
     }
 

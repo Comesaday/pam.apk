@@ -42,38 +42,15 @@ public class AskInfoService extends BaseService<AskInfo, Long> {
         // 检查事项
         matterService.checkMatterConfig(matter, NumConstant.I5, Boolean.FALSE);
         // 保存申请表单信息
-        List<AskFormData> datas = this.saveFormData(askInfoVo.getAskInfos());
+        List<AskFormData> datas = askFormDataService.saveAll(askInfoVo.getAskInfos());
         // 初始化申请主表
         AskInfo askInfo = this.initAskMainInfo(askInfoVo, matter);
         // 表单数据&主表关联
-        this.updateAskFormData(datas, askInfo);
+        datas.forEach(data -> data.setAskId(askInfo.getId()));
+        askFormDataService.saveAll(datas);
         askInfoVo.setMatter(matter);
         askInfoVo.setAskInfos(datas);
         return askInfoVo;
-    }
-
-    /**
-     * <说明> 更新表单数据
-     * @param datas List<AskFormData>
-     * @param askInfo AskInfo
-     * @author ChenWei
-     * @date 2021/4/1 15:06
-     * @return void
-     */
-    private void updateAskFormData(List<AskFormData> datas, AskInfo askInfo) {
-        datas.forEach(data -> data.setAskId(askInfo.getId()));
-        askFormDataService.saveAll(datas);
-    }
-
-    /**
-     * <说明> 保存申请表单信息
-     * @param askInfos 表单填写内容
-     * @author ChenWei
-     * @date 2021/3/29 19:57
-     * @return List<AskFormData>
-     */
-    private List<AskFormData> saveFormData(List<AskFormData> askInfos) {
-        return askFormDataService.saveAll(askInfos);
     }
 
     /**
