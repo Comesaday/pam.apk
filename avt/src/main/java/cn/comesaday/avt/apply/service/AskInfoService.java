@@ -5,6 +5,8 @@ import cn.comesaday.avt.apply.model.AskInfo;
 import cn.comesaday.avt.apply.vo.AskInfoVo;
 import cn.comesaday.avt.matter.model.Matter;
 import cn.comesaday.avt.matter.service.MatterService;
+import cn.comesaday.coe.common.constant.NumConstant;
+import cn.comesaday.coe.core.basic.exception.PamException;
 import cn.comesaday.coe.core.basic.service.BaseService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -35,27 +37,43 @@ public class AskInfoService extends BaseService<AskInfo, Long> {
      * @date 2021/3/29 19:52
      * @return cn.comesaday.avt.apply.model.AskInfo
      */
-    public AskInfo apply(AskInfoVo askInfoVo) {
-        // 初始化申请主表
-        AskInfo askInfo = this.initAskMainInfo(askInfoVo);
+    public AskInfoVo apply(AskInfoVo askInfoVo) throws Exception {
+        Matter matter = matterService.getBasicMatter(askInfoVo.getMatterId());
+        // 检查事项
+        matterService.checkMatterConfig(matter, NumConstant.I5, Boolean.FALSE);
         // 保存申请表单信息
-        this.saveFormData(askInfoVo.getAskInfos(), askInfo.getId());
-        return null;
+        List<AskFormData> datas = this.saveFormData(askInfoVo.getAskInfos());
+        // 初始化申请主表
+        AskInfo askInfo = this.initAskMainInfo(askInfoVo, matter);
+        // 表单数据&主表关联
+        this.updateAskFormData(datas, askInfo);
+        askInfoVo.setMatter(matter);
+        askInfoVo.setAskInfos(datas);
+        return askInfoVo;
+    }
+
+    /**
+     * <说明> 更新表单数据
+     * @param datas List<AskFormData>
+     * @param askInfo AskInfo
+     * @author ChenWei
+     * @date 2021/4/1 15:06
+     * @return void
+     */
+    private void updateAskFormData(List<AskFormData> datas, AskInfo askInfo) {
+        datas.forEach(data -> data.setAskId(askInfo.getId()));
+        askFormDataService.saveAll(datas);
     }
 
     /**
      * <说明> 保存申请表单信息
      * @param askInfos 表单填写内容
-     * @param askInfoId 主表id
      * @author ChenWei
      * @date 2021/3/29 19:57
-     * @return void
+     * @return List<AskFormData>
      */
-    private void saveFormData(List<AskFormData> askInfos, Long askInfoId) {
-        for (AskFormData askFormData : askInfos) {
-            askFormData.setAskId(askInfoId);
-            askFormDataService.save(askFormData);
-        }
+    private List<AskFormData> saveFormData(List<AskFormData> askInfos) {
+        return askFormDataService.saveAll(askInfos);
     }
 
     /**
@@ -65,15 +83,35 @@ public class AskInfoService extends BaseService<AskInfo, Long> {
      * @date 2021/3/29 19:52
      * @return cn.comesaday.avt.apply.model.AskInfo
      */
-    public AskInfo initAskMainInfo(AskInfoVo askInfoVo) {
-        Matter matter = matterService.findOne(askInfoVo.getMatterId());
+    public AskInfo initAskMainInfo(AskInfoVo askInfoVo, Matter matter) {
         AskInfo askInfo = new AskInfo();
         askInfo.setMatterCode(matter.getCode());
         askInfo.setMatterId(matter.getId());
         askInfo.setMatterName(matter.getName());
         askInfo.setApplyId(null);
         askInfo.setApplyName(null);
-        askInfo.setPublish(Boolean.FALSE);
+        askInfo.setStatus(NumConstant.I1);
         return this.save(askInfo);
+    }
+
+    /**
+     * <说明> 查询申请信息
+     * @param askInfoId Long
+     * @author ChenWei
+     * @date 2021/4/1 17:35
+     * @return cn.comesaday.avt.apply.vo.AskInfoVo
+     */
+    public AskInfoVo query(Long askInfoId) throws PamException {
+        AskInfoVo askInfoVo = new AskInfoVo();
+        AskInfo askInfo = this.findOne(askInfoId);
+        if (null == askInfo) {
+            throw new PamException("申请信息不存在");
+        }
+        askInfoVo.setMatter(matterService.findOne(askInfo.getMatterId()));
+        askInfoVo.setApplyId(askInfo.getApplyId());
+        askInfoVo.setApplyName(askInfo.getApplyName());
+        askInfoVo.setAskTime(askInfo.getCreateAt());
+        askInfoVo.setAskInfos(askFormDataService.findAllByProperty("askId", askInfo.getId()));
+        return askInfoVo;
     }
 }

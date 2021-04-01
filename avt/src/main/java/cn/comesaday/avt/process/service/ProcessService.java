@@ -17,7 +17,6 @@ import org.activiti.engine.repository.Deployment;
 import org.activiti.engine.repository.Model;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
-import org.springframework.util.StringUtils;
 
 /**
  * <描述> ProcessService
@@ -43,19 +42,13 @@ public class ProcessService {
      */
     public Model createModel(Long matterId) throws Exception {
         // 事项是否创建
-        Matter matter = matterService.findOne(matterId);
-        if (null == matter) {
-            throw new PamException("未查找到该事项");
-        }
-        // 流程model是否创建
-        if (!StringUtils.isEmpty(matter.getModelId())) {
-            throw new PamException("流程模型已创建");
-        }
+        Matter matter = matterService.getBasicMatter(matterId);
+        matterService.checkMatterConfig(matter, NumConstant.I3, Boolean.TRUE);
         // 创建保存流程model
         Model model = this.createNewModel(matter);
         matter.setModelId(model.getId());
         matter.setStatus(MatterEnum.DEFINED.getStatus());
-        matterService.saveOrUpdate(matter);
+        matterService.save(matter);
         //完善ModelEditorSource
         ObjectNode editorNode = new ObjectMapper().createObjectNode();
         editorNode.put("id", "canvas");
@@ -92,13 +85,17 @@ public class ProcessService {
 
     /**
      * <说明> 流程部署
-     * @param modelId 模型id
+     * @param matterId 模型id
      * @author ChenWei
      * @date 2021/3/16 14:21
      * @return Deployment
      */
-    public Deployment deploymentModel(String modelId) throws Exception {
-        Model model = repositoryService.getModel(modelId);
+    public Deployment deploymentModel(Long matterId) throws Exception {
+        Matter matter = matterService.getBasicMatter(matterId);
+        // 检查事项状态
+        matterService.checkMatterConfig(matter, NumConstant.I4, Boolean.TRUE);
+        // 流程部署
+        Model model = repositoryService.getModel(matter.getModelId());
         byte[] bytes = repositoryService.getModelEditorSource(model.getId());
         if (null == bytes) {
             throw new PamException("模型数据为空");
@@ -112,8 +109,12 @@ public class ProcessService {
         String processName = model.getName() + ".bpmn20.xml";
         Deployment deploy = repositoryService.createDeployment().name(processName)
                 .addString(processName, new String(bpmnBytes, "utf-8")).deploy();
+        // 保存部署信息
         model.setDeploymentId(deploy.getId());
         repositoryService.saveModel(model);
+
+        matter.setDeployId(deploy.getId());
+        matterService.save(matter);
         return deploy;
     }
 }

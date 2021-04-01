@@ -36,8 +36,8 @@ public class AskInfo extends IdEntity {
     // 流程实例ID
     private Long processId;
 
-    // 0:暂存 1:发布
-    private boolean publish;
+    // 0:暂存 1:发布 2:处理中
+    private Integer status;
 
     public Long getApplyId() {
         return applyId;
@@ -95,11 +95,11 @@ public class AskInfo extends IdEntity {
         this.processId = processId;
     }
 
-    public boolean isPublish() {
-        return publish;
+    public Integer getStatus() {
+        return status;
     }
 
-    public void setPublish(boolean publish) {
-        this.publish = publish;
+    public void setStatus(Integer status) {
+        this.status = status;
     }
 }

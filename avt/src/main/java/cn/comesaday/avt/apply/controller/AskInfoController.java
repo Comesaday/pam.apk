@@ -1,6 +1,5 @@
 package cn.comesaday.avt.apply.controller;
 
-import cn.comesaday.avt.apply.model.AskInfo;
 import cn.comesaday.avt.apply.service.AskInfoService;
 import cn.comesaday.avt.apply.vo.AskInfoVo;
 import cn.comesaday.avt.matter.service.MatterService;
@@ -27,16 +26,60 @@ public class AskInfoController {
     @Autowired
     private MatterService matterService;
 
+    /**
+     * <说明> 事项申请页面
+     * @param model Model
+     * @param matterId 事项id
+     * @author ChenWei
+     * @date 2021/4/1 17:28
+     * @return java.lang.String
+     */
     @RequestMapping("/matter/apply/{matterId}")
     public String apply(Model model, @PathVariable(name = "matterId") Long matterId) {
-        MatterVo matterInfo = matterService.getMatter(matterId);
-        model.addAttribute("matterInfo", matterInfo);
+        try {
+            MatterVo matterInfo = matterService.getMatterInfo(matterId);
+            model.addAttribute("matterInfo", matterInfo);
+        } catch (Exception e) {
+            model.addAttribute("error", e.getMessage());
+        }
         return "ask/ask-edit";
     }
 
+    /**
+     * <说明> 保存申请信息
+     * @param model Model
+     * @param askInfoVo 申请信息
+     * @author ChenWei
+     * @date 2021/4/1 17:28
+     * @return java.lang.String
+     */
     @RequestMapping("/matter/create")
-    public String create(AskInfoVo askInfoVo) {
-        AskInfo askInfo = askInfoService.apply(askInfoVo);
+    public String create(Model model, AskInfoVo askInfoVo) {
+        try {
+            AskInfoVo askInfo = askInfoService.apply(askInfoVo);
+            model.addAttribute("askInfo", askInfo);
+        } catch (Exception e) {
+            model.addAttribute("error", e.getMessage());
+        }
+        return "ask/ask-view";
+    }
+
+    /**
+     * <说明> 查看申请信息
+     * @param model Model
+     * @param askInfoId 申请id
+     * @author ChenWei
+     * @date 2021/4/1 17:34
+     * @return java.lang.String
+     */
+    @RequestMapping("/query/{askInfoId}")
+    public String view(Model model, @PathVariable(value = "askInfoId") Long askInfoId) {
+        try {
+            AskInfoVo askInfo = askInfoService.query(askInfoId);
+            model.addAttribute("askInfo", askInfo);
+        } catch (Exception e) {
+            model.addAttribute("error", e.getMessage());
+        }
         return "ask/ask-view";
     }
 }
