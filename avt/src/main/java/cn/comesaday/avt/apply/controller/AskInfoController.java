@@ -75,7 +75,7 @@ public class AskInfoController {
     @RequestMapping("/query/{askInfoId}")
     public String view(Model model, @PathVariable(value = "askInfoId") Long askInfoId) {
         try {
-            AskInfoVo askInfo = askInfoService.query(askInfoId);
+            AskInfoVo askInfo = askInfoService.queryDetail(askInfoId);
             model.addAttribute("askInfo", askInfo);
         } catch (Exception e) {
             model.addAttribute("error", e.getMessage());

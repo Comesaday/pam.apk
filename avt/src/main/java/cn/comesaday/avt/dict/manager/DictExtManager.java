@@ -1,6 +1,6 @@
-package cn.comesaday.avt.setting.dict.manager;
+package cn.comesaday.avt.dict.manager;
 
-import cn.comesaday.avt.setting.dict.model.DictExt;
+import cn.comesaday.avt.dict.model.DictExt;
 import cn.comesaday.coe.core.jpa.bean.repository.MyRepository;
 
 /**

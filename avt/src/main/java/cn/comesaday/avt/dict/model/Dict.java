@@ -1,4 +1,4 @@
-package cn.comesaday.avt.setting.dict.model;
+package cn.comesaday.avt.dict.model;
 
 import cn.comesaday.coe.core.basic.model.IdEntity;
 

@@ -1,7 +1,7 @@
-package cn.comesaday.avt.setting.dict.service;
+package cn.comesaday.avt.dict.service;
 
-import cn.comesaday.avt.setting.dict.manager.DictManager;
-import cn.comesaday.avt.setting.dict.model.Dict;
+import cn.comesaday.avt.dict.manager.DictManager;
+import cn.comesaday.avt.dict.model.Dict;
 import cn.comesaday.coe.common.constant.NumConstant;
 import cn.comesaday.coe.core.basic.service.BaseService;
 import org.springframework.beans.factory.annotation.Autowired;

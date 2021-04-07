@@ -1,6 +1,6 @@
-package cn.comesaday.avt.setting.dict.manager;
+package cn.comesaday.avt.dict.manager;
 
-import cn.comesaday.avt.setting.dict.model.Dict;
+import cn.comesaday.avt.dict.model.Dict;
 import cn.comesaday.coe.core.jpa.bean.repository.MyRepository;
 import org.springframework.data.jpa.repository.Query;
 import org.springframework.data.repository.query.Param;

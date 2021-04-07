@@ -1,7 +1,7 @@
-package cn.comesaday.avt.setting.dict.service;
+package cn.comesaday.avt.dict.service;
 
-import cn.comesaday.avt.setting.dict.manager.DictExtManager;
-import cn.comesaday.avt.setting.dict.model.DictExt;
+import cn.comesaday.avt.dict.manager.DictExtManager;
+import cn.comesaday.avt.dict.model.DictExt;
 import cn.comesaday.coe.core.basic.service.BaseService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;

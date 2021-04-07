@@ -1,7 +1,7 @@
-package cn.comesaday.avt.setting.dict.controller;
+package cn.comesaday.avt.dict.controller;
 
-import cn.comesaday.avt.setting.dict.model.Dict;
-import cn.comesaday.avt.setting.dict.service.DictService;
+import cn.comesaday.avt.dict.model.Dict;
+import cn.comesaday.avt.dict.service.DictService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;

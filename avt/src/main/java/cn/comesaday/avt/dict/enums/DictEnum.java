@@ -1,4 +1,4 @@
-package cn.comesaday.avt.frame.enums;
+package cn.comesaday.avt.dict.enums;
 
 /**
  * <描述> FormEnum
@@ -6,7 +6,7 @@ package cn.comesaday.avt.frame.enums;
  * @author: ChenWei
  * @CreateAt: 2021-03-15 16:27
  */
-public enum FormEnum {
+public enum DictEnum {
 
     OPTION("OPTION", "单选型", ""),
     RADIO("RADIO", "单选型", ""),
@@ -22,7 +22,7 @@ public enum FormEnum {
 
     private final String remark;
 
-    FormEnum(String code, String name, String remark) {
+    DictEnum(String code, String name, String remark) {
         this.code = code;
         this.name = name;
         this.remark = remark;

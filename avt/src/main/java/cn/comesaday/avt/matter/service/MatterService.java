@@ -1,13 +1,13 @@
 package cn.comesaday.avt.matter.service;
 
-import cn.comesaday.avt.frame.enums.MatterEnum;
+import cn.comesaday.avt.matter.enums.MatterEnum;
 import cn.comesaday.avt.matter.manager.MatterManager;
 import cn.comesaday.avt.matter.model.Matter;
 import cn.comesaday.avt.matter.model.MatterSetting;
 import cn.comesaday.avt.matter.vo.MatterSettingVo;
 import cn.comesaday.avt.matter.vo.MatterVo;
-import cn.comesaday.avt.setting.dict.manager.DictManager;
-import cn.comesaday.avt.setting.dict.model.Dict;
+import cn.comesaday.avt.dict.manager.DictManager;
+import cn.comesaday.avt.dict.model.Dict;
 import cn.comesaday.coe.common.constant.NumConstant;
 import cn.comesaday.coe.core.basic.exception.PamException;
 import cn.comesaday.coe.core.basic.service.BaseService;

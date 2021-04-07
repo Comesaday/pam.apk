@@ -78,7 +78,7 @@ public class AskInfoService extends BaseService<AskInfo, Long> {
      * @date 2021/4/1 17:35
      * @return cn.comesaday.avt.apply.vo.AskInfoVo
      */
-    public AskInfoVo query(Long askInfoId) throws PamException {
+    public AskInfoVo queryDetail(Long askInfoId) throws PamException {
         AskInfoVo askInfoVo = new AskInfoVo();
         AskInfo askInfo = this.findOne(askInfoId);
         if (null == askInfo) {
