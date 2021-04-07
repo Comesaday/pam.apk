@@ -3,7 +3,7 @@ package cn.comesaday.avt.matter.service;
 import cn.comesaday.avt.matter.enums.MatterEnum;
 import cn.comesaday.avt.matter.manager.MatterManager;
 import cn.comesaday.avt.matter.model.Matter;
-import cn.comesaday.avt.matter.model.MatterSetting;
+import cn.comesaday.avt.matter.model.MatterFieldSetting;
 import cn.comesaday.avt.matter.vo.MatterSettingVo;
 import cn.comesaday.avt.matter.vo.MatterVo;
 import cn.comesaday.avt.dict.manager.DictManager;
@@ -37,7 +37,7 @@ public class MatterService extends BaseService<Matter, Long> {
     private DictManager dictManager;
 
     @Autowired
-    private MatterSettingService matterSettingService;
+    private MatterFieldSettingService matterSettingService;
 
     public Matter findByModelId(String modelId) {
         Matter matter = new Matter();
@@ -53,13 +53,13 @@ public class MatterService extends BaseService<Matter, Long> {
         if (CollectionUtils.isEmpty(elementIds)) {
             return;
         }
-        MatterSetting setting = new MatterSetting();
+        MatterFieldSetting setting = new MatterFieldSetting();
         for (int index = NumConstant.I0; index < elementIds.size(); index++) {
             Long elementId = elementIds.get(index);
             setting.setMatterId(matterId);
             setting.setDictId(elementId);
-            Example<MatterSetting> example = Example.of(setting);
-            setting = matterSettingService.findOne(example).orElse(new MatterSetting());
+            Example<MatterFieldSetting> example = Example.of(setting);
+            setting = matterSettingService.findOne(example).orElse(new MatterFieldSetting());
             Dict dict = dictManager.getOne(elementId);
             setting.setDictCode(dict.getCode());
             setting.setDictName(dict.getName());
@@ -103,7 +103,7 @@ public class MatterService extends BaseService<Matter, Long> {
      */
     public MatterVo getMatterInfo(Long matterId) throws PamException {
         Matter matter = this.getBasicMatter(matterId);
-        List<MatterSetting> settings = matterSettingService
+        List<MatterFieldSetting> settings = matterSettingService
                 .findAllByProperty("matterId", matterId);
         MatterVo matterVo = new MatterVo();
         matterVo.setMatter(matter);

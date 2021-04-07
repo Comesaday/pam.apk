@@ -1,6 +1,6 @@
 package cn.comesaday.avt.matter.manager;
 
-import cn.comesaday.avt.matter.model.MatterSetting;
+import cn.comesaday.avt.matter.model.MatterFieldSetting;
 import cn.comesaday.coe.core.jpa.bean.repository.MyRepository;
 
 /**
@@ -9,5 +9,5 @@ import cn.comesaday.coe.core.jpa.bean.repository.MyRepository;
  * @author: ChenWei
  * @CreateAt: 2021-03-16 10:54
  */
-public interface MatterSettingManager extends MyRepository<MatterSetting, Long> {
+public interface MatterFieldSettingManager extends MyRepository<MatterFieldSetting, Long> {
 }

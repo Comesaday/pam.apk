@@ -12,8 +12,8 @@ import javax.persistence.Table;
  * @CreateAt: 2021-03-08 20:00
  */
 @Entity
-@Table(name = "AVT_MATTER_SETTING")
-public class MatterSetting extends IdEntity {
+@Table(name = "AVT_MATTER_FIELD_SETTING")
+public class MatterFieldSetting extends IdEntity {
 
     // 事项id
     private Long matterId;

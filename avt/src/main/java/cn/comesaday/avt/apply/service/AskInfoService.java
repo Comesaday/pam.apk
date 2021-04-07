@@ -73,17 +73,19 @@ public class AskInfoService extends BaseService<AskInfo, Long> {
 
     /**
      * <说明> 查询申请信息
-     * @param askInfoId Long
+     * @param askId Long
      * @author ChenWei
      * @date 2021/4/1 17:35
      * @return cn.comesaday.avt.apply.vo.AskInfoVo
      */
-    public AskInfoVo queryDetail(Long askInfoId) throws PamException {
+    public AskInfoVo queryDetail(Long askId) throws PamException {
         AskInfoVo askInfoVo = new AskInfoVo();
-        AskInfo askInfo = this.findOne(askInfoId);
+        AskInfo askInfo = this.findOne(askId);
         if (null == askInfo) {
             throw new PamException("申请信息不存在");
         }
+        askInfoVo.setAskId(askId);
+        askInfoVo.setAskInfo(askInfo);
         askInfoVo.setMatter(matterService.findOne(askInfo.getMatterId()));
         askInfoVo.setApplyId(askInfo.getApplyId());
         askInfoVo.setApplyName(askInfo.getApplyName());

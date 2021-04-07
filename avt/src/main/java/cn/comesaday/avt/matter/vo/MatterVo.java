@@ -1,7 +1,7 @@
 package cn.comesaday.avt.matter.vo;
 
 import cn.comesaday.avt.matter.model.Matter;
-import cn.comesaday.avt.matter.model.MatterSetting;
+import cn.comesaday.avt.matter.model.MatterFieldSetting;
 
 import java.util.List;
 
@@ -17,7 +17,7 @@ public class MatterVo {
     private Matter matter;
 
     // 事项表单元素
-    private List<MatterSetting> elements;
+    private List<MatterFieldSetting> elements;
 
     public Matter getMatter() {
         return matter;
@@ -27,11 +27,11 @@ public class MatterVo {
         this.matter = matter;
     }
 
-    public List<MatterSetting> getElements() {
+    public List<MatterFieldSetting> getElements() {
         return elements;
     }
 
-    public void setElements(List<MatterSetting> elements) {
+    public void setElements(List<MatterFieldSetting> elements) {
         this.elements = elements;
     }
 }

@@ -1,11 +1,15 @@
 package cn.comesaday.avt.apply.job;
 
 import cn.comesaday.avt.apply.model.AskInfo;
+import cn.comesaday.avt.apply.model.AskProcess;
 import cn.comesaday.avt.apply.service.AskInfoService;
+import cn.comesaday.avt.apply.service.AskProcessService;
 import cn.comesaday.avt.apply.vo.AskInfoVo;
+import cn.comesaday.avt.apply.vo.ProcessVariable;
 import cn.comesaday.avt.system.helper.JobHelper;
 import cn.comesaday.coe.common.constant.NumConstant;
 import cn.comesaday.coe.common.util.DateUtil;
+import cn.comesaday.coe.common.util.JsonUtil;
 import cn.comesaday.coe.core.basic.bean.result.JsonResult;
 import cn.comesaday.coe.core.basic.exception.PamException;
 import org.activiti.engine.ProcessEngines;
@@ -45,6 +49,9 @@ public class AskJob {
 
     @Autowired
     private TaskService taskService;
+
+    @Autowired
+    private AskProcessService askProcessService;
 
     // 线程执行池
     private final static ExecutorService executorService = Executors.newFixedThreadPool(NumConstant.I10);
@@ -130,13 +137,24 @@ public class AskJob {
         @Override
         public JsonResult call() {
             JsonResult result = new JsonResult();
+            AskProcess askProcess = askProcessService.queryAskProcess(askInfo.getId());
+            askProcess.setRetryTimes(askProcess.getRetryTimes() + NumConstant.I1);
             try {
                 AskInfoVo askInfoVo = this.checkAskInfo(askInfo.getId());
                 String instanceId = this.startProcess(askInfoVo);
+                askProcess.setProcessId(instanceId);
+                askProcess.setParam(JsonUtil.toJson(askInfoVo));
+                askProcess.setSuccess(Boolean.TRUE);
+                askProcess.setResult("流程开启成功,流程实例id:" + instanceId);
+                result.setSuccess("流程开启成功,流程实例id:" + instanceId);
             } catch (Exception e) {
                 askInfo.setStatus(NumConstant.I1);
                 askInfoService.save(askInfo);
+                askProcess.setSuccess(Boolean.FALSE);
+                askProcess.setResult("流程开启失败,原因:" + e);
                 result.setError("处理异常,回滚:" + e);
+            } finally {
+                askProcessService.save(askProcess);
             }
             return result;
         }
@@ -151,15 +169,17 @@ public class AskJob {
         private String startProcess(AskInfoVo askInfoVo) {
             String applyId = String.valueOf(askInfoVo.getApplyId());
             Authentication.setAuthenticatedUserId(applyId);
+            ProcessVariable variable = new ProcessVariable();
+            variable.setAskInfoVo(askInfoVo);
             Map<String, Object> variables = new HashMap<>();
-            variables.put("applyId", applyId);
-            variables.put("askInfo", askInfo);
+            variables.put("processInfo", variable);
             // 开启流程
             ProcessInstance processInstance = ProcessEngines.getDefaultProcessEngine()
                     .getRuntimeService().startProcessInstanceByKey(askInfoVo.getMatter().getCode(), variables);
             String instanceId = processInstance.getProcessInstanceId();
             Task task = taskService.createTaskQuery().processInstanceId(instanceId).singleResult();
             task.setAssignee(applyId);
+            variable.setInstanceId(instanceId);
             // 完成此节点。由下一节点审批。完成后act_ru_task会创建一条由下节点审批的数据
             taskService.complete(task.getId(), variables);
             return instanceId;

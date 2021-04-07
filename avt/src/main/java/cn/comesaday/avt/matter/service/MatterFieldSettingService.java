@@ -1,6 +1,6 @@
 package cn.comesaday.avt.matter.service;
 
-import cn.comesaday.avt.matter.model.MatterSetting;
+import cn.comesaday.avt.matter.model.MatterFieldSetting;
 import cn.comesaday.coe.core.basic.service.BaseService;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -13,5 +13,5 @@ import org.springframework.transaction.annotation.Transactional;
  */
 @Transactional
 @Service
-public class MatterSettingService extends BaseService<MatterSetting, Long> {
+public class MatterFieldSettingService extends BaseService<MatterFieldSetting, Long> {
 }

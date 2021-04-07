@@ -23,7 +23,7 @@ public class AskProcess extends IdEntity {
     private String processId;
 
     // 重试次数
-    private Integer retryTimes = NumConstant.I3;
+    private Integer retryTimes = NumConstant.I0;
 
     // 执行结果
     private String result;
@@ -33,6 +33,13 @@ public class AskProcess extends IdEntity {
 
     // 是否执行成功
     private Boolean success;
+
+    public AskProcess() {
+    }
+
+    public AskProcess(Long askId) {
+        this.askId = askId;
+    }
 
     public Long getAskId() {
         return askId;

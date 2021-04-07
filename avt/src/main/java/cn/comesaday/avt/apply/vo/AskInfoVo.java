@@ -1,6 +1,7 @@
 package cn.comesaday.avt.apply.vo;
 
 import cn.comesaday.avt.apply.model.AskFormData;
+import cn.comesaday.avt.apply.model.AskInfo;
 import cn.comesaday.avt.matter.model.Matter;
 
 import java.util.Date;
@@ -27,6 +28,10 @@ public class AskInfoVo {
     private Long matterId;
 
     private Matter matter;
+
+    private Long askId;
+
+    private AskInfo askInfo;
 
     // 申请表单数据
     private List<AskFormData> askInfos;
@@ -77,5 +82,21 @@ public class AskInfoVo {
 
     public void setMatter(Matter matter) {
         this.matter = matter;
+    }
+
+    public Long getAskId() {
+        return askId;
+    }
+
+    public void setAskId(Long askId) {
+        this.askId = askId;
+    }
+
+    public AskInfo getAskInfo() {
+        return askInfo;
+    }
+
+    public void setAskInfo(AskInfo askInfo) {
+        this.askInfo = askInfo;
     }
 }
