@@ -1,6 +1,7 @@
 package cn.comesaday.avt.apply.service;
 
 import cn.comesaday.avt.apply.model.AskProcess;
+import cn.comesaday.coe.common.constant.NumConstant;
 import cn.comesaday.coe.core.basic.service.BaseService;
 import org.springframework.stereotype.Service;
 
@@ -23,7 +24,9 @@ public class AskProcessService extends BaseService<AskProcess, Long> {
     public AskProcess queryAskProcess(Long askId) {
         AskProcess askProcess = this.findByProperty("askId", askId);
         if (null == askProcess) {
-            return new AskProcess(askId);
+            askProcess = new AskProcess();
+            askProcess.setRetryTimes(NumConstant.I0);
+            askProcess.setAskId(askId);
         }
         return askProcess;
     }

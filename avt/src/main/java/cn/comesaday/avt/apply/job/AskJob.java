@@ -1,5 +1,6 @@
 package cn.comesaday.avt.apply.job;
 
+import cn.comesaday.avt.apply.event.AskDelegate;
 import cn.comesaday.avt.apply.model.AskInfo;
 import cn.comesaday.avt.apply.model.AskProcess;
 import cn.comesaday.avt.apply.service.AskInfoService;
@@ -20,6 +21,8 @@ import org.activiti.engine.task.Task;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.scheduling.annotation.EnableScheduling;
+import org.springframework.scheduling.annotation.Scheduled;
 import org.springframework.stereotype.Service;
 import org.springframework.util.CollectionUtils;
 import org.springframework.util.StringUtils;
@@ -34,6 +37,7 @@ import java.util.concurrent.*;
  * @CreateAt: 2021-04-01 18:59
  */
 @Service
+@EnableScheduling
 public class AskJob {
 
     private final static String ASK_SCHEDULE_KEY = "ASK_SCHEDULE_KEY";
@@ -53,6 +57,9 @@ public class AskJob {
     @Autowired
     private AskProcessService askProcessService;
 
+    @Autowired
+    private AskDelegate askDelegate;
+
     // 线程执行池
     private final static ExecutorService executorService = Executors.newFixedThreadPool(NumConstant.I10);
 
@@ -62,17 +69,19 @@ public class AskJob {
      * @date 2021/4/1 19:00
      * @return JsonResult
      */
+    @Scheduled(cron = "0/60 * * * * ? ") // 间隔5秒执行
     public JsonResult doAskScan() {
         JsonResult result = new JsonResult();
         try {
             if (jobHelper.getJobLock(ASK_SCHEDULE_KEY)) {
-                result.setError("ASK_SCHEDULE_KEY锁被占用");
+                result.setError(ASK_SCHEDULE_KEY + "锁被占用");
                 return result;
             }
+            jobHelper.setJobLock(ASK_SCHEDULE_KEY, ASK_SCHEDULE_KEY);
             // 获取所有就绪的申请信息
             logger.info("{}:查询就绪申请内容", DateUtil.formatLDate(new Date()));
             List<AskInfo> askInfos = askInfoService
-                    .findAllByProperty("status", NumConstant.I2);
+                    .findAllByProperty("status", NumConstant.I1);
             if (CollectionUtils.isEmpty(askInfos)) {
                 return result.setSuccess("此次未查询到就绪信息");
             }
@@ -101,21 +110,33 @@ public class AskJob {
             Future<JsonResult> result = executorService.submit(doAskScanThread);
             results.add(result);
         }
+        List<JsonResult> list = new ArrayList<>();
         for (Future<JsonResult> future : results) {
+            JsonResult result = null;
+            String message = "";
             try {
                 // 时间：5秒
-                future.get(NumConstant.I5, TimeUnit.MINUTES);
+                result = future.get(NumConstant.I5, TimeUnit.MINUTES);
             } catch (TimeoutException e) {
-                logger.error("提交申请信息future等待线程超时异常..." + e);
+                logger.error("future等待线程超时异常..." + e);
+                message = "future等待线程超时异常...";
             } catch (InterruptedException e) {
-                logger.error("提交申请信息future等待线程中断..." + e);
+                logger.error("future等待线程中断..." + e);
+                message = "future等待线程中断...";
             } catch (ExecutionException e) {
-                logger.error("提交申请信息线程池执行异常..." + e);
+                logger.error("线程池执行异常..." + e);
+                message = "线程池执行异常...";
             } catch (Exception e) {
-                logger.error("提交申请信息线程池异常..." + e);
+                logger.error("线程池异常..." + e);
+                message = "线程池异常...";
+            } finally {
+                if (null == result) {
+                    result = new JsonResult(Boolean.FALSE, message);
+                }
             }
+            list.add(result);
         }
-        return new JsonResult();
+        return new JsonResult(Boolean.TRUE, list);
     }
 
     /**
@@ -129,9 +150,7 @@ public class AskJob {
         private AskInfo askInfo;
 
         public DoAskScanThread(AskInfo askInfo) {
-            // 更新状态为处理中
-            askInfo.setStatus(NumConstant.I2);
-            this.askInfo = askInfoService.save(askInfo);
+            this.askInfo = askInfo;
         }
 
         @Override
@@ -140,7 +159,11 @@ public class AskJob {
             AskProcess askProcess = askProcessService.queryAskProcess(askInfo.getId());
             askProcess.setRetryTimes(askProcess.getRetryTimes() + NumConstant.I1);
             try {
+                // 更新状态为处理中
+                askInfoService.updateById(askInfo.getId(), "status", NumConstant.I2);
+                // 检查申请信息
                 AskInfoVo askInfoVo = this.checkAskInfo(askInfo.getId());
+                // 开启流程
                 String instanceId = this.startProcess(askInfoVo);
                 askProcess.setProcessId(instanceId);
                 askProcess.setParam(JsonUtil.toJson(askInfoVo));
@@ -148,8 +171,8 @@ public class AskJob {
                 askProcess.setResult("流程开启成功,流程实例id:" + instanceId);
                 result.setSuccess("流程开启成功,流程实例id:" + instanceId);
             } catch (Exception e) {
-                askInfo.setStatus(NumConstant.I1);
-                askInfoService.save(askInfo);
+                // 状态回滚
+                askInfoService.updateById(askInfo.getId(), "status", NumConstant.I1);
                 askProcess.setSuccess(Boolean.FALSE);
                 askProcess.setResult("流程开启失败,原因:" + e);
                 result.setError("处理异常,回滚:" + e);
@@ -170,6 +193,7 @@ public class AskJob {
             String applyId = String.valueOf(askInfoVo.getApplyId());
             Authentication.setAuthenticatedUserId(applyId);
             ProcessVariable variable = new ProcessVariable();
+            variable.setExecutor(askDelegate);
             variable.setAskInfoVo(askInfoVo);
             Map<String, Object> variables = new HashMap<>();
             variables.put("processInfo", variable);

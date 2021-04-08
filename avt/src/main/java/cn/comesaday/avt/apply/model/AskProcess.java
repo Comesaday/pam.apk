@@ -1,6 +1,5 @@
 package cn.comesaday.avt.apply.model;
 
-import cn.comesaday.coe.common.constant.NumConstant;
 import cn.comesaday.coe.core.basic.model.IdEntity;
 
 import javax.persistence.Entity;
@@ -23,7 +22,7 @@ public class AskProcess extends IdEntity {
     private String processId;
 
     // 重试次数
-    private Integer retryTimes = NumConstant.I0;
+    private Integer retryTimes;
 
     // 执行结果
     private String result;

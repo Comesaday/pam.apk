@@ -12,11 +12,17 @@ import java.util.List;
  */
 public class ProcessVariable {
 
+    // 流程实例id
     private String instanceId;
 
+    // 申请信息
     private AskInfoVo askInfoVo;
 
+    // 审批记录
     private List<AskInfoTrack> records;
+
+    // 审批流程执行类
+    private Object executor;
 
     public String getInstanceId() {
         return instanceId;
@@ -40,5 +46,13 @@ public class ProcessVariable {
 
     public void setRecords(List<AskInfoTrack> records) {
         this.records = records;
+    }
+
+    public Object getExecutor() {
+        return executor;
+    }
+
+    public void setExecutor(Object executor) {
+        this.executor = executor;
     }
 }
