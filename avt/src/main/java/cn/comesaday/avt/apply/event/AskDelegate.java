@@ -5,13 +5,16 @@ import cn.comesaday.avt.apply.model.AskInfoTrack;
 import cn.comesaday.avt.apply.service.AskInfoService;
 import cn.comesaday.avt.apply.service.AskInfoTrackService;
 import cn.comesaday.avt.apply.vo.ProcessVariable;
+import cn.comesaday.coe.common.util.JsonUtil;
 import org.activiti.engine.TaskService;
-import org.activiti.engine.delegate.DelegateExecution;
+import org.activiti.engine.delegate.DelegateTask;
+import org.activiti.engine.delegate.TaskListener;
 import org.activiti.engine.task.Task;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.util.CollectionUtils;
 
+import java.io.Serializable;
 import java.util.Collections;
 import java.util.HashMap;
 import java.util.List;
@@ -24,7 +27,9 @@ import java.util.Map;
  * @CreateAt: 2021-04-07 19:02
  */
 @Service
-public class AskDelegate {
+public class AskDelegate implements TaskListener,Serializable {
+
+    private static final long serialVersionUID = 8513750196548027535L;
 
     @Autowired
     private AskInfoService askInfoService;
@@ -37,17 +42,19 @@ public class AskDelegate {
 
     /**
      * <说明> 初始化版本表数据
-     * @param delegateExecution DelegateExecution
+     * @param delegateTask DelegateTask
      * @author ChenWei
      * @date 2021/4/8 11:05
      * @return void
      */
-    public void submit(DelegateExecution delegateExecution) {
+    @Override
+    public void notify(DelegateTask delegateTask) {
         // 申请内容
-        ProcessVariable variable = (ProcessVariable) delegateExecution.getVariable("processInfo");
+        Object processInfo = delegateTask.getVariable("processInfo");
+        ProcessVariable variable = JsonUtil.parseObject(processInfo.toString(), ProcessVariable.class);
         // 获取当前节点内容
         Task task = taskService.createTaskQuery().processInstanceId(
-                variable.getInstanceId()).active().singleResult();
+                delegateTask.getProcessInstanceId()).active().singleResult();
         // 初始化审批版本数据
         AskInfo askInfo = variable.getAskInfoVo().getAskInfo();
         AskInfoTrack askInfoTrack = askInfoTrackService.initAskTrackInfo(askInfo, task);

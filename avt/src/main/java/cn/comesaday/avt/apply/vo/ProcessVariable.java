@@ -2,6 +2,7 @@ package cn.comesaday.avt.apply.vo;
 
 import cn.comesaday.avt.apply.model.AskInfoTrack;
 
+import java.io.Serializable;
 import java.util.List;
 
 /**
@@ -10,7 +11,7 @@ import java.util.List;
  * @author: ChenWei
  * @CreateAt: 2021-04-07 19:43
  */
-public class ProcessVariable {
+public class ProcessVariable implements Serializable {
 
     // 流程实例id
     private String instanceId;
@@ -20,9 +21,6 @@ public class ProcessVariable {
 
     // 审批记录
     private List<AskInfoTrack> records;
-
-    // 审批流程执行类
-    private Object executor;
 
     public String getInstanceId() {
         return instanceId;
@@ -48,11 +46,4 @@ public class ProcessVariable {
         this.records = records;
     }
 
-    public Object getExecutor() {
-        return executor;
-    }
-
-    public void setExecutor(Object executor) {
-        this.executor = executor;
-    }
 }

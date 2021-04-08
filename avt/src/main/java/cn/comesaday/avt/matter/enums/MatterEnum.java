@@ -16,7 +16,7 @@ public enum MatterEnum {
     TEMP(NumConstant.I0, "暂存"),
     SAVE(NumConstant.I1, "保存"),
     CONFIGURED(NumConstant.I2, "配置"),
-    DEFINED(NumConstant.I4, "定义"),
+    DEFINED(NumConstant.I3, "定义"),
     DEPLOY(NumConstant.I4, "部署"),
     OPEN(NumConstant.I5, "开启"),
     CLOSE(NumConstant.I6, "关闭");

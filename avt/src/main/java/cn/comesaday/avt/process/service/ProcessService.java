@@ -17,6 +17,7 @@ import org.activiti.engine.repository.Deployment;
 import org.activiti.engine.repository.Model;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 /**
  * <描述> ProcessService
@@ -25,6 +26,7 @@ import org.springframework.stereotype.Service;
  * @CreateAt: 2021-03-09 14:05
  */
 @Service
+@Transactional
 public class ProcessService {
 
     @Autowired
@@ -114,6 +116,7 @@ public class ProcessService {
         repositoryService.saveModel(model);
 
         matter.setDeployId(deploy.getId());
+        matter.setStatus(MatterEnum.DEPLOY.getStatus());
         matterService.save(matter);
         return deploy;
     }

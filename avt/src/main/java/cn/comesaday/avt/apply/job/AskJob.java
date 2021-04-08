@@ -24,6 +24,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.scheduling.annotation.EnableScheduling;
 import org.springframework.scheduling.annotation.Scheduled;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 import org.springframework.util.CollectionUtils;
 import org.springframework.util.StringUtils;
 
@@ -37,6 +38,7 @@ import java.util.concurrent.*;
  * @CreateAt: 2021-04-01 18:59
  */
 @Service
+@Transactional
 @EnableScheduling
 public class AskJob {
 
@@ -56,9 +58,6 @@ public class AskJob {
 
     @Autowired
     private AskProcessService askProcessService;
-
-    @Autowired
-    private AskDelegate askDelegate;
 
     // 线程执行池
     private final static ExecutorService executorService = Executors.newFixedThreadPool(NumConstant.I10);
@@ -193,10 +192,10 @@ public class AskJob {
             String applyId = String.valueOf(askInfoVo.getApplyId());
             Authentication.setAuthenticatedUserId(applyId);
             ProcessVariable variable = new ProcessVariable();
-            variable.setExecutor(askDelegate);
             variable.setAskInfoVo(askInfoVo);
             Map<String, Object> variables = new HashMap<>();
-            variables.put("processInfo", variable);
+            variables.put("processInfo", JsonUtil.toJson(variable));
+            variables.put("askDelegate", new AskDelegate());
             // 开启流程
             ProcessInstance processInstance = ProcessEngines.getDefaultProcessEngine()
                     .getRuntimeService().startProcessInstanceByKey(askInfoVo.getMatter().getCode(), variables);
@@ -219,6 +218,8 @@ public class AskJob {
         private AskInfoVo checkAskInfo(Long askId) throws PamException {
             // 申请明细信息
             AskInfoVo askInfoVo = askInfoService.queryDetail(askId);
+            askInfoVo.setApplyId(1L);
+            askInfoVo.setApplyName("chenwei");
             if (null == askInfoVo) {
                 throw new PamException("未查询到申请信息");
             }
