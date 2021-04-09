@@ -42,7 +42,7 @@ public class AskForDelegate implements JavaDelegate, Serializable {
 
     public static final String PROCESS_VARIABLE = "processInfo";
 
-    public static final String BPMNER_RROR = "askForDelegateError";
+    public static final String BPMNER_ERROR = "bpmner_error";
 
     @Autowired
     private AskInfoService askInfoService;
@@ -87,7 +87,7 @@ public class AskForDelegate implements JavaDelegate, Serializable {
             process.setSuccess(Boolean.FALSE);
             process.setResult("[流程信息初始化]异常:" + e);
             logger.error("[流程信息初始化]异常,sessionId:{}, 方法:{},异常信息:{}" + e, sessionId, methodName);
-            throw new BpmnError(BPMNER_RROR);
+            throw new BpmnError(BPMNER_ERROR);
         } finally {
             delegateExecution.setVariable(PROCESS_VARIABLE, variable);
         }
@@ -100,7 +100,7 @@ public class AskForDelegate implements JavaDelegate, Serializable {
      * @date 2021/4/9 11:11
      * @return void
      */
-    public void checkMatterSetting(DelegateExecution delegateExecution) {
+    public void checkMatterSetting(DelegateExecution delegateExecution) throws BpmnError {
         ProcessVariable variable = this.getVariable(delegateExecution);
         String methodName = Thread.currentThread().getStackTrace()[NumConstant.I1].getMethodName();
         String sessionId = variable.getSessionId();
@@ -119,7 +119,7 @@ public class AskForDelegate implements JavaDelegate, Serializable {
             process.setSuccess(Boolean.FALSE);
             process.setResult("[检查事项配置]异常:" + e);
             logger.error("[检查事项配置]异常,sessionId:{},方法:{},异常信息:{}" + e, sessionId, methodName);
-            throw new BpmnError(BPMNER_RROR);
+            throw new BpmnError(BPMNER_ERROR);
         } finally {
             delegateExecution.setVariable(PROCESS_VARIABLE, variable);
         }
@@ -147,7 +147,7 @@ public class AskForDelegate implements JavaDelegate, Serializable {
             process.setSuccess(Boolean.FALSE);
             process.setResult("[检查申请信息]异常:" + e);
             logger.error("[检查申请信息]异常,sessionId:{},方法:{},异常信息:{}" + e, sessionId, methodName);
-            throw new BpmnError(BPMNER_RROR);
+            throw new BpmnError(BPMNER_ERROR);
         } finally {
             delegateExecution.setVariable(PROCESS_VARIABLE, variable);
         }
@@ -184,7 +184,7 @@ public class AskForDelegate implements JavaDelegate, Serializable {
             process.setSuccess(Boolean.FALSE);
             process.setResult("[初始化申请信息]异常:" + e);
             logger.error("[初始化申请信息]异常,sessionId:{},方法:{},异常信息:{}" + e, sessionId, methodName);
-            throw new BpmnError(BPMNER_RROR);
+            throw new BpmnError(BPMNER_ERROR);
         } finally {
             delegateExecution.setVariable(PROCESS_VARIABLE, variable);
         }
@@ -222,7 +222,7 @@ public class AskForDelegate implements JavaDelegate, Serializable {
             process.setSuccess(Boolean.FALSE);
             process.setResult("[初始化版本信息]异常:" + e);
             logger.error("[初始化版本信息]异常,sessionId:{},方法:{},异常信息:{}" + e, sessionId, methodName);
-            throw new BpmnError(BPMNER_RROR);
+            throw new BpmnError(BPMNER_ERROR);
         } finally {
             delegateExecution.setVariable(PROCESS_VARIABLE, variable);
         }
