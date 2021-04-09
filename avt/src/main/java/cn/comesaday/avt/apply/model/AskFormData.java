@@ -4,6 +4,7 @@ import cn.comesaday.coe.core.basic.model.IdEntity;
 
 import javax.persistence.Entity;
 import javax.persistence.Table;
+import java.io.Serializable;
 
 /**
  * <描述> 申请内容
@@ -13,7 +14,7 @@ import javax.persistence.Table;
  */
 @Entity
 @Table(name = "AVT_FORM_DATA")
-public class AskFormData extends IdEntity {
+public class AskFormData extends IdEntity implements Serializable {
 
     // 申请主表ID
     private Long askId;

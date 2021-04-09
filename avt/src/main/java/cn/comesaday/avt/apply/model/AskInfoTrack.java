@@ -4,7 +4,7 @@ import cn.comesaday.coe.core.basic.model.IdEntity;
 
 import javax.persistence.Entity;
 import javax.persistence.Table;
-import java.util.UUID;
+import java.io.Serializable;
 
 /**
  * <描述> AskInfoTrack
@@ -14,7 +14,7 @@ import java.util.UUID;
  */
 @Entity
 @Table(name = "AVT_ASK_INFO_TRACK")
-public class AskInfoTrack extends IdEntity {
+public class AskInfoTrack extends IdEntity implements Serializable {
 
     // 申请主表ID
     private Long askId;
@@ -36,9 +36,6 @@ public class AskInfoTrack extends IdEntity {
 
     // 审核人姓名
     private String checkName;
-
-    // sessionId
-    private String sessionId = UUID.randomUUID().toString();
 
     public Long getAskId() {
         return askId;
@@ -94,13 +91,5 @@ public class AskInfoTrack extends IdEntity {
 
     public void setCheckName(String checkName) {
         this.checkName = checkName;
-    }
-
-    public String getSessionId() {
-        return sessionId;
-    }
-
-    public void setSessionId(String sessionId) {
-        this.sessionId = sessionId;
     }
 }

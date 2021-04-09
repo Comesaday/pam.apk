@@ -4,6 +4,7 @@ import cn.comesaday.coe.core.basic.model.IdEntity;
 
 import javax.persistence.Entity;
 import javax.persistence.Table;
+import java.io.Serializable;
 
 /**
  * <描述> Matter
@@ -13,7 +14,7 @@ import javax.persistence.Table;
  */
 @Entity
 @Table(name = "AVT_MATTER_INFO")
-public class Matter extends IdEntity {
+public class Matter extends IdEntity implements Serializable {
 
     private String code;
 

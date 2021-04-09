@@ -38,8 +38,9 @@ public class AskInfoService extends BaseService<AskInfo, Long> {
      * @return cn.comesaday.avt.apply.model.AskInfo
      */
     public AskInfoVo apply(AskInfoVo askInfoVo) throws Exception {
+        // 获取事项信息
         Matter matter = matterService.getBasicMatter(askInfoVo.getMatterId());
-        // 检查事项
+        // 检查事项配置
         matterService.checkMatterConfig(matter, NumConstant.I5, Boolean.FALSE);
         // 保存申请表单信息
         List<AskFormData> datas = askFormDataService.saveAll(askInfoVo.getAskInfos());

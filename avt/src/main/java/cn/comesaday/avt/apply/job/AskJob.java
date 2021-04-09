@@ -1,6 +1,5 @@
 package cn.comesaday.avt.apply.job;
 
-import cn.comesaday.avt.apply.event.AskDelegate;
 import cn.comesaday.avt.apply.model.AskInfo;
 import cn.comesaday.avt.apply.model.AskProcess;
 import cn.comesaday.avt.apply.service.AskInfoService;
@@ -17,7 +16,6 @@ import org.activiti.engine.ProcessEngines;
 import org.activiti.engine.TaskService;
 import org.activiti.engine.impl.identity.Authentication;
 import org.activiti.engine.runtime.ProcessInstance;
-import org.activiti.engine.task.Task;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -171,7 +169,7 @@ public class AskJob {
                 result.setSuccess("流程开启成功,流程实例id:" + instanceId);
             } catch (Exception e) {
                 // 状态回滚
-                askInfoService.updateById(askInfo.getId(), "status", NumConstant.I1);
+//                askInfoService.updateById(askInfo.getId(), "status", NumConstant.I1);
                 askProcess.setSuccess(Boolean.FALSE);
                 askProcess.setResult("流程开启失败,原因:" + e);
                 result.setError("处理异常,回滚:" + e);
@@ -188,23 +186,18 @@ public class AskJob {
          * @date 2021/4/7 16:31
          * @return java.lang.String
          */
-        private String startProcess(AskInfoVo askInfoVo) {
+        private String startProcess(AskInfoVo askInfoVo) throws Exception {
             String applyId = String.valueOf(askInfoVo.getApplyId());
             Authentication.setAuthenticatedUserId(applyId);
             ProcessVariable variable = new ProcessVariable();
             variable.setAskInfoVo(askInfoVo);
             Map<String, Object> variables = new HashMap<>();
-            variables.put("processInfo", JsonUtil.toJson(variable));
-            variables.put("askDelegate", new AskDelegate());
+            variables.put("processInfo", variable);
             // 开启流程
             ProcessInstance processInstance = ProcessEngines.getDefaultProcessEngine()
                     .getRuntimeService().startProcessInstanceByKey(askInfoVo.getMatter().getCode(), variables);
             String instanceId = processInstance.getProcessInstanceId();
-            Task task = taskService.createTaskQuery().processInstanceId(instanceId).singleResult();
-            task.setAssignee(applyId);
             variable.setInstanceId(instanceId);
-            // 完成此节点。由下一节点审批。完成后act_ru_task会创建一条由下节点审批的数据
-            taskService.complete(task.getId(), variables);
             return instanceId;
         }
 

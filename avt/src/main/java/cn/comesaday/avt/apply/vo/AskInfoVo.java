@@ -4,6 +4,7 @@ import cn.comesaday.avt.apply.model.AskFormData;
 import cn.comesaday.avt.apply.model.AskInfo;
 import cn.comesaday.avt.matter.model.Matter;
 
+import java.io.Serializable;
 import java.util.Date;
 import java.util.List;
 
@@ -13,7 +14,7 @@ import java.util.List;
  * @author: ChenWei
  * @CreateAt: 2021-03-17 14:37
  */
-public class AskInfoVo {
+public class AskInfoVo implements Serializable {
 
     // 申请人ID
     private Long applyId;
