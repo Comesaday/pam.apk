@@ -4,6 +4,7 @@ import cn.comesaday.coe.core.basic.model.IdEntity;
 
 import javax.persistence.Entity;
 import javax.persistence.Table;
+import java.io.Serializable;
 
 /**
  * <描述> 流程记录表
@@ -13,16 +14,16 @@ import javax.persistence.Table;
  */
 @Entity
 @Table(name = "AVT_ASK_PROCESS")
-public class AskProcess extends IdEntity {
+public class AskProcess extends IdEntity implements Serializable {
 
     // 申请主表id
-    private Long askId;
+    private String sessionId;
 
     // 流程实例id
     private String processId;
 
     // 重试次数
-    private Integer retryTimes;
+    private Integer times;
 
     // 执行结果
     private String result;
@@ -36,16 +37,12 @@ public class AskProcess extends IdEntity {
     public AskProcess() {
     }
 
-    public AskProcess(Long askId) {
-        this.askId = askId;
+    public String getSessionId() {
+        return sessionId;
     }
 
-    public Long getAskId() {
-        return askId;
-    }
-
-    public void setAskId(Long askId) {
-        this.askId = askId;
+    public void setSessionId(String sessionId) {
+        this.sessionId = sessionId;
     }
 
     public String getProcessId() {
@@ -56,12 +53,12 @@ public class AskProcess extends IdEntity {
         this.processId = processId;
     }
 
-    public Integer getRetryTimes() {
-        return retryTimes;
+    public Integer getTimes() {
+        return times;
     }
 
-    public void setRetryTimes(Integer retryTimes) {
-        this.retryTimes = retryTimes;
+    public void setTimes(Integer times) {
+        this.times = times;
     }
 
     public String getResult() {

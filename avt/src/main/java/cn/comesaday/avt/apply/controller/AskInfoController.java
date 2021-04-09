@@ -4,6 +4,7 @@ import cn.comesaday.avt.apply.service.AskInfoService;
 import cn.comesaday.avt.apply.vo.AskInfoVo;
 import cn.comesaday.avt.matter.service.MatterService;
 import cn.comesaday.avt.matter.vo.MatterVo;
+import cn.comesaday.coe.core.basic.bean.result.JsonResult;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
@@ -56,8 +57,8 @@ public class AskInfoController {
     @RequestMapping("/matter/create")
     public String create(Model model, AskInfoVo askInfoVo) {
         try {
-            AskInfoVo askInfo = askInfoService.apply(askInfoVo);
-            model.addAttribute("askInfo", askInfo);
+            JsonResult result = askInfoService.apply(askInfoVo);
+            model.addAttribute("result", result);
         } catch (Exception e) {
             model.addAttribute("error", e.getMessage());
         }

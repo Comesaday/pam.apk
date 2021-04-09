@@ -37,6 +37,8 @@ public class AskInfo extends IdEntity implements Serializable {
     // 0:暂存 1:发布 2:处理中
     private Integer status;
 
+    private String sessionId;
+
     public Long getApplyId() {
         return applyId;
     }
@@ -91,5 +93,13 @@ public class AskInfo extends IdEntity implements Serializable {
 
     public void setStatus(Integer status) {
         this.status = status;
+    }
+
+    public String getSessionId() {
+        return sessionId;
+    }
+
+    public void setSessionId(String sessionId) {
+        this.sessionId = sessionId;
     }
 }

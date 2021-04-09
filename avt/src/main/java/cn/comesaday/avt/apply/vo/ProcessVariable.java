@@ -1,9 +1,11 @@
 package cn.comesaday.avt.apply.vo;
 
 import cn.comesaday.avt.apply.model.AskInfoTrack;
+import cn.comesaday.avt.apply.model.AskProcess;
 
 import java.io.Serializable;
 import java.util.List;
+import java.util.UUID;
 
 /**
  * <描述> ProcessVariable
@@ -21,6 +23,12 @@ public class ProcessVariable implements Serializable {
 
     // 审批记录
     private List<AskInfoTrack> records;
+
+    // 流程记录表
+    private AskProcess askProcess;
+
+    // sessionId
+    private String sessionId = UUID.randomUUID().toString();
 
     public String getInstanceId() {
         return instanceId;
@@ -46,4 +54,19 @@ public class ProcessVariable implements Serializable {
         this.records = records;
     }
 
+    public AskProcess getAskProcess() {
+        return askProcess;
+    }
+
+    public void setAskProcess(AskProcess askProcess) {
+        this.askProcess = askProcess;
+    }
+
+    public String getSessionId() {
+        return sessionId;
+    }
+
+    public void setSessionId(String sessionId) {
+        this.sessionId = sessionId;
+    }
 }
