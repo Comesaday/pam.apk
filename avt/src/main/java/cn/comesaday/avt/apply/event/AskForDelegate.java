@@ -15,7 +15,7 @@ import cn.comesaday.avt.matter.model.Matter;
 import cn.comesaday.avt.matter.service.MatterService;
 import cn.comesaday.coe.common.constant.NumConstant;
 import cn.comesaday.coe.common.util.JsonUtil;
-import cn.comesaday.coe.core.basic.exception.PamException;
+import org.activiti.engine.delegate.BpmnError;
 import org.activiti.engine.delegate.DelegateExecution;
 import org.activiti.engine.delegate.JavaDelegate;
 import org.slf4j.Logger;
@@ -42,6 +42,8 @@ public class AskForDelegate implements JavaDelegate, Serializable {
 
     public static final String PROCESS_VARIABLE = "processInfo";
 
+    public static final String BPMNER_RROR = "askForDelegateError";
+
     @Autowired
     private AskInfoService askInfoService;
 
@@ -66,24 +68,27 @@ public class AskForDelegate implements JavaDelegate, Serializable {
      */
     public void processInit(DelegateExecution delegateExecution) {
         ProcessVariable variable = this.getVariable(delegateExecution);
-        String methodName = Thread.currentThread().getStackTrace()[NumConstant.I2].getMethodName();
+        String methodName = Thread.currentThread().getStackTrace()[NumConstant.I1].getMethodName();
+        String sessionId = variable.getSessionId();
         AskProcess process = new AskProcess();
+        variable.setAskProcess(process);
         try {
             String processInstanceId = delegateExecution.getProcessInstanceId();
             variable.setInstanceId(processInstanceId);
             process.setProcessId(processInstanceId);
+            process.setSessionId(sessionId);
+            process.setParam(JsonUtil.toJson(variable));
+            process.setTimes(NumConstant.I0);
             process.setSuccess(Boolean.TRUE);
             process.setResult("[流程信息初始化]成功");
-            logger.info("[流程信息初始化]成功,方法:{}", methodName);
+            askProcessService.save(process);
+            logger.info("[流程信息初始化]成功,sessionId:{},方法:{}", sessionId, methodName);
         } catch (Exception e) {
             process.setSuccess(Boolean.FALSE);
             process.setResult("[流程信息初始化]异常:" + e);
-            logger.error("[流程信息初始化]异常,方法:{},异常信息:{}", methodName, e);
+            logger.error("[流程信息初始化]异常,sessionId:{}, 方法:{},异常信息:{}" + e, sessionId, methodName);
+            throw new BpmnError(BPMNER_RROR);
         } finally {
-            process.setSessionId(variable.getSessionId());
-            process.setParam(JsonUtil.toJson(variable));
-            process.setTimes(NumConstant.I0);
-            variable.setAskProcess(askProcessService.save(process));
             delegateExecution.setVariable(PROCESS_VARIABLE, variable);
         }
     }
@@ -95,9 +100,10 @@ public class AskForDelegate implements JavaDelegate, Serializable {
      * @date 2021/4/9 11:11
      * @return void
      */
-    public void checkMatterSetting(DelegateExecution delegateExecution) throws PamException {
+    public void checkMatterSetting(DelegateExecution delegateExecution) {
         ProcessVariable variable = this.getVariable(delegateExecution);
-        String methodName = Thread.currentThread().getStackTrace()[NumConstant.I2].getMethodName();
+        String methodName = Thread.currentThread().getStackTrace()[NumConstant.I1].getMethodName();
+        String sessionId = variable.getSessionId();
         AskProcess process = variable.getAskProcess();
         try {
             Long matterId = variable.getAskInfoVo().getMatterId();
@@ -107,13 +113,14 @@ public class AskForDelegate implements JavaDelegate, Serializable {
             // 将事项信息设置到流程变量
             variable.getAskInfoVo().setMatter(matter);
             process.setResult("[检查事项配置]成功");
-            logger.info("[检查事项配置]成功,方法:{}", methodName);
-        } catch (Exception e) {
-            process.setResult("[检查事项配置]异常:" + e);
-            process.setSuccess(Boolean.FALSE);
-            logger.error("[检查事项配置]异常,方法:{},异常信息:{}", methodName, e);
-        } finally {
             askProcessService.save(process);
+            logger.info("[检查事项配置]成功,sessionId:{},方法:{}", sessionId, methodName);
+        } catch (Exception e) {
+            process.setSuccess(Boolean.FALSE);
+            process.setResult("[检查事项配置]异常:" + e);
+            logger.error("[检查事项配置]异常,sessionId:{},方法:{},异常信息:{}" + e, sessionId, methodName);
+            throw new BpmnError(BPMNER_RROR);
+        } finally {
             delegateExecution.setVariable(PROCESS_VARIABLE, variable);
         }
     }
@@ -125,21 +132,23 @@ public class AskForDelegate implements JavaDelegate, Serializable {
      * @date 2021/4/9 11:10
      * @return void
      */
-    public void checkUserFill(DelegateExecution delegateExecution) throws PamException {
+    public void checkUserFill(DelegateExecution delegateExecution) {
         ProcessVariable variable = this.getVariable(delegateExecution);
-        String methodName = Thread.currentThread().getStackTrace()[NumConstant.I2].getMethodName();
+        String methodName = Thread.currentThread().getStackTrace()[NumConstant.I1].getMethodName();
+        String sessionId = variable.getSessionId();
         AskProcess process = variable.getAskProcess();
         try {
             // 检查申请信息
             askInfoService.checkAskInfo(variable.getAskInfoVo());
             process.setResult("[检查申请信息]成功");
-            logger.info("[检查申请信息]成功,方法:{}", methodName);
-        } catch (Exception e) {
-            process.setResult("[检查申请信息]异常:" + e);
-            process.setSuccess(Boolean.FALSE);
-            logger.error("[检查申请信息]异常,方法:{},异常信息:{}", methodName, e);
-        } finally {
             askProcessService.save(process);
+            logger.info("[检查申请信息]成功,sessionId:{},方法:{}", sessionId, methodName);
+        } catch (Exception e) {
+            process.setSuccess(Boolean.FALSE);
+            process.setResult("[检查申请信息]异常:" + e);
+            logger.error("[检查申请信息]异常,sessionId:{},方法:{},异常信息:{}" + e, sessionId, methodName);
+            throw new BpmnError(BPMNER_RROR);
+        } finally {
             delegateExecution.setVariable(PROCESS_VARIABLE, variable);
         }
     }
@@ -153,7 +162,8 @@ public class AskForDelegate implements JavaDelegate, Serializable {
      */
     public void initAskInfo(DelegateExecution delegateExecution) {
         ProcessVariable variable = this.getVariable(delegateExecution);
-        String methodName = Thread.currentThread().getStackTrace()[NumConstant.I2].getMethodName();
+        String methodName = Thread.currentThread().getStackTrace()[NumConstant.I1].getMethodName();
+        String sessionId = variable.getSessionId();
         AskProcess process = variable.getAskProcess();
         try {
             AskInfoVo askInfoVo = variable.getAskInfoVo();
@@ -168,13 +178,14 @@ public class AskForDelegate implements JavaDelegate, Serializable {
             // 保存最新信息到流程变量
             askInfoVo.setAskInfos(formDatas);
             process.setResult("[初始化申请信息]成功");
-            logger.info("[初始化申请信息]成功,方法:{}", methodName);
-        } catch (Exception e) {
-            process.setResult("[初始化申请信息]异常:" + e);
-            process.setSuccess(Boolean.FALSE);
-            logger.error("[初始化申请信息]异常,方法:{},异常信息:{}", methodName, e);
-        } finally {
             askProcessService.save(process);
+            logger.info("[初始化申请信息]成功,sessionId:{},方法:{}", sessionId, methodName);
+        } catch (Exception e) {
+            process.setSuccess(Boolean.FALSE);
+            process.setResult("[初始化申请信息]异常:" + e);
+            logger.error("[初始化申请信息]异常,sessionId:{},方法:{},异常信息:{}" + e, sessionId, methodName);
+            throw new BpmnError(BPMNER_RROR);
+        } finally {
             delegateExecution.setVariable(PROCESS_VARIABLE, variable);
         }
     }
@@ -188,7 +199,8 @@ public class AskForDelegate implements JavaDelegate, Serializable {
      */
     public void initAskTrack(DelegateExecution delegateExecution) {
         ProcessVariable variable = this.getVariable(delegateExecution);
-        String methodName = Thread.currentThread().getStackTrace()[NumConstant.I2].getMethodName();
+        String methodName = Thread.currentThread().getStackTrace()[NumConstant.I1].getMethodName();
+        String sessionId = variable.getSessionId();
         AskProcess process = variable.getAskProcess();
         try {
             // 初始化审批版本数据
@@ -204,21 +216,38 @@ public class AskForDelegate implements JavaDelegate, Serializable {
             }
             records.add(askInfoTrack);
             process.setResult("[初始化版本信息]成功");
-            logger.info("[初始化版本信息]成功,方法:{}", methodName);
-        } catch (Exception e) {
-            process.setResult("[初始化版本信息]异常:" + e);
-            process.setSuccess(Boolean.FALSE);
-            logger.error("[初始化版本信息]异常,方法:{},异常信息:{}", methodName, e);
-        } finally {
             askProcessService.save(process);
+            logger.info("[初始化版本信息]成功,sessionId:{},方法:{}", sessionId, methodName);
+        } catch (Exception e) {
+            process.setSuccess(Boolean.FALSE);
+            process.setResult("[初始化版本信息]异常:" + e);
+            logger.error("[初始化版本信息]异常,sessionId:{},方法:{},异常信息:{}" + e, sessionId, methodName);
+            throw new BpmnError(BPMNER_RROR);
+        } finally {
             delegateExecution.setVariable(PROCESS_VARIABLE, variable);
         }
     }
 
-    @Override
-    public void execute(DelegateExecution delegateExecution) {
+    /**
+     * <说明> 记录错误信息
+     * @param delegateExecution DelegateExecution
+     * @author ChenWei
+     * @date 2021/4/9 16:55
+     * @return void
+     */
+    public void takeErrorInfo(DelegateExecution delegateExecution) {
         ProcessVariable variable = this.getVariable(delegateExecution);
-        String methodName = Thread.currentThread().getStackTrace()[NumConstant.I2].getMethodName();
+        String methodName = Thread.currentThread().getStackTrace()[NumConstant.I1].getMethodName();
+        String sessionId = variable.getSessionId();
+        AskProcess process = variable.getAskProcess();
+        try {
+            if (!process.getSuccess()) {
+                askProcessService.save(process);
+            }
+            logger.info("[保存错误信息]成功,sessionId:{},错误信息:{}", sessionId, JsonUtil.toJson(process));
+        } catch (Exception e) {
+            logger.error("[保存错误信息]异常,sessionId:{},异常信息:{}", sessionId, e);
+        }
     }
 
     /**
@@ -230,5 +259,9 @@ public class AskForDelegate implements JavaDelegate, Serializable {
      */
     private ProcessVariable getVariable(DelegateExecution delegateExecution) {
         return (ProcessVariable) delegateExecution.getVariable(PROCESS_VARIABLE);
+    }
+
+    @Override
+    public void execute(DelegateExecution delegateExecution) {
     }
 }

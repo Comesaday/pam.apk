@@ -28,6 +28,8 @@ public class AskInfoVo implements Serializable {
     // 申请事项id
     private Long matterId;
 
+    private String matterCode;
+
     private Matter matter;
 
     private Long askId;
@@ -99,5 +101,13 @@ public class AskInfoVo implements Serializable {
 
     public void setAskInfo(AskInfo askInfo) {
         this.askInfo = askInfo;
+    }
+
+    public String getMatterCode() {
+        return matterCode;
+    }
+
+    public void setMatterCode(String matterCode) {
+        this.matterCode = matterCode;
     }
 }

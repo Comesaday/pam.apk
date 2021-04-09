@@ -69,7 +69,7 @@ public class AskInfoService extends BaseService<AskInfo, Long> {
                     // 开启流程
                     logger.info("[提交申请]进行,sessionId:{},流程变量:{}", variable.getSessionId(), JsonUtil.toJson(variable));
                     ProcessInstance processInstance = ProcessEngines.getDefaultProcessEngine()
-                            .getRuntimeService().startProcessInstanceByKey(askInfoVo.getMatter().getCode(), variables);
+                            .getRuntimeService().startProcessInstanceByKey(askInfoVo.getMatterCode(), variables);
                     String processInstanceId = processInstance.getProcessInstanceId();
                     logger.info("[提交申请]成功,流程实例ID:{},申请信息:{}", processInstanceId, JsonUtil.toJson(askInfoVo));
                 }
