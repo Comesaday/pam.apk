@@ -3,9 +3,11 @@ package cn.comesaday.avt.apply.event;
 import cn.comesaday.avt.apply.job.AskJob;
 import cn.comesaday.avt.apply.model.AskFormData;
 import cn.comesaday.avt.apply.model.AskInfo;
+import cn.comesaday.avt.apply.model.AskInfoTrack;
 import cn.comesaday.avt.apply.model.AskProcess;
 import cn.comesaday.avt.apply.service.AskFormDataService;
 import cn.comesaday.avt.apply.service.AskInfoService;
+import cn.comesaday.avt.apply.service.AskInfoTrackService;
 import cn.comesaday.avt.apply.service.AskProcessService;
 import cn.comesaday.avt.apply.vo.AskInfoVo;
 import cn.comesaday.avt.apply.vo.ProcessVariable;
@@ -20,8 +22,10 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
+import org.springframework.util.CollectionUtils;
 
 import java.io.Serializable;
+import java.util.ArrayList;
 import java.util.List;
 
 /**
@@ -49,6 +53,9 @@ public class AskForDelegate implements JavaDelegate, Serializable {
 
     @Autowired
     private AskProcessService askProcessService;
+
+    @Autowired
+    private AskInfoTrackService askInfoTrackService;
 
     /**
      * <说明> 初始化流程信息
@@ -106,7 +113,7 @@ public class AskForDelegate implements JavaDelegate, Serializable {
             process.setSuccess(Boolean.FALSE);
             logger.error("[检查事项配置]异常,方法:{},异常信息:{}", methodName, e);
         } finally {
-            variable.setAskProcess(askProcessService.save(process));
+            askProcessService.save(process);
             delegateExecution.setVariable(PROCESS_VARIABLE, variable);
         }
     }
@@ -132,7 +139,7 @@ public class AskForDelegate implements JavaDelegate, Serializable {
             process.setSuccess(Boolean.FALSE);
             logger.error("[检查申请信息]异常,方法:{},异常信息:{}", methodName, e);
         } finally {
-            variable.setAskProcess(askProcessService.save(process));
+            askProcessService.save(process);
             delegateExecution.setVariable(PROCESS_VARIABLE, variable);
         }
     }
@@ -158,9 +165,8 @@ public class AskForDelegate implements JavaDelegate, Serializable {
             // 表单数据&主表关联
             formDatas.forEach(data -> data.setAskId(askInfo.getId()));
             askFormDataService.saveAll(formDatas);
-            askInfoVo.setMatter(matter);
+            // 保存最新信息到流程变量
             askInfoVo.setAskInfos(formDatas);
-            variable.setAskInfoVo(askInfoVo);
             process.setResult("[初始化申请信息]成功");
             logger.info("[初始化申请信息]成功,方法:{}", methodName);
         } catch (Exception e) {
@@ -168,7 +174,43 @@ public class AskForDelegate implements JavaDelegate, Serializable {
             process.setSuccess(Boolean.FALSE);
             logger.error("[初始化申请信息]异常,方法:{},异常信息:{}", methodName, e);
         } finally {
-            variable.setAskProcess(askProcessService.save(process));
+            askProcessService.save(process);
+            delegateExecution.setVariable(PROCESS_VARIABLE, variable);
+        }
+    }
+
+    /**
+     * <说明> 初始化申请版本信息
+     * @param delegateExecution DelegateExecution
+     * @author ChenWei
+     * @date 2021/4/9 15:04
+     * @return void
+     */
+    public void initAskTrack(DelegateExecution delegateExecution) {
+        ProcessVariable variable = this.getVariable(delegateExecution);
+        String methodName = Thread.currentThread().getStackTrace()[NumConstant.I2].getMethodName();
+        AskProcess process = variable.getAskProcess();
+        try {
+            // 初始化审批版本数据
+            AskInfo askInfo = variable.getAskInfoVo().getAskInfo();
+            AskInfoTrack askInfoTrack = askInfoTrackService.initAskTrackInfo(askInfo, delegateExecution);
+            // 版本、主表数据关联
+            askInfo.setCurTrackId(askInfoTrack.getId());
+            askInfoService.save(askInfo);
+            // 保存审批记录
+            List<AskInfoTrack> records = variable.getRecords();
+            if (CollectionUtils.isEmpty(records)) {
+                records = new ArrayList<>();
+            }
+            records.add(askInfoTrack);
+            process.setResult("[初始化版本信息]成功");
+            logger.info("[初始化版本信息]成功,方法:{}", methodName);
+        } catch (Exception e) {
+            process.setResult("[初始化版本信息]异常:" + e);
+            process.setSuccess(Boolean.FALSE);
+            logger.error("[初始化版本信息]异常,方法:{},异常信息:{}", methodName, e);
+        } finally {
+            askProcessService.save(process);
             delegateExecution.setVariable(PROCESS_VARIABLE, variable);
         }
     }
@@ -180,7 +222,7 @@ public class AskForDelegate implements JavaDelegate, Serializable {
     }
 
     /**
-     * <说明> 获取流程遍历
+     * <说明> 获取流程变量
      * @param delegateExecution DelegateExecution
      * @author ChenWei
      * @date 2021/4/9 13:14

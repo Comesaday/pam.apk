@@ -53,6 +53,7 @@ public class AskInfoTrackService extends BaseService<AskInfoTrack, Long> {
         AskInfoTrack askInfoTrack = new AskInfoTrack();
         askInfoTrack.setAskId(askInfo.getId());
         askInfoTrack.setLinkCode(execution.getCurrentActivityId());
+        askInfoTrack.setLinkName(execution.getCurrentFlowElement().getName());
         return this.save(askInfoTrack);
     }
 }
