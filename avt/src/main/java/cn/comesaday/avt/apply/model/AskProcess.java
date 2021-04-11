@@ -2,6 +2,7 @@ package cn.comesaday.avt.apply.model;
 
 import cn.comesaday.coe.core.basic.model.IdEntity;
 
+import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.Table;
 import java.io.Serializable;
@@ -29,6 +30,7 @@ public class AskProcess extends IdEntity implements Serializable {
     private String result;
 
     // 扫描组装参数
+    @Column(length = 3000)
     private String param;
 
     // 是否执行成功

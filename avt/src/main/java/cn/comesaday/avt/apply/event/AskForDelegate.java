@@ -176,6 +176,8 @@ public class AskForDelegate implements JavaDelegate, Serializable {
             formDatas.forEach(data -> data.setAskId(askInfo.getId()));
             askFormDataService.saveAll(formDatas);
             // 保存最新信息到流程变量
+            askInfoVo.setAskId(askInfo.getId());
+            askInfoVo.setAskInfo(askInfo);
             askInfoVo.setAskInfos(formDatas);
             process.setResult("[初始化申请信息]成功");
             askProcessService.save(process);
@@ -236,7 +238,7 @@ public class AskForDelegate implements JavaDelegate, Serializable {
      * @return void
      */
     public void takeErrorInfo(DelegateExecution delegateExecution) {
-        ProcessVariable variable = this.getVariable(delegateExecution);
+         ProcessVariable variable = this.getVariable(delegateExecution);
         String methodName = Thread.currentThread().getStackTrace()[NumConstant.I1].getMethodName();
         String sessionId = variable.getSessionId();
         AskProcess process = variable.getAskProcess();

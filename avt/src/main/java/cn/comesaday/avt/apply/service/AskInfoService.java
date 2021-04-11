@@ -21,6 +21,7 @@ import org.springframework.transaction.annotation.Transactional;
 import org.springframework.util.CollectionUtils;
 import org.springframework.util.StringUtils;
 
+import java.util.Date;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.concurrent.ExecutorService;
@@ -63,6 +64,7 @@ public class AskInfoService extends BaseService<AskInfo, Long> {
                 public void run() {
                     Authentication.setAuthenticatedUserId(String.valueOf(askInfoVo.getApplyId()));
                     ProcessVariable variable = new ProcessVariable();
+                    askInfoVo.setAskTime(new Date());
                     variable.setAskInfoVo(askInfoVo);
                     Map<String, Object> variables = new HashMap<>();
                     variables.put("processInfo", variable);
@@ -91,6 +93,8 @@ public class AskInfoService extends BaseService<AskInfo, Long> {
      */
     public void checkAskInfo(AskInfoVo askInfoVo) throws PamException {
         // 申请明细信息
+        askInfoVo.setApplyId(1L);
+        askInfoVo.setApplyName("11");
         if (null == askInfoVo) {
             throw new PamException("未查询到申请信息");
         }
