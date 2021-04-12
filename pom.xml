@@ -19,14 +19,21 @@
 
     <properties>
         <pam.coe.version>0.0.1</pam.coe.version>
+        <hutool.version>5.5.9</hutool.version>
     </properties>
 
-    <!-- jpa封装核心starter -->
     <dependencies>
+        <!-- jpa封装核心starter -->
         <dependency>
             <groupId>cn.comesaday</groupId>
             <artifactId>pam.coe</artifactId>
             <version>${pam.coe.version}</version>
+        </dependency>
+        <!-- hutool工具类 -->
+        <dependency>
+            <groupId>cn.hutool</groupId>
+            <artifactId>hutool-all</artifactId>
+            <version>${hutool.version}</version>
         </dependency>
     </dependencies>
 
