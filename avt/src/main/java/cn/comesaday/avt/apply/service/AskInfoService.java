@@ -10,7 +10,7 @@ import cn.comesaday.coe.common.util.JsonUtil;
 import cn.comesaday.coe.core.basic.bean.result.JsonResult;
 import cn.comesaday.coe.core.basic.exception.PamException;
 import cn.comesaday.coe.core.basic.service.BaseService;
-import org.activiti.engine.ProcessEngines;
+import org.activiti.engine.RuntimeService;
 import org.activiti.engine.impl.identity.Authentication;
 import org.activiti.engine.runtime.ProcessInstance;
 import org.slf4j.Logger;
@@ -43,6 +43,9 @@ public class AskInfoService extends BaseService<AskInfo, Long> {
     @Autowired
     private AskFormDataService askFormDataService;
 
+    @Autowired
+    private RuntimeService runtimeService;
+
     // 日志打印
     private final static Logger logger = LoggerFactory.getLogger(AskInfoService.class);
 
@@ -70,8 +73,7 @@ public class AskInfoService extends BaseService<AskInfo, Long> {
                     variables.put("processInfo", variable);
                     // 开启流程
                     logger.info("[提交申请]进行,sessionId:{},流程变量:{}", variable.getSessionId(), JsonUtil.toJson(variable));
-                    ProcessInstance processInstance = ProcessEngines.getDefaultProcessEngine()
-                            .getRuntimeService().startProcessInstanceByKey(askInfoVo.getMatterCode(), variables);
+                    ProcessInstance processInstance = runtimeService.startProcessInstanceByKey(askInfoVo.getMatterCode(), variables);
                     String processInstanceId = processInstance.getProcessInstanceId();
                     logger.info("[提交申请]成功,流程实例ID:{},申请信息:{}", processInstanceId, JsonUtil.toJson(askInfoVo));
                 }
