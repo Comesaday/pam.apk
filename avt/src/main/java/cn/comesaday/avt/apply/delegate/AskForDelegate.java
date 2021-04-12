@@ -1,6 +1,5 @@
-package cn.comesaday.avt.apply.event;
+package cn.comesaday.avt.apply.delegate;
 
-import cn.comesaday.avt.apply.job.AskJob;
 import cn.comesaday.avt.apply.model.AskFormData;
 import cn.comesaday.avt.apply.model.AskInfo;
 import cn.comesaday.avt.apply.model.AskInfoTrack;
@@ -38,7 +37,7 @@ import java.util.List;
 public class AskForDelegate implements JavaDelegate, Serializable {
 
     // 日志打印
-    private final static Logger logger = LoggerFactory.getLogger(AskJob.class);
+    private final static Logger logger = LoggerFactory.getLogger(AskForDelegate.class);
 
     public static final String PROCESS_VARIABLE = "processInfo";
 

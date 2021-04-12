@@ -1,6 +1,5 @@
 package cn.comesaday.avt.process.controller;
 
-import cn.comesaday.avt.matter.service.MatterService;
 import cn.comesaday.avt.process.service.ProcessService;
 import cn.comesaday.coe.core.basic.bean.result.JsonResult;
 import org.activiti.engine.repository.Deployment;
@@ -27,9 +26,6 @@ public class ProcessController {
 
     @Autowired
     private ProcessService processService;
-
-    @Autowired
-    private MatterService matterService;
 
     /**
      * <说明> 创建流程

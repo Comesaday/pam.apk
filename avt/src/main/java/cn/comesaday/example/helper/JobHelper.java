@@ -1,4 +1,4 @@
-package cn.comesaday.avt.system.helper;
+package cn.comesaday.example.helper;
 
 import cn.comesaday.coe.common.util.JsonUtil;
 import cn.comesaday.coe.enhance.redis.RedisEnhance;
