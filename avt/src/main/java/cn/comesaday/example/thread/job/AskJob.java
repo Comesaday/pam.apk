@@ -1,9 +1,9 @@
-package cn.comesaday.example.job;
+package cn.comesaday.example.thread.job;
 
 import cn.comesaday.avt.apply.model.AskInfo;
 import cn.comesaday.avt.apply.service.AskInfoService;
 import cn.comesaday.avt.apply.service.AskProcessService;
-import cn.comesaday.example.helper.JobHelper;
+import cn.comesaday.example.thread.helper.JobHelper;
 import cn.comesaday.coe.common.constant.NumConstant;
 import cn.comesaday.coe.common.util.DateUtil;
 import cn.comesaday.coe.core.basic.bean.result.JsonResult;
