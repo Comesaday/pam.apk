@@ -1,17 +1,15 @@
-package cn.comesaday.avt.apply.delegate;
+package cn.comesaday.avt.apply.service;
 
+import cn.comesaday.avt.apply.delegate.AbstractApplyDelegate;
 import cn.comesaday.avt.apply.model.AskFormData;
 import cn.comesaday.avt.apply.model.AskInfo;
 import cn.comesaday.avt.apply.model.AskInfoTrack;
 import cn.comesaday.avt.apply.model.AskProcess;
-import cn.comesaday.avt.apply.service.AskFormDataService;
-import cn.comesaday.avt.apply.service.AskInfoService;
-import cn.comesaday.avt.apply.service.AskInfoTrackService;
-import cn.comesaday.avt.apply.service.AskProcessService;
 import cn.comesaday.avt.apply.vo.AskInfoVo;
 import cn.comesaday.avt.apply.vo.ProcessVariable;
 import cn.comesaday.avt.matter.model.Matter;
 import cn.comesaday.avt.matter.service.MatterService;
+import cn.comesaday.avt.process.constant.ProcessConstant;
 import cn.comesaday.coe.common.constant.NumConstant;
 import cn.comesaday.coe.common.util.JsonUtil;
 import org.activiti.engine.delegate.BpmnError;
@@ -34,10 +32,10 @@ import java.util.List;
  * @CreateAt: 2021-04-09 11:08
  */
 @Service
-public class AskForDelegate extends AvtProcessDelegate implements JavaDelegate, Serializable {
+public class ApplyDelegate extends AbstractApplyDelegate implements JavaDelegate, Serializable {
 
     // 日志打印
-    private final static Logger logger = LoggerFactory.getLogger(AskForDelegate.class);
+    private final static Logger logger = LoggerFactory.getLogger(ApplyDelegate.class);
 
     @Autowired
     private AskInfoService askInfoService;
@@ -83,9 +81,9 @@ public class AskForDelegate extends AvtProcessDelegate implements JavaDelegate, 
             process.setSuccess(Boolean.FALSE);
             process.setResult("[流程信息初始化]异常:" + e);
             logger.error("[流程信息初始化]异常,sessionId:{}, 方法:{},异常信息:{}" + e, sessionId, methodName);
-            throw new BpmnError(BPMNER_ERROR);
+            throw new BpmnError(ProcessConstant.BPMNER_ERROR_EXCEPTION);
         } finally {
-            delegateExecution.setVariable(PROCESS_VARIABLE, variable);
+            super.resetProcessVariable(delegateExecution, variable);
         }
     }
 
@@ -97,7 +95,7 @@ public class AskForDelegate extends AvtProcessDelegate implements JavaDelegate, 
      * @return void
      */
     @Override
-    public void checkMatterSetting(DelegateExecution delegateExecution) throws BpmnError {
+    public void checkMatterSetting(DelegateExecution delegateExecution) {
         ProcessVariable variable = super.getVariable(delegateExecution);
         String methodName = Thread.currentThread().getStackTrace()[NumConstant.I1].getMethodName();
         String sessionId = variable.getSessionId();
@@ -116,9 +114,9 @@ public class AskForDelegate extends AvtProcessDelegate implements JavaDelegate, 
             process.setSuccess(Boolean.FALSE);
             process.setResult("[检查事项配置]异常:" + e);
             logger.error("[检查事项配置]异常,sessionId:{},方法:{},异常信息:{}" + e, sessionId, methodName);
-            throw new BpmnError(BPMNER_ERROR);
+            throw new BpmnError(ProcessConstant.BPMNER_ERROR_EXCEPTION);
         } finally {
-            delegateExecution.setVariable(PROCESS_VARIABLE, variable);
+            super.resetProcessVariable(delegateExecution, variable);
         }
     }
 
@@ -145,9 +143,9 @@ public class AskForDelegate extends AvtProcessDelegate implements JavaDelegate, 
             process.setSuccess(Boolean.FALSE);
             process.setResult("[检查申请信息]异常:" + e);
             logger.error("[检查申请信息]异常,sessionId:{},方法:{},异常信息:{}" + e, sessionId, methodName);
-            throw new BpmnError(BPMNER_ERROR);
+            throw new BpmnError(ProcessConstant.BPMNER_ERROR_EXCEPTION);
         } finally {
-            delegateExecution.setVariable(PROCESS_VARIABLE, variable);
+            super.resetProcessVariable(delegateExecution, variable);
         }
     }
 
@@ -185,9 +183,9 @@ public class AskForDelegate extends AvtProcessDelegate implements JavaDelegate, 
             process.setSuccess(Boolean.FALSE);
             process.setResult("[初始化申请信息]异常:" + e);
             logger.error("[初始化申请信息]异常,sessionId:{},方法:{},异常信息:{}" + e, sessionId, methodName);
-            throw new BpmnError(BPMNER_ERROR);
+            throw new BpmnError(ProcessConstant.BPMNER_ERROR_EXCEPTION);
         } finally {
-            delegateExecution.setVariable(PROCESS_VARIABLE, variable);
+            super.resetProcessVariable(delegateExecution, variable);
         }
     }
 
@@ -224,9 +222,9 @@ public class AskForDelegate extends AvtProcessDelegate implements JavaDelegate, 
             process.setSuccess(Boolean.FALSE);
             process.setResult("[初始化版本信息]异常:" + e);
             logger.error("[初始化版本信息]异常,sessionId:{},方法:{},异常信息:{}" + e, sessionId, methodName);
-            throw new BpmnError(BPMNER_ERROR);
+            throw new BpmnError(ProcessConstant.BPMNER_ERROR_EXCEPTION);
         } finally {
-            delegateExecution.setVariable(PROCESS_VARIABLE, variable);
+            super.resetProcessVariable(delegateExecution, variable);
         }
     }
 

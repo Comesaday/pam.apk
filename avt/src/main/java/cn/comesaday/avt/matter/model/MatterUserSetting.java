@@ -17,6 +17,8 @@ public class MatterUserSetting extends IdEntity {
 
     private Long matterId;
 
+    private String matterCode;
+
     private String linkCode;
 
     private String linkName;
@@ -25,7 +27,14 @@ public class MatterUserSetting extends IdEntity {
 
     private String userName;
 
-    public Long getMatterId() {
+    private String groupName;
+
+    private Long groupId;
+
+    // true:个人 false:用户组
+    private boolean assignee;
+
+  public Long getMatterId() {
         return matterId;
     }
 
@@ -63,5 +72,37 @@ public class MatterUserSetting extends IdEntity {
 
     public void setUserName(String userName) {
         this.userName = userName;
+    }
+
+    public String getMatterCode() {
+        return matterCode;
+    }
+
+    public void setMatterCode(String matterCode) {
+        this.matterCode = matterCode;
+    }
+
+    public String getGroupName() {
+        return groupName;
+    }
+
+    public void setGroupName(String groupName) {
+        this.groupName = groupName;
+    }
+
+    public Long getGroupId() {
+        return groupId;
+    }
+
+    public void setGroupId(Long groupId) {
+        this.groupId = groupId;
+    }
+
+    public boolean isAssignee() {
+        return assignee;
+    }
+
+    public void setAssignee(boolean assignee) {
+        this.assignee = assignee;
     }
 }
