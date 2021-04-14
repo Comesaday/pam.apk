@@ -4,4 +4,4 @@
  * @author: ChenWei
  * @CreateAt: 2021-04-13 19:56
  */
-package cn.comesaday.example.mode;
+package cn.comesaday.avt.example.mode;
