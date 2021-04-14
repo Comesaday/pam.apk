@@ -34,14 +34,10 @@ import java.util.List;
  * @CreateAt: 2021-04-09 11:08
  */
 @Service
-public class AskForDelegate implements JavaDelegate, Serializable {
+public class AskForDelegate extends AvtProcessDelegate implements JavaDelegate, Serializable {
 
     // 日志打印
     private final static Logger logger = LoggerFactory.getLogger(AskForDelegate.class);
-
-    public static final String PROCESS_VARIABLE = "processInfo";
-
-    public static final String BPMNER_ERROR = "bpmner_error";
 
     @Autowired
     private AskInfoService askInfoService;
@@ -65,8 +61,9 @@ public class AskForDelegate implements JavaDelegate, Serializable {
      * @date 2021/4/9 13:59
      * @return void
      */
+    @Override
     public void processInit(DelegateExecution delegateExecution) {
-        ProcessVariable variable = this.getVariable(delegateExecution);
+        ProcessVariable variable = super.getVariable(delegateExecution);
         String methodName = Thread.currentThread().getStackTrace()[NumConstant.I1].getMethodName();
         String sessionId = variable.getSessionId();
         AskProcess process = new AskProcess();
@@ -99,8 +96,9 @@ public class AskForDelegate implements JavaDelegate, Serializable {
      * @date 2021/4/9 11:11
      * @return void
      */
+    @Override
     public void checkMatterSetting(DelegateExecution delegateExecution) throws BpmnError {
-        ProcessVariable variable = this.getVariable(delegateExecution);
+        ProcessVariable variable = super.getVariable(delegateExecution);
         String methodName = Thread.currentThread().getStackTrace()[NumConstant.I1].getMethodName();
         String sessionId = variable.getSessionId();
         AskProcess process = variable.getAskProcess();
@@ -131,8 +129,9 @@ public class AskForDelegate implements JavaDelegate, Serializable {
      * @date 2021/4/9 11:10
      * @return void
      */
+    @Override
     public void checkUserFill(DelegateExecution delegateExecution) {
-        ProcessVariable variable = this.getVariable(delegateExecution);
+        ProcessVariable variable = super.getVariable(delegateExecution);
         String methodName = Thread.currentThread().getStackTrace()[NumConstant.I1].getMethodName();
         String sessionId = variable.getSessionId();
         AskProcess process = variable.getAskProcess();
@@ -159,8 +158,9 @@ public class AskForDelegate implements JavaDelegate, Serializable {
      * @date 2021/4/9 11:11
      * @return void
      */
+    @Override
     public void initAskInfo(DelegateExecution delegateExecution) {
-        ProcessVariable variable = this.getVariable(delegateExecution);
+        ProcessVariable variable = super.getVariable(delegateExecution);
         String methodName = Thread.currentThread().getStackTrace()[NumConstant.I1].getMethodName();
         String sessionId = variable.getSessionId();
         AskProcess process = variable.getAskProcess();
@@ -198,8 +198,9 @@ public class AskForDelegate implements JavaDelegate, Serializable {
      * @date 2021/4/9 15:04
      * @return void
      */
+    @Override
     public void initAskTrack(DelegateExecution delegateExecution) {
-        ProcessVariable variable = this.getVariable(delegateExecution);
+        ProcessVariable variable = super.getVariable(delegateExecution);
         String methodName = Thread.currentThread().getStackTrace()[NumConstant.I1].getMethodName();
         String sessionId = variable.getSessionId();
         AskProcess process = variable.getAskProcess();
@@ -227,39 +228,6 @@ public class AskForDelegate implements JavaDelegate, Serializable {
         } finally {
             delegateExecution.setVariable(PROCESS_VARIABLE, variable);
         }
-    }
-
-    /**
-     * <说明> 记录错误信息
-     * @param delegateExecution DelegateExecution
-     * @author ChenWei
-     * @date 2021/4/9 16:55
-     * @return void
-     */
-    public void takeErrorInfo(DelegateExecution delegateExecution) {
-         ProcessVariable variable = this.getVariable(delegateExecution);
-        String methodName = Thread.currentThread().getStackTrace()[NumConstant.I1].getMethodName();
-        String sessionId = variable.getSessionId();
-        AskProcess process = variable.getAskProcess();
-        try {
-            if (!process.getSuccess()) {
-                askProcessService.save(process);
-            }
-            logger.info("[保存错误信息]成功,sessionId:{},错误信息:{}", sessionId, JsonUtil.toJson(process));
-        } catch (Exception e) {
-            logger.error("[保存错误信息]异常,sessionId:{},异常信息:{}", sessionId, e);
-        }
-    }
-
-    /**
-     * <说明> 获取流程变量
-     * @param delegateExecution DelegateExecution
-     * @author ChenWei
-     * @date 2021/4/9 13:14
-     * @return cn.comesaday.avt.apply.vo.ProcessVariable
-     */
-    private ProcessVariable getVariable(DelegateExecution delegateExecution) {
-        return (ProcessVariable) delegateExecution.getVariable(PROCESS_VARIABLE);
     }
 
     @Override
