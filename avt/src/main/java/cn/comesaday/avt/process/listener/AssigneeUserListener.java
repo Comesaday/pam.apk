@@ -1,10 +1,9 @@
-package cn.comesaday.avt.apply.listener;
+package cn.comesaday.avt.process.listener;
 
-import cn.comesaday.avt.apply.vo.ProcessVariable;
 import cn.comesaday.avt.matter.model.MatterUserSetting;
-import cn.comesaday.avt.matter.service.MatterUserSettingService;
+import cn.comesaday.avt.matter.service.MatterService;
 import cn.comesaday.avt.process.constant.ProcessConstant;
-import cn.comesaday.avt.process.listener.AbstractUserListener;
+import cn.comesaday.avt.process.variable.ProcessVariable;
 import cn.comesaday.coe.common.constant.NumConstant;
 import org.activiti.engine.delegate.BpmnError;
 import org.activiti.engine.delegate.DelegateTask;
@@ -29,7 +28,7 @@ public class AssigneeUserListener extends AbstractUserListener {
     private final static Logger logger = LoggerFactory.getLogger(AssigneeUserListener.class);
 
     @Autowired
-    private MatterUserSettingService matterUserSettingService;
+    private MatterService matterService;
 
     @Override
     public void notify(DelegateTask delegateTask) {
@@ -37,10 +36,7 @@ public class AssigneeUserListener extends AbstractUserListener {
         String actId = delegateTask.getId();
         Long matterId = variable.getAskInfoVo().getMatterId();
         try {
-            MatterUserSetting setting = new MatterUserSetting();
-            setting.setLinkCode(actId);
-            setting.setMatterId(matterId);
-            List<MatterUserSetting> settings = matterUserSettingService.findAll(setting);
+            List<MatterUserSetting> settings = matterService.getMatterLinkUsers(matterId, actId);
             if (CollectionUtils.isEmpty(settings)) {
                 logger.error("[获取事项审批人]事项ID:{},节点ID:{},未配置审批人", matterId, actId);
                 throw new BpmnError(ProcessConstant.BPMNER_ERROR_EXCEPTION);

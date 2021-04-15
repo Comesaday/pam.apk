@@ -2,7 +2,7 @@ package cn.comesaday.avt.example.thread.job;
 
 import cn.comesaday.avt.apply.model.AskInfo;
 import cn.comesaday.avt.apply.service.AskInfoService;
-import cn.comesaday.avt.apply.service.AskProcessService;
+import cn.comesaday.avt.process.service.ProcessInfoService;
 import cn.comesaday.avt.example.thread.helper.JobHelper;
 import cn.comesaday.coe.common.constant.NumConstant;
 import cn.comesaday.coe.common.util.DateUtil;
@@ -48,7 +48,7 @@ public class AskJob {
     private TaskService taskService;
 
     @Autowired
-    private AskProcessService askProcessService;
+    private ProcessInfoService processInfoService;
 
     // 线程执行池
     private final static ExecutorService executorService = Executors.newFixedThreadPool(NumConstant.I10);

@@ -45,7 +45,7 @@ public class ProcessService {
     public Model createModel(Long matterId) throws Exception {
         // 事项是否创建
         Matter matter = matterService.getBasicMatter(matterId);
-        matterService.checkMatterConfig(matter, NumConstant.I3, Boolean.TRUE);
+        matterService.checkMatterConfig(matter, MatterEnum.DEFINED.getStatus(), Boolean.TRUE);
         // 创建保存流程model
         Model model = this.createNewModel(matter);
         matter.setModelId(model.getId());

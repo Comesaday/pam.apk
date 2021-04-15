@@ -1,4 +1,4 @@
-package cn.comesaday.avt.apply.model;
+package cn.comesaday.avt.process.model;
 
 import cn.comesaday.coe.core.basic.model.IdEntity;
 
@@ -15,7 +15,7 @@ import java.io.Serializable;
  */
 @Entity
 @Table(name = "AVT_ASK_PROCESS")
-public class AskProcess extends IdEntity implements Serializable {
+public class ProcessInfo extends IdEntity implements Serializable {
 
     // 申请主表id
     private String sessionId;
@@ -33,10 +33,15 @@ public class AskProcess extends IdEntity implements Serializable {
     @Column(length = 3000)
     private String param;
 
+    // 流程当前节点
+    private String linkCode;
+
+    private String linkName;
+
     // 是否执行成功
     private Boolean success;
 
-    public AskProcess() {
+    public ProcessInfo() {
     }
 
     public String getSessionId() {
@@ -85,5 +90,21 @@ public class AskProcess extends IdEntity implements Serializable {
 
     public void setSuccess(Boolean success) {
         this.success = success;
+    }
+
+    public String getLinkCode() {
+        return linkCode;
+    }
+
+    public void setLinkCode(String linkCode) {
+        this.linkCode = linkCode;
+    }
+
+    public String getLinkName() {
+        return linkName;
+    }
+
+    public void setLinkName(String linkName) {
+        this.linkName = linkName;
     }
 }

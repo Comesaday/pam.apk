@@ -1,6 +1,6 @@
-package cn.comesaday.avt.apply.manager;
+package cn.comesaday.avt.process.manager;
 
-import cn.comesaday.avt.apply.model.AskProcess;
+import cn.comesaday.avt.process.model.ProcessInfo;
 import cn.comesaday.coe.core.jpa.bean.repository.MyRepository;
 
 /**
@@ -9,5 +9,5 @@ import cn.comesaday.coe.core.jpa.bean.repository.MyRepository;
  * @author: ChenWei
  * @CreateAt: 2021-04-08 15:08
  */
-public interface AskProcessManager extends MyRepository<AskProcess, Long> {
+public interface ProcessInfoManager extends MyRepository<ProcessInfo, Long> {
 }

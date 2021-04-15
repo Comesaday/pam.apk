@@ -1,6 +1,6 @@
-package cn.comesaday.avt.apply.service;
+package cn.comesaday.avt.process.service;
 
-import cn.comesaday.avt.apply.model.AskProcess;
+import cn.comesaday.avt.process.model.ProcessInfo;
 import cn.comesaday.coe.core.basic.service.BaseService;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -13,6 +13,6 @@ import org.springframework.transaction.annotation.Transactional;
  */
 @Service
 @Transactional
-public class AskProcessService extends BaseService<AskProcess, Long> {
+public class ProcessInfoService extends BaseService<ProcessInfo, Long> {
 
 }

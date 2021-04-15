@@ -20,7 +20,6 @@ public abstract class AbstractApplyDelegate extends AbstractProcessDelegate {
      */
     public abstract void checkMatterSetting(DelegateExecution delegateExecution);
 
-
     /**
      * <说明> 检查申请信息
      * @param delegateExecution DelegateExecution
@@ -29,7 +28,6 @@ public abstract class AbstractApplyDelegate extends AbstractProcessDelegate {
      * @return void
      */
     public abstract void checkUserFill(DelegateExecution delegateExecution);
-
 
     /**
      * <说明> 初始化申请信息
@@ -40,7 +38,6 @@ public abstract class AbstractApplyDelegate extends AbstractProcessDelegate {
      */
     public abstract void initAskInfo(DelegateExecution delegateExecution);
 
-
     /**
      * <说明> 初始化申请版本信息
      * @param delegateExecution DelegateExecution
@@ -49,5 +46,23 @@ public abstract class AbstractApplyDelegate extends AbstractProcessDelegate {
      * @return void
      */
     public abstract void initAskTrack(DelegateExecution delegateExecution);
+
+    /**
+     * <说明> 获取审批结果
+     * @param delegateExecution DelegateExecution
+     * @author ChenWei
+     * @date 2021/4/9 15:04
+     * @return void
+     */
+    public abstract void isApprovalPass(DelegateExecution delegateExecution);
+
+    /**
+     * <说明> 审批
+     * @param delegateExecution DelegateExecution
+     * @author ChenWei
+     * @date 2021/4/9 15:04
+     * @return void
+     */
+    public abstract void approvalAskInfo(DelegateExecution delegateExecution);
 
 }

@@ -1,15 +1,18 @@
-package cn.comesaday.avt.apply.service;
+package cn.comesaday.avt.apply.delegate;
 
-import cn.comesaday.avt.apply.delegate.AbstractApplyDelegate;
 import cn.comesaday.avt.apply.model.AskFormData;
 import cn.comesaday.avt.apply.model.AskInfo;
 import cn.comesaday.avt.apply.model.AskInfoTrack;
-import cn.comesaday.avt.apply.model.AskProcess;
+import cn.comesaday.avt.apply.service.AskFormDataService;
+import cn.comesaday.avt.apply.service.AskInfoService;
+import cn.comesaday.avt.apply.service.AskInfoTrackService;
 import cn.comesaday.avt.apply.vo.AskInfoVo;
-import cn.comesaday.avt.apply.vo.ProcessVariable;
+import cn.comesaday.avt.process.variable.ProcessVariable;
 import cn.comesaday.avt.matter.model.Matter;
 import cn.comesaday.avt.matter.service.MatterService;
 import cn.comesaday.avt.process.constant.ProcessConstant;
+import cn.comesaday.avt.process.model.ProcessInfo;
+import cn.comesaday.avt.process.service.ProcessInfoService;
 import cn.comesaday.coe.common.constant.NumConstant;
 import cn.comesaday.coe.common.util.JsonUtil;
 import org.activiti.engine.delegate.BpmnError;
@@ -47,7 +50,7 @@ public class ApplyDelegate extends AbstractApplyDelegate implements JavaDelegate
     private AskFormDataService askFormDataService;
 
     @Autowired
-    private AskProcessService askProcessService;
+    private ProcessInfoService processInfoService;
 
     @Autowired
     private AskInfoTrackService askInfoTrackService;
@@ -64,8 +67,8 @@ public class ApplyDelegate extends AbstractApplyDelegate implements JavaDelegate
         ProcessVariable variable = super.getVariable(delegateExecution);
         String methodName = Thread.currentThread().getStackTrace()[NumConstant.I1].getMethodName();
         String sessionId = variable.getSessionId();
-        AskProcess process = new AskProcess();
-        variable.setAskProcess(process);
+        ProcessInfo process = new ProcessInfo();
+        variable.setProcessInfo(process);
         try {
             String processInstanceId = delegateExecution.getProcessInstanceId();
             variable.setInstanceId(processInstanceId);
@@ -75,7 +78,7 @@ public class ApplyDelegate extends AbstractApplyDelegate implements JavaDelegate
             process.setTimes(NumConstant.I0);
             process.setSuccess(Boolean.TRUE);
             process.setResult("[流程信息初始化]成功");
-            askProcessService.save(process);
+            processInfoService.save(process);
             logger.info("[流程信息初始化]成功,sessionId:{},方法:{}", sessionId, methodName);
         } catch (Exception e) {
             process.setSuccess(Boolean.FALSE);
@@ -99,7 +102,7 @@ public class ApplyDelegate extends AbstractApplyDelegate implements JavaDelegate
         ProcessVariable variable = super.getVariable(delegateExecution);
         String methodName = Thread.currentThread().getStackTrace()[NumConstant.I1].getMethodName();
         String sessionId = variable.getSessionId();
-        AskProcess process = variable.getAskProcess();
+        ProcessInfo process = variable.getProcessInfo();
         try {
             Long matterId = variable.getAskInfoVo().getMatterId();
             Matter matter = matterService.getBasicMatter(matterId);
@@ -108,7 +111,7 @@ public class ApplyDelegate extends AbstractApplyDelegate implements JavaDelegate
             // 将事项信息设置到流程变量
             variable.getAskInfoVo().setMatter(matter);
             process.setResult("[检查事项配置]成功");
-            askProcessService.save(process);
+            processInfoService.save(process);
             logger.info("[检查事项配置]成功,sessionId:{},方法:{}", sessionId, methodName);
         } catch (Exception e) {
             process.setSuccess(Boolean.FALSE);
@@ -132,12 +135,12 @@ public class ApplyDelegate extends AbstractApplyDelegate implements JavaDelegate
         ProcessVariable variable = super.getVariable(delegateExecution);
         String methodName = Thread.currentThread().getStackTrace()[NumConstant.I1].getMethodName();
         String sessionId = variable.getSessionId();
-        AskProcess process = variable.getAskProcess();
+        ProcessInfo process = variable.getProcessInfo();
         try {
             // 检查申请信息
             askInfoService.checkAskInfo(variable.getAskInfoVo());
             process.setResult("[检查申请信息]成功");
-            askProcessService.save(process);
+            processInfoService.save(process);
             logger.info("[检查申请信息]成功,sessionId:{},方法:{}", sessionId, methodName);
         } catch (Exception e) {
             process.setSuccess(Boolean.FALSE);
@@ -161,7 +164,7 @@ public class ApplyDelegate extends AbstractApplyDelegate implements JavaDelegate
         ProcessVariable variable = super.getVariable(delegateExecution);
         String methodName = Thread.currentThread().getStackTrace()[NumConstant.I1].getMethodName();
         String sessionId = variable.getSessionId();
-        AskProcess process = variable.getAskProcess();
+        ProcessInfo process = variable.getProcessInfo();
         try {
             AskInfoVo askInfoVo = variable.getAskInfoVo();
             // 保存申请表单信息
@@ -177,7 +180,7 @@ public class ApplyDelegate extends AbstractApplyDelegate implements JavaDelegate
             askInfoVo.setAskInfo(askInfo);
             askInfoVo.setAskInfos(formDatas);
             process.setResult("[初始化申请信息]成功");
-            askProcessService.save(process);
+            processInfoService.save(process);
             logger.info("[初始化申请信息]成功,sessionId:{},方法:{}", sessionId, methodName);
         } catch (Exception e) {
             process.setSuccess(Boolean.FALSE);
@@ -201,7 +204,7 @@ public class ApplyDelegate extends AbstractApplyDelegate implements JavaDelegate
         ProcessVariable variable = super.getVariable(delegateExecution);
         String methodName = Thread.currentThread().getStackTrace()[NumConstant.I1].getMethodName();
         String sessionId = variable.getSessionId();
-        AskProcess process = variable.getAskProcess();
+        ProcessInfo process = variable.getProcessInfo();
         try {
             // 初始化审批版本数据
             AskInfo askInfo = variable.getAskInfoVo().getAskInfo();
@@ -216,7 +219,7 @@ public class ApplyDelegate extends AbstractApplyDelegate implements JavaDelegate
             }
             records.add(askInfoTrack);
             process.setResult("[初始化版本信息]成功");
-            askProcessService.save(process);
+            processInfoService.save(process);
             logger.info("[初始化版本信息]成功,sessionId:{},方法:{}", sessionId, methodName);
         } catch (Exception e) {
             process.setSuccess(Boolean.FALSE);
@@ -228,6 +231,37 @@ public class ApplyDelegate extends AbstractApplyDelegate implements JavaDelegate
         }
     }
 
+    /**
+     * <说明> 环节审批
+     * @param delegateExecution DelegateExecution
+     * @author ChenWei
+     * @date 2021/4/15 11:32
+     * @return void
+     */
+    @Override
+    public void approvalAskInfo(DelegateExecution delegateExecution) {
+
+    }
+
+    /**
+     * <说明> 获取审批结果
+     * @param delegateExecution DelegateExecution
+     * @author ChenWei
+     * @date 2021/4/15 11:32
+     * @return void
+     */
+    @Override
+    public void isApprovalPass(DelegateExecution delegateExecution) {
+
+    }
+
+    /**
+     * <说明> execute
+     * @param delegateExecution DelegateExecution
+     * @author ChenWei
+     * @date 2021/4/15 11:32
+     * @return void
+     */
     @Override
     public void execute(DelegateExecution delegateExecution) {
     }

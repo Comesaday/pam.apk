@@ -21,5 +21,5 @@
 var ACTIVITI = ACTIVITI || {};
 
 ACTIVITI.CONFIG = {
-	'contextRoot' : '/platform-activity/service',
+	'contextRoot' : '/platform-activity/model',
 };

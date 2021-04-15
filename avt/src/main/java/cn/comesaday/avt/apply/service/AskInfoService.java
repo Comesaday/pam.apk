@@ -2,7 +2,7 @@ package cn.comesaday.avt.apply.service;
 
 import cn.comesaday.avt.apply.model.AskInfo;
 import cn.comesaday.avt.apply.vo.AskInfoVo;
-import cn.comesaday.avt.apply.vo.ProcessVariable;
+import cn.comesaday.avt.process.variable.ProcessVariable;
 import cn.comesaday.avt.matter.model.Matter;
 import cn.comesaday.avt.matter.service.MatterService;
 import cn.comesaday.coe.common.constant.NumConstant;

@@ -1,18 +1,17 @@
 package cn.comesaday.avt.matter.service;
 
+import cn.comesaday.avt.dict.model.Dict;
+import cn.comesaday.avt.dict.service.DictService;
 import cn.comesaday.avt.matter.enums.MatterEnum;
-import cn.comesaday.avt.matter.manager.MatterManager;
 import cn.comesaday.avt.matter.model.Matter;
 import cn.comesaday.avt.matter.model.MatterFieldSetting;
+import cn.comesaday.avt.matter.model.MatterUserSetting;
 import cn.comesaday.avt.matter.vo.MatterSettingVo;
 import cn.comesaday.avt.matter.vo.MatterVo;
-import cn.comesaday.avt.dict.manager.DictManager;
-import cn.comesaday.avt.dict.model.Dict;
 import cn.comesaday.coe.common.constant.NumConstant;
 import cn.comesaday.coe.core.basic.exception.PamException;
 import cn.comesaday.coe.core.basic.service.BaseService;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.data.domain.Example;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.util.CollectionUtils;
@@ -31,21 +30,21 @@ import java.util.List;
 public class MatterService extends BaseService<Matter, Long> {
 
     @Autowired
-    private MatterManager matterManager;
+    private DictService dictService;
 
     @Autowired
-    private DictManager dictManager;
+    private MatterFieldSettingService matterFieldSettingService;
 
     @Autowired
-    private MatterFieldSettingService matterSettingService;
+    private MatterUserSettingService matterUserSettingService;
 
-    public Matter findByModelId(String modelId) {
-        Matter matter = new Matter();
-        matter.setModelId(modelId);
-        Example<Matter> example = Example.of(matter);
-        return matterManager.findOne(example).orElse(new Matter());
-    }
-
+    /**
+     * <说明> 事项表单配置
+     * @param settingVo MatterSettingVo
+     * @author ChenWei
+     * @date 2021/4/15 14:05
+     * @return void
+     */
     public void setting(MatterSettingVo settingVo) {
         Long matterId = settingVo.getMatterId();
         List<Long> elementIds = settingVo.getElementIds();
@@ -54,29 +53,40 @@ public class MatterService extends BaseService<Matter, Long> {
             return;
         }
         MatterFieldSetting setting = new MatterFieldSetting();
+        setting.setMatterId(matterId);
         for (int index = NumConstant.I0; index < elementIds.size(); index++) {
             Long elementId = elementIds.get(index);
-            setting.setMatterId(matterId);
             setting.setDictId(elementId);
-            Example<MatterFieldSetting> example = Example.of(setting);
-            setting = matterSettingService.findOne(example).orElse(new MatterFieldSetting());
-            Dict dict = dictManager.getOne(elementId);
+            MatterFieldSetting set = matterFieldSettingService.findOne(setting);
+            if (null != set) {
+                setting.setId(set.getId());
+            }
+            Dict dict = dictService.findOne(elementId);
             setting.setDictCode(dict.getCode());
             setting.setDictName(dict.getName());
             setting.setStyle(dict.getStyle());
             setting.setSort(index + NumConstant.I1);
-            matterSettingService.save(setting);
+            matterFieldSettingService.save(setting);
         }
     }
 
+    /**
+     * <说明> 移除事项表单配置
+     * @param settingVo MatterSettingVo
+     * @author ChenWei
+     * @date 2021/4/15 14:25
+     * @return void
+     */
     public void removeSetting(MatterSettingVo settingVo) {
-        Long matterId = settingVo.getMatterId();
+        // 字段配置id
         List<Long> elementIds = settingVo.getElementIds();
         // 为空不配置
         if (CollectionUtils.isEmpty(elementIds)) {
             return;
         }
-        matterSettingService.deleteAll();
+        for (Long settingId : elementIds) {
+            matterFieldSettingService.deleteById(settingId);
+        }
     }
 
     /**
@@ -103,7 +113,7 @@ public class MatterService extends BaseService<Matter, Long> {
      */
     public MatterVo getMatterInfo(Long matterId) throws PamException {
         Matter matter = this.getBasicMatter(matterId);
-        List<MatterFieldSetting> settings = matterSettingService
+        List<MatterFieldSetting> settings = matterFieldSettingService
                 .findAllByProperty("matterId", matterId);
         MatterVo matterVo = new MatterVo();
         matterVo.setMatter(matter);
@@ -141,5 +151,31 @@ public class MatterService extends BaseService<Matter, Long> {
         if (!StringUtils.isEmpty(exception)) {
             throw new PamException(exception);
         }
+    }
+
+    /**
+     * <说明> 获取事项配置的所有人
+     * @param matterId 事项id
+     * @author ChenWei
+     * @date 2021/4/15 14:31
+     * @return java.util.List<cn.comesaday.avt.matter.model.MatterUserSetting>
+     */
+    public List<MatterUserSetting> getMatterUsers(Long matterId) {
+        return matterUserSettingService.findAllByProperty("matterId", matterId);
+    }
+
+    /**
+     * <说明> 获取事项环节审批人
+     * @param matterId 事项ID
+     * @param actId 事项环节
+     * @author ChenWei
+     * @date 2021/4/15 14:32
+     * @return java.util.List<cn.comesaday.avt.matter.model.MatterUserSetting>
+     */
+    public List<MatterUserSetting> getMatterLinkUsers(Long matterId, String actId) {
+        MatterUserSetting setting = new MatterUserSetting();
+        setting.setMatterId(matterId);
+        setting.setLinkCode(actId);
+        return matterUserSettingService.findAll(setting);
     }
 }

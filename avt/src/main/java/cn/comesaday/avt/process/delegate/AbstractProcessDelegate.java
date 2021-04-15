@@ -1,8 +1,8 @@
 package cn.comesaday.avt.process.delegate;
 
-import cn.comesaday.avt.apply.model.AskProcess;
-import cn.comesaday.avt.apply.service.AskProcessService;
-import cn.comesaday.avt.apply.vo.ProcessVariable;
+import cn.comesaday.avt.process.model.ProcessInfo;
+import cn.comesaday.avt.process.service.ProcessInfoService;
+import cn.comesaday.avt.process.variable.ProcessVariable;
 import cn.comesaday.avt.process.constant.ProcessConstant;
 import cn.comesaday.coe.common.constant.NumConstant;
 import cn.comesaday.coe.common.util.JsonUtil;
@@ -22,8 +22,9 @@ public abstract class AbstractProcessDelegate {
     // 日志打印
     private final static Logger logger = LoggerFactory.getLogger(AbstractProcessDelegate.class);
 
+
     @Autowired
-    private AskProcessService askProcessService;
+    private ProcessInfoService processInfoService;
 
 
     /**
@@ -40,7 +41,7 @@ public abstract class AbstractProcessDelegate {
      * @param delegateExecution DelegateExecution
      * @author ChenWei
      * @date 2021/4/9 13:14
-     * @return cn.comesaday.avt.apply.vo.ProcessVariable
+     * @return cn.comesaday.avt.process.variable.ProcessVariable
      */
     public ProcessVariable getVariable(DelegateExecution delegateExecution) {
         return (ProcessVariable) delegateExecution.getVariable(ProcessConstant.PROCESS_VARIABLE);
@@ -57,17 +58,16 @@ public abstract class AbstractProcessDelegate {
         ProcessVariable variable = this.getVariable(delegateExecution);
         String methodName = Thread.currentThread().getStackTrace()[NumConstant.I1].getMethodName();
         String sessionId = variable.getSessionId();
-        AskProcess process = variable.getAskProcess();
+        ProcessInfo process = variable.getProcessInfo();
         try {
             if (!process.getSuccess()) {
-                askProcessService.save(process);
+                processInfoService.save(process);
             }
             logger.info("[保存错误信息]成功,sessionId:{},错误信息:{}", sessionId, JsonUtil.toJson(process));
         } catch (Exception e) {
             logger.error("[保存错误信息]异常,sessionId:{},异常信息:{}", sessionId, e);
         }
     }
-
 
     /**
      * <说明> 设置流程变量

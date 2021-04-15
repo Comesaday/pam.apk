@@ -1,7 +1,7 @@
 package cn.comesaday.avt.process.listener;
 
-import cn.comesaday.avt.apply.vo.ProcessVariable;
 import cn.comesaday.avt.process.constant.ProcessConstant;
+import cn.comesaday.avt.process.variable.ProcessVariable;
 import org.activiti.engine.delegate.DelegateTask;
 import org.activiti.engine.delegate.TaskListener;
 
@@ -21,9 +21,10 @@ public abstract class AbstractUserListener implements TaskListener {
      * @param delegateTask DelegateTask
      * @author ChenWei
      * @date 2021/4/9 13:14
-     * @return cn.comesaday.avt.apply.vo.ProcessVariable
+     * @return cn.comesaday.avt.process.variable.ProcessVariable
      */
     public ProcessVariable getVariable(DelegateTask delegateTask) {
         return (ProcessVariable) delegateTask.getVariable(ProcessConstant.PROCESS_VARIABLE);
     }
+
 }
