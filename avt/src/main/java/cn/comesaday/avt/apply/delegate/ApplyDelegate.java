@@ -7,6 +7,7 @@ import cn.comesaday.avt.apply.service.AskFormDataService;
 import cn.comesaday.avt.apply.service.AskInfoService;
 import cn.comesaday.avt.apply.service.AskInfoTrackService;
 import cn.comesaday.avt.apply.vo.AskInfoVo;
+import cn.comesaday.avt.matter.enums.MatterEnum;
 import cn.comesaday.avt.process.variable.ProcessVariable;
 import cn.comesaday.avt.matter.model.Matter;
 import cn.comesaday.avt.matter.service.MatterService;
@@ -107,7 +108,7 @@ public class ApplyDelegate extends AbstractApplyDelegate implements JavaDelegate
             Long matterId = variable.getAskInfoVo().getMatterId();
             Matter matter = matterService.getBasicMatter(matterId);
             // 检查事项配置
-            matterService.checkMatterConfig(matter, NumConstant.I5, Boolean.FALSE);
+            matterService.checkMatterConfig(matter, MatterEnum.OPEN.getStatus(), Boolean.FALSE);
             // 将事项信息设置到流程变量
             variable.getAskInfoVo().setMatter(matter);
             process.setResult("[检查事项配置]成功");

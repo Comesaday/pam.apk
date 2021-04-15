@@ -95,7 +95,7 @@ public class ProcessService {
     public Deployment deploymentModel(Long matterId) throws Exception {
         Matter matter = matterService.getBasicMatter(matterId);
         // 检查事项状态
-        matterService.checkMatterConfig(matter, NumConstant.I4, Boolean.TRUE);
+        matterService.checkMatterConfig(matter, MatterEnum.DEPLOY.getStatus(), Boolean.TRUE);
         // 流程部署
         Model model = repositoryService.getModel(matter.getModelId());
         byte[] bytes = repositoryService.getModelEditorSource(model.getId());
