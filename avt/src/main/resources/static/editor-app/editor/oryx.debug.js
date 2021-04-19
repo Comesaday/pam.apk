@@ -1355,7 +1355,7 @@ ResourceManager = {
 			
 			// .. if listener subscribed to this type of event ...
 			if(event.action & controller.mask)
-				return controller.listener(event);
+				return cn.comesaday.avt.water.wharf.listener(event);
 		});
 	},
 

@@ -1,8 +1,8 @@
 package cn.comesaday.avt.process.variable;
 
-import cn.comesaday.avt.apply.model.AskInfoTrack;
-import cn.comesaday.avt.apply.vo.AskInfoVo;
-import cn.comesaday.avt.process.model.ProcessInfo;
+import cn.comesaday.avt.business.apply.model.AskInfoTrack;
+import cn.comesaday.avt.business.apply.vo.AskInfoVo;
+import cn.comesaday.avt.business.water.model.Water;
 
 import java.io.Serializable;
 import java.util.List;
@@ -17,34 +17,34 @@ import java.util.UUID;
 public class ProcessVariable implements Serializable {
 
     // 流程实例id
-    private String instanceId;
+    private String processId;
 
     // 申请信息
-    private AskInfoVo askInfoVo;
+    private AskInfoVo askInfo;
 
-    // 审批记录
+    // 审批记录 new LinkedList<>()
     private List<AskInfoTrack> records;
 
     // 流程记录表
-    private ProcessInfo processInfo;
+    private Water water;
 
     // sessionId
     private String sessionId = UUID.randomUUID().toString();
 
-    public String getInstanceId() {
-        return instanceId;
+    public String getProcessId() {
+        return processId;
     }
 
-    public void setInstanceId(String instanceId) {
-        this.instanceId = instanceId;
+    public void setProcessId(String processId) {
+        this.processId = processId;
     }
 
-    public AskInfoVo getAskInfoVo() {
-        return askInfoVo;
+    public AskInfoVo getAskInfo() {
+        return askInfo;
     }
 
-    public void setAskInfoVo(AskInfoVo askInfoVo) {
-        this.askInfoVo = askInfoVo;
+    public void setAskInfo(AskInfoVo askInfo) {
+        this.askInfo = askInfo;
     }
 
     public List<AskInfoTrack> getRecords() {
@@ -55,12 +55,12 @@ public class ProcessVariable implements Serializable {
         this.records = records;
     }
 
-    public ProcessInfo getProcessInfo() {
-        return processInfo;
+    public Water getWater() {
+        return water;
     }
 
-    public void setProcessInfo(ProcessInfo processInfo) {
-        this.processInfo = processInfo;
+    public void setWater(Water water) {
+        this.water = water;
     }
 
     public String getSessionId() {

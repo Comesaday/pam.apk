@@ -1,7 +1,7 @@
 package cn.comesaday.avt.process.delegate;
 
-import cn.comesaday.avt.process.model.ProcessInfo;
-import cn.comesaday.avt.process.service.ProcessInfoService;
+import cn.comesaday.avt.business.water.model.Water;
+import cn.comesaday.avt.business.water.service.WaterService;
 import cn.comesaday.avt.process.variable.ProcessVariable;
 import cn.comesaday.avt.process.constant.ProcessConstant;
 import cn.comesaday.coe.common.constant.NumConstant;
@@ -19,12 +19,13 @@ import org.springframework.beans.factory.annotation.Autowired;
  */
 public abstract class AbstractProcessDelegate {
 
+
     // 日志打印
     private final static Logger logger = LoggerFactory.getLogger(AbstractProcessDelegate.class);
 
 
     @Autowired
-    private ProcessInfoService processInfoService;
+    private WaterService waterService;
 
 
     /**
@@ -58,12 +59,12 @@ public abstract class AbstractProcessDelegate {
         ProcessVariable variable = this.getVariable(delegateExecution);
         String methodName = Thread.currentThread().getStackTrace()[NumConstant.I1].getMethodName();
         String sessionId = variable.getSessionId();
-        ProcessInfo process = variable.getProcessInfo();
+        Water water = variable.getWater();
         try {
-            if (!process.getSuccess()) {
-                processInfoService.save(process);
+            if (!water.getSuccess()) {
+                waterService.save(water);
             }
-            logger.info("[保存错误信息]成功,sessionId:{},错误信息:{}", sessionId, JsonUtil.toJson(process));
+            logger.info("[保存错误信息]成功,sessionId:{},错误信息:{}", sessionId, JsonUtil.toJson(water));
         } catch (Exception e) {
             logger.error("[保存错误信息]异常,sessionId:{},异常信息:{}", sessionId, e);
         }
