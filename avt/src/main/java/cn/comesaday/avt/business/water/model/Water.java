@@ -14,7 +14,7 @@ import java.io.Serializable;
  * @CreateAt: 2021-04-01 18:52
  */
 @Entity
-@Table(name = "AVT_ASK_PROCESS")
+@Table(name = "AVT_PROCESS_WATER")
 public class Water extends IdEntity implements Serializable {
 
     // 申请主表id

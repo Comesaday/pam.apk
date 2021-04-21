@@ -13,9 +13,6 @@ import org.activiti.engine.delegate.TaskListener;
  */
 public abstract class AbstractUserListener implements TaskListener {
 
-    @Override
-    public abstract void notify(DelegateTask delegateTask);
-
     /**
      * <说明> 获取流程变量
      * @param delegateTask DelegateTask

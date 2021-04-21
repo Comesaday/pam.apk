@@ -14,6 +14,7 @@ import org.activiti.engine.RepositoryService;
 import org.activiti.engine.repository.Deployment;
 import org.activiti.engine.repository.Model;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Service;
 
 /**
  * <描述> ModelService
@@ -21,6 +22,7 @@ import org.springframework.beans.factory.annotation.Autowired;
  * @author: ChenWei
  * @CreateAt: 2021-04-19 16:53
  */
+@Service
 public class ModelService {
 
     @Autowired

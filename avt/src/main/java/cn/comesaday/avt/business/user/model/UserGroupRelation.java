@@ -12,7 +12,7 @@ import javax.persistence.Table;
  * @CreateAt: 2021-04-12 13:53
  */
 @Entity
-@Table(name = "AVT_USER_GROUP_RELATION")
+@Table(name = "AVT_USER_GROUP_REL")
 public class UserGroupRelation extends IdEntity {
 
     private Long userId;

@@ -13,6 +13,7 @@ import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.ResponseBody;
 
 import java.util.List;
 
@@ -44,7 +45,7 @@ public class MatterController {
      */
     @RequestMapping("/setting")
     public String setting(MatterSettingVo settingVo) {
-        matterService.setting(settingVo);
+//        matterService.setting(settingVo);
         return "redirect:/matter/index";
     }
 
@@ -116,6 +117,7 @@ public class MatterController {
      * @return JsonResult
      */
     @RequestMapping("/create/process/{matterId}")
+    @ResponseBody
     public JsonResult create(@PathVariable(name = "matterId") Long matterId) {
         JsonResult result = new JsonResult();
         try {
@@ -137,6 +139,7 @@ public class MatterController {
      * @return JsonResult
      */
     @RequestMapping("/deploy/process/{matterId}")
+    @ResponseBody
     public JsonResult deploy(@PathVariable(name = "matterId") Long matterId) {
         JsonResult result = new JsonResult();
         try {

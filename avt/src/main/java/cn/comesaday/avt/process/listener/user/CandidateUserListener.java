@@ -2,9 +2,9 @@ package cn.comesaday.avt.process.listener.user;
 
 import cn.comesaday.avt.business.matter.model.MatterUserSetting;
 import cn.comesaday.avt.business.matter.service.MatterService;
+import cn.comesaday.avt.business.user.service.UserGroupService;
 import cn.comesaday.avt.process.constant.ProcessConstant;
 import cn.comesaday.avt.process.variable.ProcessVariable;
-import cn.comesaday.avt.business.user.service.UserGroupService;
 import org.activiti.engine.delegate.BpmnError;
 import org.activiti.engine.delegate.DelegateTask;
 import org.slf4j.Logger;
@@ -37,7 +37,7 @@ public class CandidateUserListener extends AbstractUserListener {
     @Override
     public void notify(DelegateTask delegateTask) {
         ProcessVariable variable = super.getVariable(delegateTask);
-        String actId = delegateTask.getId();
+        String actId = delegateTask.getTaskDefinitionKey();
         Long matterId = variable.getAskInfo().getMatterId();
         try {
             List<MatterUserSetting> settings = matterService.getMatterLinkUsers(matterId, actId);
