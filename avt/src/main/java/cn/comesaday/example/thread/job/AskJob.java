@@ -1,8 +1,8 @@
 package cn.comesaday.example.thread.job;
 
-import cn.comesaday.avt.business.apply.model.AskInfo;
-import cn.comesaday.avt.business.apply.service.AskInfoService;
-import cn.comesaday.avt.business.water.service.WaterService;
+import cn.comesaday.avt.business.apply.model.ApplyInfo;
+import cn.comesaday.avt.business.apply.service.ApplyService;
+import cn.comesaday.avt.process.water.service.WaterService;
 import cn.comesaday.example.thread.helper.JobHelper;
 import cn.comesaday.coe.common.constant.NumConstant;
 import cn.comesaday.coe.common.util.DateUtil;
@@ -39,7 +39,7 @@ public class AskJob {
     private final static Logger logger = LoggerFactory.getLogger(AskJob.class);
 
     @Autowired
-    private AskInfoService askInfoService;
+    private ApplyService applyService;
 
     @Autowired
     private JobHelper jobHelper;
@@ -70,13 +70,13 @@ public class AskJob {
             jobHelper.setJobLock(ASK_SCHEDULE_KEY, ASK_SCHEDULE_KEY);
             // 获取所有就绪的申请信息
             logger.info("{}:查询就绪申请内容", DateUtil.formatLDate(new Date()));
-            List<AskInfo> askInfos = askInfoService
+            List<ApplyInfo> applyInfos = applyService
                     .findAllByProperty("status", NumConstant.I1);
-            if (CollectionUtils.isEmpty(askInfos)) {
+            if (CollectionUtils.isEmpty(applyInfos)) {
                 return result.setSuccess("此次未查询到就绪信息");
             }
             // 开始创建流程实例
-            result = doAskProcess(askInfos);
+            result = doAskProcess(applyInfos);
         } catch (Exception e) {
             logger.error("用户申请计划执行异常" + e.getMessage(), e);
             result.setError(e.getMessage());
@@ -88,15 +88,15 @@ public class AskJob {
 
     /**
      * <说明> 针对申请信息生成流程实例
-     * @param askInfos List<AskInfo>
+     * @param applyInfos List<AskInfo>
      * @author ChenWei
      * @date 2021/4/1 19:15
      * @return cn.comesaday.coe.core.basic.bean.result.JsonResult
      */
-    private JsonResult doAskProcess(List<AskInfo> askInfos) {
+    private JsonResult doAskProcess(List<ApplyInfo> applyInfos) {
         List<Future<JsonResult>> results = new LinkedList<>();
-        for (AskInfo askInfo : askInfos) {
-            DoAskScanThread doAskScanThread = new DoAskScanThread(askInfo);
+        for (ApplyInfo applyInfo : applyInfos) {
+            DoAskScanThread doAskScanThread = new DoAskScanThread(applyInfo);
             Future<JsonResult> result = executorService.submit(doAskScanThread);
             results.add(result);
         }
@@ -137,10 +137,10 @@ public class AskJob {
      */
     public class DoAskScanThread implements Callable<JsonResult> {
 
-        private AskInfo askInfo;
+        private ApplyInfo applyInfo;
 
-        public DoAskScanThread(AskInfo askInfo) {
-            this.askInfo = askInfo;
+        public DoAskScanThread(ApplyInfo applyInfo) {
+            this.applyInfo = applyInfo;
         }
 
         @Override

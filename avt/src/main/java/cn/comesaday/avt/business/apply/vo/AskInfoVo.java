@@ -1,7 +1,7 @@
 package cn.comesaday.avt.business.apply.vo;
 
-import cn.comesaday.avt.business.apply.model.AskFormData;
-import cn.comesaday.avt.business.apply.model.AskInfo;
+import cn.comesaday.avt.business.apply.model.ApplyFormData;
+import cn.comesaday.avt.business.apply.model.ApplyInfo;
 import cn.comesaday.avt.business.matter.model.Matter;
 
 import java.io.Serializable;
@@ -23,7 +23,7 @@ public class AskInfoVo implements Serializable {
     private String applyName;
 
     // 申请时间
-    private Date askTime;
+    private Date askTime = new Date();
 
     // 申请事项id
     private Long matterId;
@@ -34,10 +34,10 @@ public class AskInfoVo implements Serializable {
 
     private Long askId;
 
-    private AskInfo askInfo;
+    private ApplyInfo applyInfo;
 
     // 申请表单数据
-    private List<AskFormData> askInfos;
+    private List<ApplyFormData> askInfos;
 
     public Long getApplyId() {
         return applyId;
@@ -71,11 +71,11 @@ public class AskInfoVo implements Serializable {
         this.matterId = matterId;
     }
 
-    public List<AskFormData> getAskInfos() {
+    public List<ApplyFormData> getAskInfos() {
         return askInfos;
     }
 
-    public void setAskInfos(List<AskFormData> askInfos) {
+    public void setAskInfos(List<ApplyFormData> askInfos) {
         this.askInfos = askInfos;
     }
 
@@ -95,12 +95,12 @@ public class AskInfoVo implements Serializable {
         this.askId = askId;
     }
 
-    public AskInfo getAskInfo() {
-        return askInfo;
+    public ApplyInfo getApplyInfo() {
+        return applyInfo;
     }
 
-    public void setAskInfo(AskInfo askInfo) {
-        this.askInfo = askInfo;
+    public void setApplyInfo(ApplyInfo applyInfo) {
+        this.applyInfo = applyInfo;
     }
 
     public String getMatterCode() {

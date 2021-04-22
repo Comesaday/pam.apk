@@ -1,6 +1,6 @@
 package cn.comesaday.avt.business.apply.delegate;
 
-import cn.comesaday.avt.process.delegate.AbstractProcessDelegate;
+import cn.comesaday.avt.process.flow.delegate.AbstractProcessDelegate;
 import org.activiti.engine.delegate.DelegateExecution;
 
 /**

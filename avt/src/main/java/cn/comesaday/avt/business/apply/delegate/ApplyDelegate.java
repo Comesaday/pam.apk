@@ -1,21 +1,20 @@
 package cn.comesaday.avt.business.apply.delegate;
 
-import cn.comesaday.avt.business.apply.model.AskFormData;
-import cn.comesaday.avt.business.apply.model.AskInfo;
-import cn.comesaday.avt.business.apply.model.AskInfoTrack;
-import cn.comesaday.avt.business.apply.service.AskFormDataService;
-import cn.comesaday.avt.business.apply.service.AskInfoService;
-import cn.comesaday.avt.business.apply.service.AskInfoTrackService;
+import cn.comesaday.avt.business.apply.model.ApplyFormData;
+import cn.comesaday.avt.business.apply.model.ApplyInfo;
+import cn.comesaday.avt.business.apply.model.ApplyTrack;
+import cn.comesaday.avt.business.apply.service.ApplyFormDataService;
+import cn.comesaday.avt.business.apply.service.ApplyService;
+import cn.comesaday.avt.business.apply.service.ApplyTrackService;
 import cn.comesaday.avt.business.apply.vo.AskInfoVo;
 import cn.comesaday.avt.business.matter.enums.MatterEnum;
 import cn.comesaday.avt.business.matter.model.Matter;
 import cn.comesaday.avt.business.matter.service.MatterService;
-import cn.comesaday.avt.process.constant.ProcessConstant;
-import cn.comesaday.avt.business.water.model.Water;
-import cn.comesaday.avt.business.water.service.WaterService;
-import cn.comesaday.avt.process.variable.ProcessVariable;
+import cn.comesaday.avt.process.flow.constant.ProcessConstant;
+import cn.comesaday.avt.process.flow.variable.ProcessVariable;
+import cn.comesaday.avt.process.water.model.Water;
+import cn.comesaday.avt.process.water.service.WaterService;
 import cn.comesaday.coe.common.constant.NumConstant;
-import cn.comesaday.coe.common.util.JsonUtil;
 import org.activiti.engine.delegate.BpmnError;
 import org.activiti.engine.delegate.DelegateExecution;
 import org.activiti.engine.delegate.JavaDelegate;
@@ -42,54 +41,19 @@ public class ApplyDelegate extends AbstractApplyDelegate implements JavaDelegate
     private final static Logger logger = LoggerFactory.getLogger(ApplyDelegate.class);
 
     @Autowired
-    private AskInfoService askInfoService;
+    private ApplyService applyService;
 
     @Autowired
     private MatterService matterService;
 
     @Autowired
-    private AskFormDataService askFormDataService;
+    private ApplyFormDataService applyFormDataService;
 
     @Autowired
-    private WaterService processInfoService;
+    private WaterService waterService;
 
     @Autowired
-    private AskInfoTrackService askInfoTrackService;
-
-    /**
-     * <说明> 初始化流程信息
-     * @param delegateExecution DelegateExecution
-     * @author ChenWei
-     * @date 2021/4/9 13:59
-     * @return void
-     */
-    @Override
-    public void processInit(DelegateExecution delegateExecution) {
-        ProcessVariable variable = super.getVariable(delegateExecution);
-        String methodName = Thread.currentThread().getStackTrace()[NumConstant.I1].getMethodName();
-        String sessionId = variable.getSessionId();
-        Water water = new Water();
-        variable.setWater(water);
-        try {
-            String processInstanceId = delegateExecution.getProcessInstanceId();
-            variable.setProcessId(processInstanceId);
-            water.setProcessId(processInstanceId);
-            water.setSessionId(sessionId);
-            water.setParam(JsonUtil.toJson(variable));
-            water.setTimes(NumConstant.I0);
-            water.setSuccess(Boolean.TRUE);
-            water.setResult("[流程信息初始化]成功");
-            processInfoService.save(water);
-            logger.info("[流程信息初始化]成功,sessionId:{},方法:{}", sessionId, methodName);
-        } catch (Exception e) {
-            water.setSuccess(Boolean.FALSE);
-            water.setResult("[流程信息初始化]异常:" + e);
-            logger.error("[流程信息初始化]异常,sessionId:{}, 方法:{},异常信息:{}" + e, sessionId, methodName);
-            throw new BpmnError(ProcessConstant.BPMNER_ERROR_EXCEPTION);
-        } finally {
-            super.resetProcessVariable(delegateExecution, variable);
-        }
-    }
+    private ApplyTrackService applyTrackService;
 
     /**
      * <说明> 检查事项配置
@@ -103,16 +67,16 @@ public class ApplyDelegate extends AbstractApplyDelegate implements JavaDelegate
         ProcessVariable variable = super.getVariable(delegateExecution);
         String methodName = Thread.currentThread().getStackTrace()[NumConstant.I1].getMethodName();
         String sessionId = variable.getSessionId();
-        Water water = variable.getWater();
+        Water water = super.getProcessWater(sessionId);
         try {
-            Long matterId = variable.getAskInfo().getMatterId();
+            Long matterId = variable.getApplyInfo().getMatterId();
             Matter matter = matterService.getBasicMatter(matterId);
             // 检查事项配置
             matterService.checkMatterConfig(matter, MatterEnum.OPEN.getStatus(), Boolean.FALSE);
             // 将事项信息设置到流程变量
-            variable.getAskInfo().setMatter(matter);
+            variable.getApplyInfo().setMatter(matter);
             water.setResult("[检查事项配置]成功");
-            processInfoService.save(water);
+            waterService.save(water);
             logger.info("[检查事项配置]成功,sessionId:{},方法:{}", sessionId, methodName);
         } catch (Exception e) {
             water.setSuccess(Boolean.FALSE);
@@ -136,12 +100,12 @@ public class ApplyDelegate extends AbstractApplyDelegate implements JavaDelegate
         ProcessVariable variable = super.getVariable(delegateExecution);
         String methodName = Thread.currentThread().getStackTrace()[NumConstant.I1].getMethodName();
         String sessionId = variable.getSessionId();
-        Water water = variable.getWater();
+        Water water = super.getProcessWater(sessionId);
         try {
             // 检查申请信息
-            askInfoService.checkAskInfo(variable.getAskInfo());
+            applyService.checkAskInfo(variable.getApplyInfo());
             water.setResult("[检查申请信息]成功");
-            processInfoService.save(water);
+            waterService.save(water);
             logger.info("[检查申请信息]成功,sessionId:{},方法:{}", sessionId, methodName);
         } catch (Exception e) {
             water.setSuccess(Boolean.FALSE);
@@ -165,23 +129,23 @@ public class ApplyDelegate extends AbstractApplyDelegate implements JavaDelegate
         ProcessVariable variable = super.getVariable(delegateExecution);
         String methodName = Thread.currentThread().getStackTrace()[NumConstant.I1].getMethodName();
         String sessionId = variable.getSessionId();
-        Water water = variable.getWater();
+        Water water = super.getProcessWater(sessionId);
         try {
-            AskInfoVo askInfoVo = variable.getAskInfo();
+            AskInfoVo askInfoVo = variable.getApplyInfo();
             // 保存申请表单信息
-            List<AskFormData> formDatas = askFormDataService.saveAll(askInfoVo.getAskInfos());
+            List<ApplyFormData> formDatas = applyFormDataService.saveAll(askInfoVo.getAskInfos());
             // 初始化申请主表
             Matter matter = matterService.getBasicMatter(askInfoVo.getMatterId());
-            AskInfo askInfo = askInfoService.initAskMainInfo(askInfoVo, matter);
+            ApplyInfo applyInfo = applyService.initAskMainInfo(askInfoVo, matter);
             // 表单数据&主表关联
-            formDatas.forEach(data -> data.setAskId(askInfo.getId()));
-            askFormDataService.saveAll(formDatas);
+            formDatas.forEach(data -> data.setAskId(applyInfo.getId()));
+            applyFormDataService.saveAll(formDatas);
             // 保存最新信息到流程变量
-            askInfoVo.setAskId(askInfo.getId());
-            askInfoVo.setAskInfo(askInfo);
+            askInfoVo.setAskId(applyInfo.getId());
+            askInfoVo.setApplyInfo(applyInfo);
             askInfoVo.setAskInfos(formDatas);
             water.setResult("[初始化申请信息]成功");
-            processInfoService.save(water);
+            waterService.save(water);
             logger.info("[初始化申请信息]成功,sessionId:{},方法:{}", sessionId, methodName);
         } catch (Exception e) {
             water.setSuccess(Boolean.FALSE);
@@ -205,22 +169,22 @@ public class ApplyDelegate extends AbstractApplyDelegate implements JavaDelegate
         ProcessVariable variable = super.getVariable(delegateExecution);
         String methodName = Thread.currentThread().getStackTrace()[NumConstant.I1].getMethodName();
         String sessionId = variable.getSessionId();
-        Water water = variable.getWater();
+        Water water = super.getProcessWater(sessionId);
         try {
             // 初始化审批版本数据
-            AskInfo askInfo = variable.getAskInfo().getAskInfo();
-            AskInfoTrack askInfoTrack = askInfoTrackService.initAskTrackInfo(askInfo, delegateExecution);
+            ApplyInfo applyInfo = variable.getApplyInfo().getApplyInfo();
+            ApplyTrack applyTrack = applyTrackService.initAskTrackInfo(applyInfo, delegateExecution);
             // 版本、主表数据关联
-            askInfo.setCurTrackId(askInfoTrack.getId());
-            askInfoService.save(askInfo);
+            applyInfo.setCurTrackId(applyTrack.getId());
+            applyService.save(applyInfo);
             // 保存审批记录
-            List<AskInfoTrack> records = variable.getRecords();
+            List<ApplyTrack> records = variable.getRecords();
             if (CollectionUtils.isEmpty(records)) {
                 records = new ArrayList<>();
             }
-            records.add(askInfoTrack);
+            records.add(applyTrack);
             water.setResult("[初始化版本信息]成功");
-            processInfoService.save(water);
+            waterService.save(water);
             logger.info("[初始化版本信息]成功,sessionId:{},方法:{}", sessionId, methodName);
         } catch (Exception e) {
             water.setSuccess(Boolean.FALSE);

@@ -3,7 +3,7 @@ package cn.comesaday.avt.business.matter.controller;
 import cn.comesaday.avt.business.matter.model.Matter;
 import cn.comesaday.avt.business.matter.service.MatterService;
 import cn.comesaday.avt.business.matter.vo.MatterSettingVo;
-import cn.comesaday.avt.process.model.service.ModelService;
+import cn.comesaday.avt.process.flow.model.service.ModelService;
 import cn.comesaday.coe.core.basic.bean.result.JsonResult;
 import org.activiti.engine.repository.Deployment;
 import org.slf4j.Logger;
