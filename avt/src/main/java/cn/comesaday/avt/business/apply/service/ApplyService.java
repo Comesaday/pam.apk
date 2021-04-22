@@ -9,6 +9,7 @@ import cn.comesaday.avt.process.flow.variable.ProcessVariable;
 import cn.comesaday.coe.common.constant.NumConstant;
 import cn.comesaday.coe.common.util.JsonUtil;
 import cn.comesaday.coe.core.basic.bean.result.JsonResult;
+import cn.comesaday.coe.core.basic.bean.result.Result;
 import cn.comesaday.coe.core.basic.exception.PamException;
 import cn.comesaday.coe.core.basic.service.BaseService;
 import org.activiti.engine.RuntimeService;
@@ -65,7 +66,6 @@ public class ApplyService extends BaseService<ApplyInfo, Long> {
      * @date 2021/3/29 19:52
      */
     public JsonResult apply(AskInfoVo askInfoVo) {
-        JsonResult result = new JsonResult(Boolean.TRUE, askInfoVo);
         try {
             executorService.submit(new Runnable() {
                 @Override
@@ -82,11 +82,11 @@ public class ApplyService extends BaseService<ApplyInfo, Long> {
                     logger.info("[提交申请]成功,流程实例ID:{},申请信息:{}", instanceId, JsonUtil.toJson(askInfoVo));
                 }
             });
+            return Result.success("提交申请成功", askInfoVo);
         } catch (Exception e) {
-            result.setError("[提交申请]异常:" + e + ",申请信息:" + JsonUtil.toJson(askInfoVo));
             logger.error("]提交申请]异常:{},申请信息:{}", e, JsonUtil.toJson(askInfoVo));
+            return Result.fail("[提交申请]异常:" + e);
         }
-        return result;
     }
 
 

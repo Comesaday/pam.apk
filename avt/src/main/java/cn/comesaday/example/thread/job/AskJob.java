@@ -3,10 +3,11 @@ package cn.comesaday.example.thread.job;
 import cn.comesaday.avt.business.apply.model.ApplyInfo;
 import cn.comesaday.avt.business.apply.service.ApplyService;
 import cn.comesaday.avt.process.water.service.WaterService;
-import cn.comesaday.example.thread.helper.JobHelper;
 import cn.comesaday.coe.common.constant.NumConstant;
 import cn.comesaday.coe.common.util.DateUtil;
 import cn.comesaday.coe.core.basic.bean.result.JsonResult;
+import cn.comesaday.coe.core.basic.bean.result.Result;
+import cn.comesaday.example.thread.helper.JobHelper;
 import org.activiti.engine.TaskService;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -61,11 +62,9 @@ public class AskJob {
      */
 //    @Scheduled(cron = "0/60 * * * * ? ") // 间隔5秒执行
     public JsonResult doAskScan() {
-        JsonResult result = new JsonResult();
         try {
             if (jobHelper.getJobLock(ASK_SCHEDULE_KEY)) {
-                result.setError(ASK_SCHEDULE_KEY + "锁被占用");
-                return result;
+                return Result.fail(ASK_SCHEDULE_KEY + "锁被占用");
             }
             jobHelper.setJobLock(ASK_SCHEDULE_KEY, ASK_SCHEDULE_KEY);
             // 获取所有就绪的申请信息
@@ -73,17 +72,16 @@ public class AskJob {
             List<ApplyInfo> applyInfos = applyService
                     .findAllByProperty("status", NumConstant.I1);
             if (CollectionUtils.isEmpty(applyInfos)) {
-                return result.setSuccess("此次未查询到就绪信息");
+                return Result.fail("此次未查询到就绪信息");
             }
             // 开始创建流程实例
-            result = doAskProcess(applyInfos);
+            return doAskProcess(applyInfos);
         } catch (Exception e) {
             logger.error("用户申请计划执行异常" + e.getMessage(), e);
-            result.setError(e.getMessage());
+            return Result.fail(e.getMessage());
         } finally {
             jobHelper.removeJobLock(ASK_SCHEDULE_KEY);
         }
-        return result;
     }
 
     /**

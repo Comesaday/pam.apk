@@ -5,6 +5,7 @@ import cn.comesaday.avt.business.matter.service.MatterService;
 import cn.comesaday.avt.business.matter.vo.MatterSettingVo;
 import cn.comesaday.avt.process.flow.model.service.ModelService;
 import cn.comesaday.coe.core.basic.bean.result.JsonResult;
+import cn.comesaday.coe.core.basic.bean.result.Result;
 import org.activiti.engine.repository.Deployment;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -119,16 +120,14 @@ public class MatterController {
     @RequestMapping("/create/process/{matterId}")
     @ResponseBody
     public JsonResult create(@PathVariable(name = "matterId") Long matterId) {
-        JsonResult result = new JsonResult();
         try {
             org.activiti.engine.repository.Model model = matterService.createMatterProcess(matterId);
             String url = "/static/modeler.html?modelId=" + model.getId();
-            result.setSuccess("流程创建成功", url);
+            return Result.success("流程创建成功", url);
         } catch (Exception e) {
             logger.error("流程创建失败：{}", e.getMessage(), e);
-            result.setError("流程创建失败：" + e);
+            return Result.fail("流程创建失败：" + e);
         }
-        return result;
     }
 
     /**
@@ -141,15 +140,13 @@ public class MatterController {
     @RequestMapping("/deploy/process/{matterId}")
     @ResponseBody
     public JsonResult deploy(@PathVariable(name = "matterId") Long matterId) {
-        JsonResult result = new JsonResult();
         try {
             Deployment deploy = matterService.deployMatterProcess(matterId);
-            result.setSuccess("流程部署成功", deploy);
+            return Result.success("流程部署成功", deploy);
         } catch (Exception e) {
             logger.error("流程部署失败：{}", e.getMessage(), e);
-            result.setError("流程部署失败：" + e);
+            return Result.fail("流程部署失败：" + e);
         }
-        return result;
     }
 
 }

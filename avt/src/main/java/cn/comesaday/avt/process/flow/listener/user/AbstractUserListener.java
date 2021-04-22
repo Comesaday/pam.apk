@@ -1,8 +1,6 @@
 package cn.comesaday.avt.process.flow.listener.user;
 
-import cn.comesaday.avt.process.flow.constant.ProcessConstant;
-import cn.comesaday.avt.process.flow.variable.ProcessVariable;
-import org.activiti.engine.delegate.DelegateTask;
+import cn.comesaday.avt.process.flow.listener.VariableListener;
 import org.activiti.engine.delegate.TaskListener;
 
 /**
@@ -11,17 +9,7 @@ import org.activiti.engine.delegate.TaskListener;
  * @author: ChenWei
  * @CreateAt: 2021-04-14 19:44
  */
-public abstract class AbstractUserListener implements TaskListener {
-
-    /**
-     * <说明> 获取流程变量
-     * @param delegateTask DelegateTask
-     * @author ChenWei
-     * @date 2021/4/9 13:14
-     * @return cn.comesaday.avt.process.flow.variable.ProcessVariable
-     */
-    public ProcessVariable getVariable(DelegateTask delegateTask) {
-        return (ProcessVariable) delegateTask.getVariable(ProcessConstant.PROCESS_VARIABLE);
-    }
+public abstract class AbstractUserListener
+        extends VariableListener implements TaskListener {
 
 }
