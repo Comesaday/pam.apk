@@ -4,7 +4,10 @@ import cn.comesaday.avt.business.apply.model.ApplyTrack;
 import cn.comesaday.avt.business.apply.service.ApplyTrackService;
 import cn.comesaday.avt.process.approval.vo.ApprovalRequestVo;
 import cn.comesaday.avt.process.flow.constant.ProcessConstant;
+import cn.comesaday.avt.process.flow.loader.VariableLoader;
 import cn.comesaday.avt.process.flow.variable.ProcessVariable;
+import cn.comesaday.avt.process.water.model.Water;
+import cn.comesaday.avt.process.water.service.WaterService;
 import cn.comesaday.coe.common.constant.NumConstant;
 import org.activiti.engine.TaskService;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -21,13 +24,16 @@ import java.util.Map;
  * @CreateAt: 2021-04-23 11:07
  */
 @Service
-public class ApprovalService {
+public class ApprovalService extends VariableLoader {
 
     @Autowired
     private TaskService taskService;
 
     @Autowired
     private ApplyTrackService applyTrackService;
+
+    @Autowired
+    private WaterService waterService;
 
     /**
      * <说明> 任务审批
@@ -47,6 +53,7 @@ public class ApprovalService {
         // 获取流程变量
         ProcessVariable variable = (ProcessVariable)
                 taskService.getVariable(taskId, ProcessConstant.PROCESS_VARIABLE);
+        Water water = super.getProcessWater(variable.getSessionId());
         // 更新历史表
         ApplyTrack applyTrack = this.updateRecords(variable, approvalRequest);
         // 重新设置流程变量
@@ -54,6 +61,7 @@ public class ApprovalService {
             if (record.getLinkCode().equals(variable.getCurLinkCode())) {
                 record = applyTrack;
             }});
+        waterService.saveSuccess(water, variable, "审批成功");
         Map<String, Object> variables = new HashMap<>();
         variables.put(ProcessConstant.PROCESS_VARIABLE, variable);
         taskService.complete(taskId, variables);
