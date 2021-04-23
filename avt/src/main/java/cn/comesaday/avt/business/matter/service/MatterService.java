@@ -8,7 +8,7 @@ import cn.comesaday.avt.business.matter.model.MatterFieldSetting;
 import cn.comesaday.avt.business.matter.model.MatterUserSetting;
 import cn.comesaday.avt.business.matter.vo.MatterSettingVo;
 import cn.comesaday.avt.business.matter.vo.MatterVo;
-import cn.comesaday.avt.process.flow.model.service.ModelService;
+import cn.comesaday.avt.process.model.service.ModelService;
 import cn.comesaday.coe.common.constant.NumConstant;
 import cn.comesaday.coe.core.basic.exception.PamException;
 import cn.comesaday.coe.core.basic.service.BaseService;

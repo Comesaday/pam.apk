@@ -5,6 +5,7 @@ import cn.comesaday.avt.business.apply.model.ApplyInfo;
 import cn.comesaday.avt.business.apply.vo.AskInfoVo;
 import cn.comesaday.avt.business.matter.model.Matter;
 import cn.comesaday.avt.business.matter.service.MatterService;
+import cn.comesaday.avt.process.flow.constant.ProcessConstant;
 import cn.comesaday.avt.process.flow.variable.ProcessVariable;
 import cn.comesaday.coe.common.constant.NumConstant;
 import cn.comesaday.coe.common.util.JsonUtil;
@@ -24,7 +25,6 @@ import org.springframework.transaction.annotation.Transactional;
 import org.springframework.util.CollectionUtils;
 import org.springframework.util.StringUtils;
 
-import java.util.Date;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -75,7 +75,7 @@ public class ApplyService extends BaseService<ApplyInfo, Long> {
                     String sessionId = RandomStringUtils.randomNumeric(NumConstant.I10);
                     ProcessVariable variable = new ProcessVariable(sessionId, askInfoVo);
                     Map<String, Object> variables = new HashMap<>();
-                    variables.put("processInfo", variable);
+                    variables.put(ProcessConstant.PROCESS_VARIABLE, variable);
                     // 开启流程
                     ProcessInstance processInstance = runtimeService.startProcessInstanceByKey(askInfoVo.getMatterCode(), variables);
                     String instanceId = processInstance.getProcessInstanceId();
@@ -171,5 +171,18 @@ public class ApplyService extends BaseService<ApplyInfo, Long> {
      */
     public List<ApplyFormData> getAskDatas(Long askId) {
         return applyFormDataService.findAllByProperty("askId", askId);
+    }
+
+    /**
+     * <说明> 实时更新主申请表关联关系
+     * @param applyInfo 申请主表
+     * @param trackId 版本表ID
+     * @author ChenWei
+     * @date 2021/4/23 15:14
+     * @return void
+     */
+    public void createRelation(ApplyInfo applyInfo, Long trackId) {
+        applyInfo.setCurTrackId(trackId);
+        this.save(applyInfo);
     }
 }

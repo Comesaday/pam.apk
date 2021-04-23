@@ -1,6 +1,8 @@
 package cn.comesaday.avt.business.user.controller;
 
 import cn.comesaday.avt.business.user.service.UserService;
+import cn.comesaday.avt.process.approval.service.ApprovalService;
+import cn.comesaday.avt.process.approval.vo.ApprovalRequestVo;
 import cn.comesaday.coe.core.basic.bean.result.JsonResult;
 import cn.comesaday.coe.core.basic.bean.result.Result;
 import org.activiti.engine.task.Task;
@@ -32,6 +34,9 @@ public class UserController {
     @Autowired
     private UserService userService;
 
+    @Autowired
+    private ApprovalService approvalService;
+
     @RequestMapping("/query/task/{userId}")
     @ResponseBody
     public JsonResult myTask(@PathVariable(name = "userId") String userId) {
@@ -43,9 +48,27 @@ public class UserController {
                     return task.getId();
                 }).collect(Collectors.toList());
             }
-            return Result.success("获取成功", taskList);
+            return Result.success("获取成功", taskIds);
         } catch (Exception e) {
             return Result.fail("获取个人任务异常:" + e.getMessage());
+        }
+    }
+
+    /**
+     * <说明> 审批任务
+     * @param approvalRequest ApprovalRequestVo
+     * @author ChenWei
+     * @date 2021/4/23 10:59
+     * @return cn.comesaday.coe.core.basic.bean.result.JsonResult
+     */
+    @RequestMapping("/task/approval")
+    public JsonResult approval(ApprovalRequestVo approvalRequest) {
+        try {
+            approvalService.approval(approvalRequest);
+            return Result.success("审批成功");
+        } catch (Exception e) {
+            logger.error("审批异常:" + e.getMessage(), e);
+            return Result.fail("审批异常:" + e.getMessage());
         }
     }
 }

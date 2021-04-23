@@ -26,10 +26,10 @@ public class ApplyTrack extends IdEntity implements Serializable {
     private String linkName;
 
     // 审核结果
-    private Boolean isPass;
+    private Boolean agree;
 
     // 审核备注
-    private Boolean remark;
+    private String comment;
 
     // 审核人
     private Long checkId;
@@ -61,20 +61,20 @@ public class ApplyTrack extends IdEntity implements Serializable {
         this.linkName = linkName;
     }
 
-    public Boolean getPass() {
-        return isPass;
+    public Boolean getAgree() {
+        return agree;
     }
 
-    public void setPass(Boolean pass) {
-        isPass = pass;
+    public void setAgree(Boolean agree) {
+        this.agree = agree;
     }
 
-    public Boolean getRemark() {
-        return remark;
+    public String getComment() {
+        return comment;
     }
 
-    public void setRemark(Boolean remark) {
-        this.remark = remark;
+    public void setComment(String comment) {
+        this.comment = comment;
     }
 
     public Long getCheckId() {

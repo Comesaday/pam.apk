@@ -4,6 +4,7 @@ import cn.comesaday.avt.business.apply.model.ApplyTrack;
 import cn.comesaday.avt.business.apply.vo.AskInfoVo;
 
 import java.io.Serializable;
+import java.util.LinkedList;
 import java.util.List;
 
 /**
@@ -21,7 +22,10 @@ public class ProcessVariable implements Serializable {
     private AskInfoVo applyInfo;
 
     // 审批记录
-    private List<ApplyTrack> records;
+    private List<ApplyTrack> records = new LinkedList<>();
+
+    // 当前审批环节
+    private String curLinkCode;
 
     public ProcessVariable() {
     }
@@ -57,5 +61,13 @@ public class ProcessVariable implements Serializable {
 
     public void setRecords(List<ApplyTrack> records) {
         this.records = records;
+    }
+
+    public String getCurLinkCode() {
+        return curLinkCode;
+    }
+
+    public void setCurLinkCode(String curLinkCode) {
+        this.curLinkCode = curLinkCode;
     }
 }

@@ -22,4 +22,8 @@ public class VariableListener {
         return (ProcessVariable) delegateTask.getVariable(ProcessConstant.PROCESS_VARIABLE);
     }
 
+    public void resetVariable(DelegateTask delegateTask, ProcessVariable variable) {
+        delegateTask.setVariable(ProcessConstant.PROCESS_VARIABLE, variable);
+    }
+
 }

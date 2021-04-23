@@ -54,15 +54,6 @@ public abstract class AbstractApplyDelegate extends AbstractProcessDelegate {
      * @date 2021/4/9 15:04
      * @return void
      */
-    public abstract void isApprovalPass(DelegateExecution delegateExecution);
-
-    /**
-     * <说明> 审批
-     * @param delegateExecution DelegateExecution
-     * @author ChenWei
-     * @date 2021/4/9 15:04
-     * @return void
-     */
-    public abstract void approvalAskInfo(DelegateExecution delegateExecution);
+    public abstract Boolean approved(DelegateExecution delegateExecution);
 
 }

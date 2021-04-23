@@ -1,9 +1,5 @@
 package cn.comesaday.example.count;
 
-import org.apache.commons.lang.RandomStringUtils;
-
-import java.util.UUID;
-
 /**
  * <描述> ThreadCount
  * <详细背景>
@@ -13,7 +9,6 @@ import java.util.UUID;
 public class ThreadCount {
 
     public static void main(String[] args) throws Exception {
-        System.out.println(RandomStringUtils.randomNumeric(10));
 //        CountDownLatch countDownLatch = new CountDownLatch(4);
 //        new Thread() {
 //            @Override

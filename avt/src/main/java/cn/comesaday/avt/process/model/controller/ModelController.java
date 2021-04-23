@@ -1,4 +1,4 @@
-package cn.comesaday.avt.process.flow.model.controller;
+package cn.comesaday.avt.process.model.controller;
 
 /**
  * <描述> ModelController

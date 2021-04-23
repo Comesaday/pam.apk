@@ -9,6 +9,7 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.util.CollectionUtils;
 
+import java.util.Date;
 import java.util.List;
 
 /**
@@ -51,8 +52,16 @@ public class ApplyTrackService extends BaseService<ApplyTrack, Long> {
     public ApplyTrack initAskTrackInfo(ApplyInfo applyInfo, DelegateExecution execution) {
         ApplyTrack applyTrack = new ApplyTrack();
         applyTrack.setAskId(applyInfo.getId());
+        applyInfo.setApplyId(applyInfo.getApplyId());
+        applyInfo.setApplyName(applyInfo.getApplyName());
         applyTrack.setLinkCode(execution.getCurrentActivityId());
         applyTrack.setLinkName(execution.getCurrentFlowElement().getName());
+        applyTrack.setAgree(Boolean.TRUE);
+        applyTrack.setCreateAt(applyInfo.getCreateAt());
+        applyTrack.setCheckId(NumConstant.L100);
+        applyTrack.setCheckName("系统");
+        applyTrack.setComment("系统自动检查申请信息通过");
+        applyTrack.setUpdateAt(new Date());
         return this.save(applyTrack);
     }
 }

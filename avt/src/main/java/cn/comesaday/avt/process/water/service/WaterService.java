@@ -15,4 +15,31 @@ import org.springframework.transaction.annotation.Transactional;
 @Transactional
 public class WaterService extends BaseService<Water, Long> {
 
+    /**
+     * <说明> 记录流程成功信息
+     * @param water Water
+     * @param message String
+     * @author ChenWei
+     * @date 2021/4/23 15:18
+     * @return cn.comesaday.avt.process.water.model.Water
+     */
+    public Water saveSuccess(Water water, String message) {
+        water.setResult(message);
+        water.setSuccess(Boolean.TRUE);
+        return this.save(water);
+    }
+
+    /**
+     * <说明> 记录流程失败信息
+     * @param water Water
+     * @param message String
+     * @author ChenWei
+     * @date 2021/4/23 15:18
+     * @return cn.comesaday.avt.process.water.model.Water
+     */
+    public Water saveFail(Water water, String message) {
+        water.setResult(message);
+        water.setSuccess(Boolean.FALSE);
+        return this.save(water);
+    }
 }

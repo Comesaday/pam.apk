@@ -21,11 +21,9 @@ import org.activiti.engine.delegate.JavaDelegate;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.stereotype.Service;
-import org.springframework.util.CollectionUtils;
+import org.springframework.stereotype.Component;
 
 import java.io.Serializable;
-import java.util.ArrayList;
 import java.util.List;
 
 /**
@@ -34,7 +32,7 @@ import java.util.List;
  * @author: ChenWei
  * @CreateAt: 2021-04-09 11:08
  */
-@Service
+@Component
 public class ApplyDelegate extends AbstractApplyDelegate implements JavaDelegate, Serializable {
 
     // 日志打印
@@ -75,18 +73,18 @@ public class ApplyDelegate extends AbstractApplyDelegate implements JavaDelegate
             matterService.checkMatterConfig(matter, MatterEnum.OPEN.getStatus(), Boolean.FALSE);
             // 将事项信息设置到流程变量
             variable.getApplyInfo().setMatter(matter);
-            water.setResult("[检查事项配置]成功");
-            waterService.save(water);
+            // 流程记录信息
+            waterService.saveSuccess(water, "[检查事项配置]成功");
             logger.info("[检查事项配置]成功,sessionId:{},方法:{}", sessionId, methodName);
         } catch (Exception e) {
-            water.setSuccess(Boolean.FALSE);
-            water.setResult("[检查事项配置]异常:" + e);
+            waterService.saveFail(water, "[检查事项配置]异常:" + e);
             logger.error("[检查事项配置]异常,sessionId:{},方法:{},异常信息:{}" + e, sessionId, methodName);
             throw new BpmnError(ProcessConstant.BPMNER_ERROR_EXCEPTION);
         } finally {
             super.resetProcessVariable(delegateExecution, variable);
         }
     }
+
 
     /**
      * <说明> 检查申请信息
@@ -104,18 +102,18 @@ public class ApplyDelegate extends AbstractApplyDelegate implements JavaDelegate
         try {
             // 检查申请信息
             applyService.checkAskInfo(variable.getApplyInfo());
-            water.setResult("[检查申请信息]成功");
-            waterService.save(water);
+            // 流程记录信息
+            waterService.saveSuccess(water, "[检查申请信息]成功");
             logger.info("[检查申请信息]成功,sessionId:{},方法:{}", sessionId, methodName);
         } catch (Exception e) {
-            water.setSuccess(Boolean.FALSE);
-            water.setResult("[检查申请信息]异常:" + e);
+            waterService.saveFail(water, "[检查申请信息]异常:" + e);
             logger.error("[检查申请信息]异常,sessionId:{},方法:{},异常信息:{}" + e, sessionId, methodName);
             throw new BpmnError(ProcessConstant.BPMNER_ERROR_EXCEPTION);
         } finally {
             super.resetProcessVariable(delegateExecution, variable);
         }
     }
+
 
     /**
      * <说明> 初始化申请信息
@@ -138,24 +136,24 @@ public class ApplyDelegate extends AbstractApplyDelegate implements JavaDelegate
             Matter matter = matterService.getBasicMatter(askInfoVo.getMatterId());
             ApplyInfo applyInfo = applyService.initAskMainInfo(askInfoVo, matter);
             // 表单数据&主表关联
-            formDatas.forEach(data -> data.setAskId(applyInfo.getId()));
+            formDatas.stream().forEach(data -> data.setAskId(applyInfo.getId()));
             applyFormDataService.saveAll(formDatas);
             // 保存最新信息到流程变量
             askInfoVo.setAskId(applyInfo.getId());
             askInfoVo.setApplyInfo(applyInfo);
             askInfoVo.setAskInfos(formDatas);
-            water.setResult("[初始化申请信息]成功");
-            waterService.save(water);
+            // 流程记录信息
+            waterService.saveSuccess(water, "[初始化申请信息]成功");
             logger.info("[初始化申请信息]成功,sessionId:{},方法:{}", sessionId, methodName);
         } catch (Exception e) {
-            water.setSuccess(Boolean.FALSE);
-            water.setResult("[初始化申请信息]异常:" + e);
+            waterService.saveFail(water, "[初始化申请信息]异常:" + e);
             logger.error("[初始化申请信息]异常,sessionId:{},方法:{},异常信息:{}" + e, sessionId, methodName);
             throw new BpmnError(ProcessConstant.BPMNER_ERROR_EXCEPTION);
         } finally {
             super.resetProcessVariable(delegateExecution, variable);
         }
     }
+
 
     /**
      * <说明> 初始化申请版本信息
@@ -175,20 +173,14 @@ public class ApplyDelegate extends AbstractApplyDelegate implements JavaDelegate
             ApplyInfo applyInfo = variable.getApplyInfo().getApplyInfo();
             ApplyTrack applyTrack = applyTrackService.initAskTrackInfo(applyInfo, delegateExecution);
             // 版本、主表数据关联
-            applyInfo.setCurTrackId(applyTrack.getId());
-            applyService.save(applyInfo);
+            applyService.createRelation(applyInfo, applyTrack.getId());
             // 保存审批记录
-            List<ApplyTrack> records = variable.getRecords();
-            if (CollectionUtils.isEmpty(records)) {
-                records = new ArrayList<>();
-            }
-            records.add(applyTrack);
-            water.setResult("[初始化版本信息]成功");
-            waterService.save(water);
+            variable.getRecords().add(applyTrack);
+            // 流程记录信息
+            waterService.saveSuccess(water, "[初始化版本信息]成功");
             logger.info("[初始化版本信息]成功,sessionId:{},方法:{}", sessionId, methodName);
         } catch (Exception e) {
-            water.setSuccess(Boolean.FALSE);
-            water.setResult("[初始化版本信息]异常:" + e);
+            waterService.saveFail(water, "[初始化版本信息]异常:" + e);
             logger.error("[初始化版本信息]异常,sessionId:{},方法:{},异常信息:{}" + e, sessionId, methodName);
             throw new BpmnError(ProcessConstant.BPMNER_ERROR_EXCEPTION);
         } finally {
@@ -196,29 +188,23 @@ public class ApplyDelegate extends AbstractApplyDelegate implements JavaDelegate
         }
     }
 
-    /**
-     * <说明> 环节审批
-     * @param delegateExecution DelegateExecution
-     * @author ChenWei
-     * @date 2021/4/15 11:32
-     * @return void
-     */
-    @Override
-    public void approvalAskInfo(DelegateExecution delegateExecution) {
-
-    }
 
     /**
-     * <说明> 获取审批结果
+     * <说明> 获取审核结果
      * @param delegateExecution DelegateExecution
      * @author ChenWei
-     * @date 2021/4/15 11:32
-     * @return void
+     * @date 2021/4/23 14:04
+     * @return java.lang.Boolean
      */
     @Override
-    public void isApprovalPass(DelegateExecution delegateExecution) {
-
+    public Boolean approved(DelegateExecution delegateExecution) {
+        ProcessVariable variable = super.getVariable(delegateExecution);
+        ApplyTrack applyTrack = variable.getRecords().stream().filter(record ->
+            record.getLinkCode().equals(variable.getCurLinkCode())
+        ).findFirst().get();
+        return applyTrack.getAgree();
     }
+
 
     /**
      * <说明> execute
@@ -229,5 +215,6 @@ public class ApplyDelegate extends AbstractApplyDelegate implements JavaDelegate
      */
     @Override
     public void execute(DelegateExecution delegateExecution) {
+
     }
 }
