@@ -29,7 +29,7 @@ public class MatterUserSetting extends IdEntity {
 
     private String groupName;
 
-    private Long groupId;
+    private String groupCode;
 
     // true:个人 false:用户组
     private boolean assignee;
@@ -90,12 +90,12 @@ public class MatterUserSetting extends IdEntity {
         this.groupName = groupName;
     }
 
-    public Long getGroupId() {
-        return groupId;
+    public String getGroupCode() {
+        return groupCode;
     }
 
-    public void setGroupId(Long groupId) {
-        this.groupId = groupId;
+    public void setGroupCode(String groupCode) {
+        this.groupCode = groupCode;
     }
 
     public boolean isAssignee() {

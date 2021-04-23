@@ -1,6 +1,8 @@
 package cn.comesaday.avt.process.water.service;
 
+import cn.comesaday.avt.process.flow.variable.ProcessVariable;
 import cn.comesaday.avt.process.water.model.Water;
+import cn.comesaday.coe.common.util.JsonUtil;
 import cn.comesaday.coe.core.basic.service.BaseService;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -23,9 +25,10 @@ public class WaterService extends BaseService<Water, Long> {
      * @date 2021/4/23 15:18
      * @return cn.comesaday.avt.process.water.model.Water
      */
-    public Water saveSuccess(Water water, String message) {
+    public Water saveSuccess(Water water, ProcessVariable variable, String message) {
         water.setResult(message);
         water.setSuccess(Boolean.TRUE);
+        water.setParam(JsonUtil.toJson(variable));
         return this.save(water);
     }
 
@@ -37,9 +40,10 @@ public class WaterService extends BaseService<Water, Long> {
      * @date 2021/4/23 15:18
      * @return cn.comesaday.avt.process.water.model.Water
      */
-    public Water saveFail(Water water, String message) {
+    public Water saveFail(Water water, ProcessVariable variable, String message) {
         water.setResult(message);
         water.setSuccess(Boolean.FALSE);
+        water.setParam(JsonUtil.toJson(variable));
         return this.save(water);
     }
 }

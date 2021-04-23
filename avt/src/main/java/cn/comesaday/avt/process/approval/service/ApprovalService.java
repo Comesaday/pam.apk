@@ -7,7 +7,6 @@ import cn.comesaday.avt.process.flow.constant.ProcessConstant;
 import cn.comesaday.avt.process.flow.variable.ProcessVariable;
 import cn.comesaday.coe.common.constant.NumConstant;
 import org.activiti.engine.TaskService;
-import org.activiti.engine.task.Task;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.util.StringUtils;
@@ -46,9 +45,8 @@ public class ApprovalService {
             return;
         }
         // 获取流程变量
-        Task task = taskService.createTaskQuery().taskId(taskId).singleResult();
-        ProcessVariable variable = (ProcessVariable) task.getProcessVariables()
-                .get(ProcessConstant.PROCESS_VARIABLE);
+        ProcessVariable variable = (ProcessVariable)
+                taskService.getVariable(taskId, ProcessConstant.PROCESS_VARIABLE);
         // 更新历史表
         ApplyTrack applyTrack = this.updateRecords(variable, approvalRequest);
         // 重新设置流程变量
@@ -74,7 +72,7 @@ public class ApprovalService {
                 record.getLinkCode().equals(variable.getCurLinkCode())
         ).findFirst().get();
         applyTrack.setAgree(approvalRequest.getAgree());
-        applyTrack.setCheckName(approvalRequest.getComment());
+        applyTrack.setComment(approvalRequest.getComment());
         applyTrack.setCheckId(NumConstant.L100);
         applyTrack.setCheckName("系统");
         return applyTrackService.save(applyTrack);

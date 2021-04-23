@@ -31,5 +31,5 @@ insert into avt_user_group_relation(id, user_id, group_id) values(3, 3, 2);
 insert into avt_user_group_relation(id, user_id, group_id) values(4, 4, 2);
 
 -- 设置事项环境审批人
-INSERT INTO `avt_matter_user_setting` VALUES (1, NULL, NULL, NULL, NULL, NULL, NULL, 'ZZSP', '组长审批', 1, NULL, NULL, b'0', 1, '组长', NULL);
-INSERT INTO `avt_matter_user_setting` VALUES (2, NULL, NULL, NULL, NULL, NULL, NULL, 'JLSP', '经理审批', 1, NULL, NULL, b'0', 1, '经理', NULL);
+INSERT INTO `avt_matter_user_setting` VALUES (1, NULL, NULL, 0, 0, NULL, NULL, b'0', 'GROUP_LEADER', '组长', 'ZZSP', '组长审批', 'ASK_FOR_LEAVE', 1, NULL, NULL);
+INSERT INTO `avt_matter_user_setting` VALUES (2, NULL, NULL, 0, 0, NULL, NULL, b'0', 'MANAGER', '经理', 'JLSP', '经理审批', 'ASK_FOR_LEAVE', 1, NULL, NULL);

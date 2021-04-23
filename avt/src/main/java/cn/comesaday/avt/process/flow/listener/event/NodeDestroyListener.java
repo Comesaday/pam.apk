@@ -5,12 +5,12 @@ import org.activiti.engine.delegate.DelegateTask;
 import org.springframework.stereotype.Component;
 
 /**
- * <Description> VariableEndListener
+ * <Description> NodeDestroyListener
  * @author ChenWei
  * @CreateAt 2021-04-22 21:31
  */
 @Component
-public class VariableEndListener extends AbstractVariableListener {
+public class NodeDestroyListener extends AbstractNodeListener {
 
     @Override
     public void notify(DelegateTask delegateTask) {

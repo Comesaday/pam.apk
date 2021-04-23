@@ -14,7 +14,6 @@ import cn.comesaday.avt.process.flow.constant.ProcessConstant;
 import cn.comesaday.avt.process.flow.variable.ProcessVariable;
 import cn.comesaday.avt.process.water.model.Water;
 import cn.comesaday.avt.process.water.service.WaterService;
-import cn.comesaday.coe.common.constant.NumConstant;
 import org.activiti.engine.delegate.BpmnError;
 import org.activiti.engine.delegate.DelegateExecution;
 import org.activiti.engine.delegate.JavaDelegate;
@@ -63,7 +62,6 @@ public class ApplyDelegate extends AbstractApplyDelegate implements JavaDelegate
     @Override
     public void checkMatterSetting(DelegateExecution delegateExecution) {
         ProcessVariable variable = super.getVariable(delegateExecution);
-        String methodName = Thread.currentThread().getStackTrace()[NumConstant.I1].getMethodName();
         String sessionId = variable.getSessionId();
         Water water = super.getProcessWater(sessionId);
         try {
@@ -74,11 +72,11 @@ public class ApplyDelegate extends AbstractApplyDelegate implements JavaDelegate
             // 将事项信息设置到流程变量
             variable.getApplyInfo().setMatter(matter);
             // 流程记录信息
-            waterService.saveSuccess(water, "[检查事项配置]成功");
-            logger.info("[检查事项配置]成功,sessionId:{},方法:{}", sessionId, methodName);
+            waterService.saveSuccess(water, variable, "检查事项配置成功");
+            logger.info("检查事项配置成功,sessionId:{}", sessionId);
         } catch (Exception e) {
-            waterService.saveFail(water, "[检查事项配置]异常:" + e);
-            logger.error("[检查事项配置]异常,sessionId:{},方法:{},异常信息:{}" + e, sessionId, methodName);
+            waterService.saveFail(water, variable, "检查事项配置异常:" + e);
+            logger.error("检查事项配置异常,sessionId:{},异常信息:{}" + e, sessionId);
             throw new BpmnError(ProcessConstant.BPMNER_ERROR_EXCEPTION);
         } finally {
             super.resetProcessVariable(delegateExecution, variable);
@@ -96,18 +94,17 @@ public class ApplyDelegate extends AbstractApplyDelegate implements JavaDelegate
     @Override
     public void checkUserFill(DelegateExecution delegateExecution) {
         ProcessVariable variable = super.getVariable(delegateExecution);
-        String methodName = Thread.currentThread().getStackTrace()[NumConstant.I1].getMethodName();
         String sessionId = variable.getSessionId();
         Water water = super.getProcessWater(sessionId);
         try {
             // 检查申请信息
             applyService.checkAskInfo(variable.getApplyInfo());
             // 流程记录信息
-            waterService.saveSuccess(water, "[检查申请信息]成功");
-            logger.info("[检查申请信息]成功,sessionId:{},方法:{}", sessionId, methodName);
+            waterService.saveSuccess(water, variable, "检查申请信息成功");
+            logger.info("检查申请信息成功,sessionId:{}", sessionId);
         } catch (Exception e) {
-            waterService.saveFail(water, "[检查申请信息]异常:" + e);
-            logger.error("[检查申请信息]异常,sessionId:{},方法:{},异常信息:{}" + e, sessionId, methodName);
+            waterService.saveFail(water, variable, "检查申请信息异常:" + e);
+            logger.error("检查申请信息异常,sessionId:{},异常信息:{}" + e, sessionId);
             throw new BpmnError(ProcessConstant.BPMNER_ERROR_EXCEPTION);
         } finally {
             super.resetProcessVariable(delegateExecution, variable);
@@ -125,7 +122,6 @@ public class ApplyDelegate extends AbstractApplyDelegate implements JavaDelegate
     @Override
     public void initAskInfo(DelegateExecution delegateExecution) {
         ProcessVariable variable = super.getVariable(delegateExecution);
-        String methodName = Thread.currentThread().getStackTrace()[NumConstant.I1].getMethodName();
         String sessionId = variable.getSessionId();
         Water water = super.getProcessWater(sessionId);
         try {
@@ -143,11 +139,11 @@ public class ApplyDelegate extends AbstractApplyDelegate implements JavaDelegate
             askInfoVo.setApplyInfo(applyInfo);
             askInfoVo.setAskInfos(formDatas);
             // 流程记录信息
-            waterService.saveSuccess(water, "[初始化申请信息]成功");
-            logger.info("[初始化申请信息]成功,sessionId:{},方法:{}", sessionId, methodName);
+            waterService.saveSuccess(water, variable,"初始化申请信息成功");
+            logger.info("初始化申请信息成功,sessionId:{}", sessionId);
         } catch (Exception e) {
-            waterService.saveFail(water, "[初始化申请信息]异常:" + e);
-            logger.error("[初始化申请信息]异常,sessionId:{},方法:{},异常信息:{}" + e, sessionId, methodName);
+            waterService.saveFail(water, variable, "初始化申请信息异常:" + e);
+            logger.error("初始化申请信息异常,sessionId:{},异常信息:{}" + e, sessionId);
             throw new BpmnError(ProcessConstant.BPMNER_ERROR_EXCEPTION);
         } finally {
             super.resetProcessVariable(delegateExecution, variable);
@@ -165,7 +161,6 @@ public class ApplyDelegate extends AbstractApplyDelegate implements JavaDelegate
     @Override
     public void initAskTrack(DelegateExecution delegateExecution) {
         ProcessVariable variable = super.getVariable(delegateExecution);
-        String methodName = Thread.currentThread().getStackTrace()[NumConstant.I1].getMethodName();
         String sessionId = variable.getSessionId();
         Water water = super.getProcessWater(sessionId);
         try {
@@ -177,11 +172,11 @@ public class ApplyDelegate extends AbstractApplyDelegate implements JavaDelegate
             // 保存审批记录
             variable.getRecords().add(applyTrack);
             // 流程记录信息
-            waterService.saveSuccess(water, "[初始化版本信息]成功");
-            logger.info("[初始化版本信息]成功,sessionId:{},方法:{}", sessionId, methodName);
+            waterService.saveSuccess(water, variable, "初始化版本信息成功");
+            logger.info("初始化版本信息成功,sessionId:{}", sessionId);
         } catch (Exception e) {
-            waterService.saveFail(water, "[初始化版本信息]异常:" + e);
-            logger.error("[初始化版本信息]异常,sessionId:{},方法:{},异常信息:{}" + e, sessionId, methodName);
+            waterService.saveFail(water, variable, "初始化版本信息异常:" + e);
+            logger.error("初始化版本信息异常,sessionId:{},异常信息:{}" + e, sessionId);
             throw new BpmnError(ProcessConstant.BPMNER_ERROR_EXCEPTION);
         } finally {
             super.resetProcessVariable(delegateExecution, variable);

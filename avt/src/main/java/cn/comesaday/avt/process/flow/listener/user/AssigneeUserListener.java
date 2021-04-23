@@ -2,10 +2,11 @@ package cn.comesaday.avt.process.flow.listener.user;
 
 import cn.comesaday.avt.business.matter.model.MatterUserSetting;
 import cn.comesaday.avt.business.matter.service.MatterService;
-import cn.comesaday.avt.process.flow.constant.ProcessConstant;
 import cn.comesaday.avt.process.flow.variable.ProcessVariable;
+import cn.comesaday.avt.process.water.model.Water;
+import cn.comesaday.avt.process.water.service.WaterService;
 import cn.comesaday.coe.common.constant.NumConstant;
-import org.activiti.engine.delegate.BpmnError;
+import cn.comesaday.coe.core.basic.exception.PamException;
 import org.activiti.engine.delegate.DelegateTask;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -30,20 +31,29 @@ public class AssigneeUserListener extends AbstractUserListener {
     @Autowired
     private MatterService matterService;
 
+    @Autowired
+    private WaterService waterService;
+
     @Override
     public void notify(DelegateTask delegateTask) {
         ProcessVariable variable = super.getVariable(delegateTask);
+        String sessionId = variable.getSessionId();
+        Water water = super.getProcessWater(sessionId);
         String actId = delegateTask.getId();
         Long matterId = variable.getApplyInfo().getMatterId();
         try {
             List<MatterUserSetting> settings = matterService.getMatterLinkUsers(matterId, actId);
             if (CollectionUtils.isEmpty(settings)) {
-                logger.error("[获取事项审批人]事项ID:{},节点ID:{},未配置审批人", matterId, actId);
-                throw new BpmnError(ProcessConstant.BPMNER_ERROR_EXCEPTION);
+                throw new PamException("未配置审批人");
             }
             Long userId = settings.get(NumConstant.I0).getUserId();
             delegateTask.setAssignee(String.valueOf(userId));
+            waterService.saveSuccess(water, null, "节点"
+                    + actId + "审批人初始化成功");
+            logger.info("审批人初始化成功,节点ID:{},sessinId:{}", actId, sessionId);
         } catch (Exception e) {
+            waterService.saveSuccess(water, null, "节点"
+                    + actId + "审批人初始化异常:" + e.getMessage());
             logger.error("[获取事项审批人]事项ID:{},节点ID:{},异常信息:{}", matterId, actId, e.getMessage(), e);
         }
     }

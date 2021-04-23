@@ -27,13 +27,13 @@ public class UserGroupService extends BaseService<UserGroup, Long> {
 
     /**
      * <说明> 获取用户组用户
-     * @param groupId 组id
+     * @param groupCode 组id
      * @author ChenWei
      * @date 2021/4/15 14:52
      * @return java.util.List<java.lang.Long>
      */
-    public List<Long> getGroupUserIds(Long groupId) {
-        List<UserGroupRelation> relations = userGroupRelationService.findAllByProperty("groupId", groupId);
+    public List<Long> getGroupUserIds(String groupCode) {
+        List<UserGroupRelation> relations = userGroupRelationService.findAllByProperty("groupCode", groupCode);
         if (CollectionUtils.isEmpty(relations)) {
             return null;
         }
@@ -42,15 +42,15 @@ public class UserGroupService extends BaseService<UserGroup, Long> {
 
     /**
      * <说明> 获取用户组用户
-     * @param groupIds 组ids
+     * @param groupCodes 组ids
      * @author ChenWei
      * @date 2021/4/15 14:52
      * @return java.util.List<java.lang.Long>
      */
-    public List<Long> getGroupsUserIds(List<Long> groupIds) {
+    public List<Long> getGroupsUserIds(List<String> groupCodes) {
         List<Long> userIds = new ArrayList<>();
-        for (Long groupId : groupIds) {
-            List<Long> groupUserIds = getGroupUserIds(groupId);
+        for (String groupCode : groupCodes) {
+            List<Long> groupUserIds = getGroupUserIds(groupCode);
             userIds.addAll(groupUserIds);
         }
         return userIds;
