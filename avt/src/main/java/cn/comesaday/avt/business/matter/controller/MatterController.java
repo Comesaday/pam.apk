@@ -3,7 +3,6 @@ package cn.comesaday.avt.business.matter.controller;
 import cn.comesaday.avt.business.matter.model.Matter;
 import cn.comesaday.avt.business.matter.service.MatterService;
 import cn.comesaday.avt.business.matter.vo.MatterSettingVo;
-import cn.comesaday.avt.process.model.service.ModelService;
 import cn.comesaday.coe.core.basic.bean.result.JsonResult;
 import cn.comesaday.coe.core.basic.bean.result.Result;
 import org.activiti.engine.repository.Deployment;
@@ -33,9 +32,6 @@ public class MatterController {
 
     @Autowired
     private MatterService matterService;
-
-    @Autowired
-    private ModelService modelService;
 
     /**
      * <说明> 事项表单配置

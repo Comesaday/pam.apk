@@ -1,10 +1,9 @@
 package cn.comesaday.avt.process.flow.delegate;
 
-import cn.comesaday.avt.process.flow.constant.ProcessConstant;
-import cn.comesaday.avt.process.flow.loader.VariableLoader;
+import cn.comesaday.avt.process.flow.constant.FlowConstant;
 import cn.comesaday.avt.process.flow.variable.ProcessVariable;
-import cn.comesaday.avt.process.water.model.Water;
-import cn.comesaday.avt.process.water.service.WaterService;
+import cn.comesaday.avt.business.water.model.Water;
+import cn.comesaday.avt.business.water.service.WaterService;
 import cn.comesaday.coe.common.constant.NumConstant;
 import org.activiti.engine.delegate.BpmnError;
 import org.activiti.engine.delegate.DelegateExecution;
@@ -18,11 +17,11 @@ import org.springframework.beans.factory.annotation.Autowired;
  * @author: ChenWei
  * @CreateAt: 2021-04-14 19:50
  */
-public abstract class AbstractProcessDelegate extends VariableLoader {
+public abstract class AbstractFlowDelegate {
 
 
     // 日志打印
-    private final static Logger logger = LoggerFactory.getLogger(AbstractProcessDelegate.class);
+    private final static Logger logger = LoggerFactory.getLogger(AbstractFlowDelegate.class);
 
 
     @Autowired
@@ -51,7 +50,7 @@ public abstract class AbstractProcessDelegate extends VariableLoader {
         } catch (Exception e) {
             waterService.saveFail(water, variable, "[流程信息初始化]异常:" + e);
             logger.error("[流程信息初始化]异常,sessionId:{}, 方法:{},异常信息:{}" + e, sessionId, methodName);
-            throw new BpmnError(ProcessConstant.BPMNER_ERROR_EXCEPTION);
+            throw new BpmnError(FlowConstant.BPMNER_ERROR_EXCEPTION);
         } finally {
             this.resetProcessVariable(delegateExecution, variable);
         }
@@ -66,7 +65,7 @@ public abstract class AbstractProcessDelegate extends VariableLoader {
      * @return cn.comesaday.avt.process.flow.variable.ProcessVariable
      */
     public ProcessVariable getVariable(DelegateExecution delegateExecution) {
-        return (ProcessVariable) delegateExecution.getVariable(ProcessConstant.PROCESS_VARIABLE);
+        return (ProcessVariable) delegateExecution.getVariable(FlowConstant.PROCESS_VARIABLE);
     }
 
 
@@ -79,6 +78,6 @@ public abstract class AbstractProcessDelegate extends VariableLoader {
      * @return void
      */
     public void resetProcessVariable(DelegateExecution delegateExecution, ProcessVariable variable) {
-        delegateExecution.setVariable(ProcessConstant.PROCESS_VARIABLE, variable);
+        delegateExecution.setVariable(FlowConstant.PROCESS_VARIABLE, variable);
     }
 }

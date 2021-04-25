@@ -1,4 +1,4 @@
-package cn.comesaday.avt.process.water.model;
+package cn.comesaday.avt.business.water.model;
 
 import cn.comesaday.coe.core.basic.model.IdEntity;
 

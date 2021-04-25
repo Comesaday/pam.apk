@@ -6,14 +6,14 @@ import cn.comesaday.avt.business.apply.model.ApplyTrack;
 import cn.comesaday.avt.business.apply.service.ApplyFormDataService;
 import cn.comesaday.avt.business.apply.service.ApplyService;
 import cn.comesaday.avt.business.apply.service.ApplyTrackService;
-import cn.comesaday.avt.business.apply.vo.AskInfoVo;
+import cn.comesaday.avt.business.apply.vo.ApplyVo;
 import cn.comesaday.avt.business.matter.enums.MatterEnum;
 import cn.comesaday.avt.business.matter.model.Matter;
 import cn.comesaday.avt.business.matter.service.MatterService;
-import cn.comesaday.avt.process.flow.constant.ProcessConstant;
+import cn.comesaday.avt.business.water.model.Water;
+import cn.comesaday.avt.business.water.service.WaterService;
+import cn.comesaday.avt.process.flow.constant.FlowConstant;
 import cn.comesaday.avt.process.flow.variable.ProcessVariable;
-import cn.comesaday.avt.process.water.model.Water;
-import cn.comesaday.avt.process.water.service.WaterService;
 import org.activiti.engine.delegate.BpmnError;
 import org.activiti.engine.delegate.DelegateExecution;
 import org.activiti.engine.delegate.JavaDelegate;
@@ -52,6 +52,7 @@ public class ApplyDelegate extends AbstractApplyDelegate implements JavaDelegate
     @Autowired
     private ApplyTrackService applyTrackService;
 
+
     /**
      * <说明> 检查事项配置
      * @param delegateExecution DelegateExecution
@@ -63,7 +64,7 @@ public class ApplyDelegate extends AbstractApplyDelegate implements JavaDelegate
     public void checkMatterSetting(DelegateExecution delegateExecution) {
         ProcessVariable variable = super.getVariable(delegateExecution);
         String sessionId = variable.getSessionId();
-        Water water = super.getProcessWater(sessionId);
+        Water water = waterService.getProcessWater(sessionId);
         try {
             Long matterId = variable.getApplyInfo().getMatterId();
             Matter matter = matterService.getBasicMatter(matterId);
@@ -77,7 +78,7 @@ public class ApplyDelegate extends AbstractApplyDelegate implements JavaDelegate
         } catch (Exception e) {
             waterService.saveFail(water, variable, "检查事项配置异常:" + e);
             logger.error("检查事项配置异常,sessionId:{},异常信息:{}" + e, sessionId);
-            throw new BpmnError(ProcessConstant.BPMNER_ERROR_EXCEPTION);
+            throw new BpmnError(FlowConstant.BPMNER_ERROR_EXCEPTION);
         } finally {
             super.resetProcessVariable(delegateExecution, variable);
         }
@@ -95,7 +96,7 @@ public class ApplyDelegate extends AbstractApplyDelegate implements JavaDelegate
     public void checkUserFill(DelegateExecution delegateExecution) {
         ProcessVariable variable = super.getVariable(delegateExecution);
         String sessionId = variable.getSessionId();
-        Water water = super.getProcessWater(sessionId);
+        Water water = waterService.getProcessWater(sessionId);
         try {
             // 检查申请信息
             applyService.checkAskInfo(variable.getApplyInfo());
@@ -105,7 +106,7 @@ public class ApplyDelegate extends AbstractApplyDelegate implements JavaDelegate
         } catch (Exception e) {
             waterService.saveFail(water, variable, "检查申请信息异常:" + e);
             logger.error("检查申请信息异常,sessionId:{},异常信息:{}" + e, sessionId);
-            throw new BpmnError(ProcessConstant.BPMNER_ERROR_EXCEPTION);
+            throw new BpmnError(FlowConstant.BPMNER_ERROR_EXCEPTION);
         } finally {
             super.resetProcessVariable(delegateExecution, variable);
         }
@@ -123,28 +124,28 @@ public class ApplyDelegate extends AbstractApplyDelegate implements JavaDelegate
     public void initAskInfo(DelegateExecution delegateExecution) {
         ProcessVariable variable = super.getVariable(delegateExecution);
         String sessionId = variable.getSessionId();
-        Water water = super.getProcessWater(sessionId);
+        Water water = waterService.getProcessWater(sessionId);
         try {
-            AskInfoVo askInfoVo = variable.getApplyInfo();
+            ApplyVo applyVo = variable.getApplyInfo();
             // 保存申请表单信息
-            List<ApplyFormData> formDatas = applyFormDataService.saveAll(askInfoVo.getAskInfos());
+            List<ApplyFormData> formDatas = applyFormDataService.saveAll(applyVo.getAskInfos());
             // 初始化申请主表
-            Matter matter = matterService.getBasicMatter(askInfoVo.getMatterId());
-            ApplyInfo applyInfo = applyService.initAskMainInfo(askInfoVo, matter);
+            Matter matter = matterService.getBasicMatter(applyVo.getMatterId());
+            ApplyInfo applyInfo = applyService.initAskMainInfo(applyVo, matter);
             // 表单数据&主表关联
             formDatas.stream().forEach(data -> data.setAskId(applyInfo.getId()));
             applyFormDataService.saveAll(formDatas);
             // 保存最新信息到流程变量
-            askInfoVo.setAskId(applyInfo.getId());
-            askInfoVo.setApplyInfo(applyInfo);
-            askInfoVo.setAskInfos(formDatas);
+            applyVo.setAskId(applyInfo.getId());
+            applyVo.setApplyInfo(applyInfo);
+            applyVo.setAskInfos(formDatas);
             // 流程记录信息
             waterService.saveSuccess(water, variable,"初始化申请信息成功");
             logger.info("初始化申请信息成功,sessionId:{}", sessionId);
         } catch (Exception e) {
             waterService.saveFail(water, variable, "初始化申请信息异常:" + e);
             logger.error("初始化申请信息异常,sessionId:{},异常信息:{}" + e, sessionId);
-            throw new BpmnError(ProcessConstant.BPMNER_ERROR_EXCEPTION);
+            throw new BpmnError(FlowConstant.BPMNER_ERROR_EXCEPTION);
         } finally {
             super.resetProcessVariable(delegateExecution, variable);
         }
@@ -162,7 +163,7 @@ public class ApplyDelegate extends AbstractApplyDelegate implements JavaDelegate
     public void initAskTrack(DelegateExecution delegateExecution) {
         ProcessVariable variable = super.getVariable(delegateExecution);
         String sessionId = variable.getSessionId();
-        Water water = super.getProcessWater(sessionId);
+        Water water = waterService.getProcessWater(sessionId);
         try {
             // 初始化审批版本数据
             ApplyInfo applyInfo = variable.getApplyInfo().getApplyInfo();
@@ -177,7 +178,7 @@ public class ApplyDelegate extends AbstractApplyDelegate implements JavaDelegate
         } catch (Exception e) {
             waterService.saveFail(water, variable, "初始化版本信息异常:" + e);
             logger.error("初始化版本信息异常,sessionId:{},异常信息:{}" + e, sessionId);
-            throw new BpmnError(ProcessConstant.BPMNER_ERROR_EXCEPTION);
+            throw new BpmnError(FlowConstant.BPMNER_ERROR_EXCEPTION);
         } finally {
             super.resetProcessVariable(delegateExecution, variable);
         }

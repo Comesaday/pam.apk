@@ -8,7 +8,7 @@ import cn.comesaday.avt.business.matter.model.MatterFieldSetting;
 import cn.comesaday.avt.business.matter.model.MatterUserSetting;
 import cn.comesaday.avt.business.matter.vo.MatterSettingVo;
 import cn.comesaday.avt.business.matter.vo.MatterVo;
-import cn.comesaday.avt.process.model.service.ModelService;
+import cn.comesaday.avt.process.flow.service.FlowService;
 import cn.comesaday.coe.common.constant.NumConstant;
 import cn.comesaday.coe.core.basic.exception.PamException;
 import cn.comesaday.coe.core.basic.service.BaseService;
@@ -43,7 +43,7 @@ public class MatterService extends BaseService<Matter, Long> {
     private MatterUserSettingService matterUserSettingService;
 
     @Autowired
-    private ModelService modelService;
+    private FlowService flowService;
 
     /**
      * <说明> 事项表单配置
@@ -119,7 +119,7 @@ public class MatterService extends BaseService<Matter, Long> {
         Matter matter = this.getBasicMatter(matterId);
         this.checkMatterConfig(matter, MatterEnum.DEFINED.getStatus(), Boolean.TRUE);
         // 创建新流程
-        Model model = modelService.createModel(matter.getCode(),
+        Model model = flowService.createModel(matter.getCode(),
                 matter.getName(), matter.getRemark(), NumConstant.I1);
         // 保存流程定义信息
         matter.setModelId(model.getId());
@@ -140,7 +140,7 @@ public class MatterService extends BaseService<Matter, Long> {
         Matter matter = this.getBasicMatter(matterId);
         this.checkMatterConfig(matter, MatterEnum.DEPLOY.getStatus(), Boolean.TRUE);
         // 流程部署
-        Deployment deployment = modelService.deploymentModel(matter.getModelId());
+        Deployment deployment = flowService.deploymentModel(matter.getModelId());
         // 保存流程部署信息
         matter.setDeployId(deployment.getId());
         matter.setStatus(MatterEnum.DEPLOY.getStatus());

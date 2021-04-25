@@ -1,6 +1,6 @@
 package cn.comesaday.avt.business.apply.delegate;
 
-import cn.comesaday.avt.process.flow.delegate.AbstractProcessDelegate;
+import cn.comesaday.avt.process.flow.delegate.AbstractFlowDelegate;
 import org.activiti.engine.delegate.DelegateExecution;
 
 /**
@@ -9,7 +9,7 @@ import org.activiti.engine.delegate.DelegateExecution;
  * @author: ChenWei
  * @CreateAt: 2021-04-14 14:20
  */
-public abstract class AbstractApplyDelegate extends AbstractProcessDelegate {
+public abstract class AbstractApplyDelegate extends AbstractFlowDelegate {
 
     /**
      * <说明> 检查事项配置

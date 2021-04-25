@@ -1,8 +1,7 @@
 package cn.comesaday.avt.business.user.controller;
 
+import cn.comesaday.avt.business.apply.vo.ApprovalVo;
 import cn.comesaday.avt.business.user.service.UserService;
-import cn.comesaday.avt.process.approval.service.ApprovalService;
-import cn.comesaday.avt.process.approval.vo.ApprovalRequestVo;
 import cn.comesaday.coe.core.basic.bean.result.JsonResult;
 import cn.comesaday.coe.core.basic.bean.result.Result;
 import org.activiti.engine.task.Task;
@@ -32,9 +31,14 @@ public class UserController {
     @Autowired
     private UserService userService;
 
-    @Autowired
-    private ApprovalService approvalService;
 
+    /**
+     * <说明> 获取人员任务
+     * @param userId 人员ID
+     * @author ChenWei
+     * @date 2021/4/25 17:46
+     * @return cn.comesaday.coe.core.basic.bean.result.JsonResult
+     */
     @RequestMapping("/query/task/{userId}")
     @ResponseBody
     public JsonResult myTask(@PathVariable(name = "userId") String userId) {
@@ -61,9 +65,9 @@ public class UserController {
      */
     @RequestMapping(value = "/task/approval", method = RequestMethod.POST, produces = "application/json")
     @ResponseBody
-    public JsonResult approval(@RequestBody ApprovalRequestVo approvalRequest) {
+    public JsonResult approval(@RequestBody ApprovalVo approvalRequest) {
         try {
-            approvalService.approval(approvalRequest);
+            userService.approval(approvalRequest);
             return Result.success("审批成功");
         } catch (Exception e) {
             logger.error("审批异常:" + e.getMessage(), e);

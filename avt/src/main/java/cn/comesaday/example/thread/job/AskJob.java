@@ -2,7 +2,7 @@ package cn.comesaday.example.thread.job;
 
 import cn.comesaday.avt.business.apply.model.ApplyInfo;
 import cn.comesaday.avt.business.apply.service.ApplyService;
-import cn.comesaday.avt.process.water.service.WaterService;
+import cn.comesaday.avt.business.water.service.WaterService;
 import cn.comesaday.coe.common.constant.NumConstant;
 import cn.comesaday.coe.common.util.DateUtil;
 import cn.comesaday.coe.core.basic.bean.result.JsonResult;

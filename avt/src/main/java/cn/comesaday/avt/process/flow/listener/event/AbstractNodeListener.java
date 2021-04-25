@@ -1,6 +1,5 @@
 package cn.comesaday.avt.process.flow.listener.event;
 
-import cn.comesaday.avt.process.flow.loader.VariableLoader;
 import org.activiti.engine.delegate.TaskListener;
 
 /**
@@ -8,7 +7,7 @@ import org.activiti.engine.delegate.TaskListener;
  * @author ChenWei
  * @CreateAt 2021-04-22 21:29
  */
-public abstract class AbstractNodeListener extends VariableLoader
+public abstract class AbstractNodeListener
         implements TaskListener {
 
 }

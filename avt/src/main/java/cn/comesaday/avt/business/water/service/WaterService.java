@@ -1,7 +1,7 @@
-package cn.comesaday.avt.process.water.service;
+package cn.comesaday.avt.business.water.service;
 
 import cn.comesaday.avt.process.flow.variable.ProcessVariable;
-import cn.comesaday.avt.process.water.model.Water;
+import cn.comesaday.avt.business.water.model.Water;
 import cn.comesaday.coe.common.util.JsonUtil;
 import cn.comesaday.coe.core.basic.service.BaseService;
 import org.springframework.stereotype.Service;
@@ -23,7 +23,7 @@ public class WaterService extends BaseService<Water, Long> {
      * @param message String
      * @author ChenWei
      * @date 2021/4/23 15:18
-     * @return cn.comesaday.avt.process.water.model.Water
+     * @return cn.comesaday.avt.business.water.model.Water
      */
     public Water saveSuccess(Water water, ProcessVariable variable, String message) {
         water.setResult(message);
@@ -38,12 +38,24 @@ public class WaterService extends BaseService<Water, Long> {
      * @param message String
      * @author ChenWei
      * @date 2021/4/23 15:18
-     * @return cn.comesaday.avt.process.water.model.Water
+     * @return cn.comesaday.avt.business.water.model.Water
      */
     public Water saveFail(Water water, ProcessVariable variable, String message) {
         water.setResult(message);
         water.setSuccess(Boolean.FALSE);
         water.setParam(JsonUtil.toJson(variable));
         return this.save(water);
+    }
+
+    /**
+     * <说明> 查询流程流水记录
+     * @param sessionId String
+     * @author ChenWei
+     * @date 2021/4/22 19:34
+     * @return cn.comesaday.avt.business.water.model.Water
+     */
+    public Water getProcessWater(String sessionId) {
+        Water water = new Water(sessionId);
+        return this.findOne(water);
     }
 }

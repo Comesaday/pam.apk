@@ -14,7 +14,7 @@ import java.util.List;
  * @author: ChenWei
  * @CreateAt: 2021-03-17 14:37
  */
-public class AskInfoVo implements Serializable {
+public class ApplyVo implements Serializable {
 
     // 申请人ID
     private Long applyId;

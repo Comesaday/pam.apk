@@ -1,6 +1,6 @@
-package cn.comesaday.avt.process.water.manager;
+package cn.comesaday.avt.business.water.manager;
 
-import cn.comesaday.avt.process.water.model.Water;
+import cn.comesaday.avt.business.water.model.Water;
 import cn.comesaday.coe.core.jpa.bean.repository.MyRepository;
 
 /**

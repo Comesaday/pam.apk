@@ -1,6 +1,8 @@
-package cn.comesaday.avt.process.model.service;
+package cn.comesaday.avt.process.flow.service.impl;
 
-import cn.comesaday.avt.business.matter.service.MatterService;
+import cn.comesaday.avt.process.flow.constant.FlowConstant;
+import cn.comesaday.avt.process.flow.service.FlowService;
+import cn.comesaday.avt.process.flow.variable.ProcessVariable;
 import cn.comesaday.coe.common.constant.NumConstant;
 import cn.comesaday.coe.core.basic.exception.PamException;
 import com.fasterxml.jackson.databind.JsonNode;
@@ -11,25 +13,33 @@ import org.activiti.bpmn.model.BpmnModel;
 import org.activiti.editor.constants.ModelDataJsonConstants;
 import org.activiti.editor.language.json.converter.BpmnJsonConverter;
 import org.activiti.engine.RepositoryService;
+import org.activiti.engine.TaskService;
+import org.activiti.engine.delegate.DelegateTask;
 import org.activiti.engine.repository.Deployment;
 import org.activiti.engine.repository.Model;
+import org.activiti.engine.task.Task;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
+
 /**
- * <描述> ModelService
+ * <描述> FlowServiceImpl
  * <详细背景>
  * @author: ChenWei
- * @CreateAt: 2021-04-19 16:53
+ * @CreateAt: 2021-04-25 17:31
  */
 @Service
-public class ModelService {
+public class FlowServiceImpl implements FlowService {
+
+    @Autowired
+    private TaskService taskService;
 
     @Autowired
     private RepositoryService repositoryService;
 
-    @Autowired
-    private MatterService matterService;
 
     /**
      * <说明> 创建流程模型
@@ -41,6 +51,7 @@ public class ModelService {
      * @date 2021/3/16 14:12
      * @return Model
      */
+    @Override
     public Model createModel(String key, String name, String description, Integer version) throws Exception {
         // 创建保存流程model
         Model model = repositoryService.newModel();
@@ -74,6 +85,7 @@ public class ModelService {
      * @date 2021/3/16 14:21
      * @return Deployment
      */
+    @Override
     public Deployment deploymentModel(String modelId) throws Exception {
         // 流程部署
         Model model = repositoryService.getModel(modelId);
@@ -94,5 +106,73 @@ public class ModelService {
         model.setDeploymentId(deploy.getId());
         repositoryService.saveModel(model);
         return deploy;
+    }
+
+    /**
+     * <说明> 获取流程变量
+     * @param delegateTask DelegateTask
+     * @author ChenWei
+     * @date 2021/4/9 13:14
+     * @return cn.comesaday.avt.process.flow.variable.ProcessVariable
+     */
+    @Override
+    public ProcessVariable getVariable(DelegateTask delegateTask) {
+        return (ProcessVariable) delegateTask.getVariable(FlowConstant.PROCESS_VARIABLE);
+    }
+
+
+    /**
+     * <说明> 获取流程变量
+     * @param taskId 任务ID
+     * @author ChenWei
+     * @date 2021/4/25 17:28
+     * @return cn.comesaday.avt.process.flow.variable.ProcessVariable
+     */
+    @Override
+    public ProcessVariable getVariable(String taskId) {
+        return (ProcessVariable) taskService.getVariable(taskId, FlowConstant.PROCESS_VARIABLE);
+    }
+
+
+    /**
+     * <说明> 重新设置流程变量
+     * @param delegateTask DelegateTask
+     * @param variable ProcessVariable
+     * @author ChenWei
+     * @date 2021/4/23 17:35
+     * @return void
+     */
+    @Override
+    public void resetVariable(DelegateTask delegateTask, ProcessVariable variable) {
+        delegateTask.setVariable(FlowConstant.PROCESS_VARIABLE, variable);
+    }
+
+
+    /**
+     * <说明> 完成此节点任务
+     * @param taskId 任务ID
+     * @param variable 流程变量
+     * @author ChenWei
+     * @date 2021/4/25 17:34
+     * @return void
+     */
+    @Override
+    public void complete(String taskId, Object variable) {
+        Map<String, Object> variables = new HashMap<>();
+        variables.put(FlowConstant.PROCESS_VARIABLE, variable);
+        taskService.complete(taskId, variables);
+    }
+
+
+    /**
+     * <说明> 获取人员任务
+     * @param userId 人员ID
+     * @author ChenWei
+     * @date 2021/4/25 17:42
+     * @return java.util.List<org.activiti.engine.task.Task>
+     */
+    @Override
+    public List<Task> getUserTask(String userId) {
+        return taskService.createTaskQuery().taskCandidateOrAssigned(userId).list();
     }
 }

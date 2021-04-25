@@ -1,6 +1,6 @@
 package cn.comesaday.avt.process.flow.listener.user;
 
-import cn.comesaday.avt.process.flow.loader.VariableLoader;
+import cn.comesaday.avt.process.flow.service.impl.FlowServiceImpl;
 import org.activiti.engine.delegate.TaskListener;
 
 /**
@@ -9,7 +9,7 @@ import org.activiti.engine.delegate.TaskListener;
  * @author: ChenWei
  * @CreateAt: 2021-04-14 19:44
  */
-public abstract class AbstractUserListener
-        extends VariableLoader implements TaskListener {
+public abstract class AbstractUserListener extends FlowServiceImpl
+        implements TaskListener {
 
 }

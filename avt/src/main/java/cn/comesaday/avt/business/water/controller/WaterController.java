@@ -1,4 +1,4 @@
-package cn.comesaday.avt.process.water.controller;
+package cn.comesaday.avt.business.water.controller;
 
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;

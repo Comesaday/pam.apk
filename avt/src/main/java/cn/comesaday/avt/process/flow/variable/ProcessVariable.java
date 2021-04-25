@@ -1,7 +1,7 @@
 package cn.comesaday.avt.process.flow.variable;
 
 import cn.comesaday.avt.business.apply.model.ApplyTrack;
-import cn.comesaday.avt.business.apply.vo.AskInfoVo;
+import cn.comesaday.avt.business.apply.vo.ApplyVo;
 
 import java.io.Serializable;
 import java.util.LinkedList;
@@ -19,18 +19,24 @@ public class ProcessVariable implements Serializable {
     private String sessionId;
 
     // 申请信息
-    private AskInfoVo applyInfo;
+    private ApplyVo applyInfo;
 
     // 审批记录
-    private List<ApplyTrack> records = new LinkedList<>();
+    private List<ApplyTrack> records;
 
     // 当前审批环节
     private String curLinkCode;
 
     public ProcessVariable() {
+        if (null == records) {
+            this.records = new LinkedList<>();
+        }
     }
 
-    public ProcessVariable(String sessionId, AskInfoVo applyInfo) {
+    public ProcessVariable(String sessionId, ApplyVo applyInfo) {
+        if (null == records) {
+            this.records = new LinkedList<>();
+        }
         this.sessionId = sessionId;
         this.applyInfo = applyInfo;
     }
@@ -47,11 +53,11 @@ public class ProcessVariable implements Serializable {
         this.sessionId = sessionId;
     }
 
-    public AskInfoVo getApplyInfo() {
+    public ApplyVo getApplyInfo() {
         return applyInfo;
     }
 
-    public void setApplyInfo(AskInfoVo applyInfo) {
+    public void setApplyInfo(ApplyVo applyInfo) {
         this.applyInfo = applyInfo;
     }
 

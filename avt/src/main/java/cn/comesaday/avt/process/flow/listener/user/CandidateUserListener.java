@@ -3,9 +3,9 @@ package cn.comesaday.avt.process.flow.listener.user;
 import cn.comesaday.avt.business.matter.model.MatterUserSetting;
 import cn.comesaday.avt.business.matter.service.MatterService;
 import cn.comesaday.avt.business.user.service.UserGroupService;
+import cn.comesaday.avt.business.water.model.Water;
+import cn.comesaday.avt.business.water.service.WaterService;
 import cn.comesaday.avt.process.flow.variable.ProcessVariable;
-import cn.comesaday.avt.process.water.model.Water;
-import cn.comesaday.avt.process.water.service.WaterService;
 import cn.comesaday.coe.core.basic.exception.PamException;
 import org.activiti.engine.delegate.DelegateTask;
 import org.slf4j.Logger;
@@ -42,7 +42,7 @@ public class CandidateUserListener extends AbstractUserListener {
     public void notify(DelegateTask delegateTask) {
         ProcessVariable variable = super.getVariable(delegateTask);
         String sessionId = variable.getSessionId();
-        Water water = super.getProcessWater(sessionId);
+        Water water = waterService.getProcessWater(sessionId);
         String actId = delegateTask.getTaskDefinitionKey();
         Long matterId = variable.getApplyInfo().getMatterId();
         try {

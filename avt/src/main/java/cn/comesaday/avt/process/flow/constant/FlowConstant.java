@@ -6,7 +6,7 @@ package cn.comesaday.avt.process.flow.constant;
  * @author: ChenWei
  * @CreateAt: 2021-04-14 17:48
  */
-public class ProcessConstant {
+public class FlowConstant {
 
     // 流程变量标识
     public static final String PROCESS_VARIABLE = "processInfo";

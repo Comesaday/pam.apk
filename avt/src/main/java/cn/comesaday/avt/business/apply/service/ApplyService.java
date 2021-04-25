@@ -2,10 +2,10 @@ package cn.comesaday.avt.business.apply.service;
 
 import cn.comesaday.avt.business.apply.model.ApplyFormData;
 import cn.comesaday.avt.business.apply.model.ApplyInfo;
-import cn.comesaday.avt.business.apply.vo.AskInfoVo;
+import cn.comesaday.avt.business.apply.vo.ApplyVo;
 import cn.comesaday.avt.business.matter.model.Matter;
 import cn.comesaday.avt.business.matter.service.MatterService;
-import cn.comesaday.avt.process.flow.constant.ProcessConstant;
+import cn.comesaday.avt.process.flow.constant.FlowConstant;
 import cn.comesaday.avt.process.flow.variable.ProcessVariable;
 import cn.comesaday.coe.common.constant.NumConstant;
 import cn.comesaday.coe.common.util.JsonUtil;
@@ -60,31 +60,31 @@ public class ApplyService extends BaseService<ApplyInfo, Long> {
     /**
      * <说明> 事项申请
      *
-     * @param askInfoVo 申请信息
+     * @param applyVo 申请信息
      * @return cn.comesaday.avt.business.apply.model.AskInfo
      * @author ChenWei
      * @date 2021/3/29 19:52
      */
-    public JsonResult apply(AskInfoVo askInfoVo) {
+    public JsonResult apply(ApplyVo applyVo) {
         try {
             executorService.submit(new Runnable() {
                 @Override
                 public void run() {
-                    Authentication.setAuthenticatedUserId(String.valueOf(askInfoVo.getApplyId()));
+                    Authentication.setAuthenticatedUserId(String.valueOf(applyVo.getApplyId()));
                     // 初始化流程变量数据
                     String sessionId = RandomStringUtils.randomNumeric(NumConstant.I10);
-                    ProcessVariable variable = new ProcessVariable(sessionId, askInfoVo);
+                    ProcessVariable variable = new ProcessVariable(sessionId, applyVo);
                     Map<String, Object> variables = new HashMap<>();
-                    variables.put(ProcessConstant.PROCESS_VARIABLE, variable);
+                    variables.put(FlowConstant.PROCESS_VARIABLE, variable);
                     // 开启流程
-                    ProcessInstance processInstance = runtimeService.startProcessInstanceByKey(askInfoVo.getMatterCode(), variables);
+                    ProcessInstance processInstance = runtimeService.startProcessInstanceByKey(applyVo.getMatterCode(), variables);
                     String instanceId = processInstance.getProcessInstanceId();
-                    logger.info("[提交申请]成功,流程实例ID:{},申请信息:{}", instanceId, JsonUtil.toJson(askInfoVo));
+                    logger.info("[提交申请]成功,流程实例ID:{},申请信息:{}", instanceId, JsonUtil.toJson(applyVo));
                 }
             });
-            return Result.success("提交申请成功", askInfoVo);
+            return Result.success("提交申请成功", applyVo);
         } catch (Exception e) {
-            logger.error("]提交申请]异常:{},申请信息:{}", e, JsonUtil.toJson(askInfoVo));
+            logger.error("]提交申请]异常:{},申请信息:{}", e, JsonUtil.toJson(applyVo));
             return Result.fail("[提交申请]异常:" + e);
         }
     }
@@ -93,26 +93,26 @@ public class ApplyService extends BaseService<ApplyInfo, Long> {
     /**
      * <说明> 检查申请信息
      *
-     * @param askInfoVo AskInfoVo
+     * @param applyVo AskInfoVo
      * @return void
      * @author ChenWei
      * @date 2021/4/7 15:38
      */
-    public void checkAskInfo(AskInfoVo askInfoVo) throws PamException {
+    public void checkAskInfo(ApplyVo applyVo) throws PamException {
         // 申请明细信息
-        askInfoVo.setApplyId(1L);
-        askInfoVo.setApplyName("11");
-        if (null == askInfoVo) {
+        applyVo.setApplyId(1L);
+        applyVo.setApplyName("11");
+        if (null == applyVo) {
             throw new PamException("未查询到申请信息");
         }
-        if (null == askInfoVo.getMatter()) {
+        if (null == applyVo.getMatter()) {
             throw new PamException("申请信息未关联事项");
         }
-        if (null == askInfoVo.getApplyId()
-                || StringUtils.isEmpty(askInfoVo.getApplyName())) {
+        if (null == applyVo.getApplyId()
+                || StringUtils.isEmpty(applyVo.getApplyName())) {
             throw new PamException("申请人信息为空");
         }
-        if (CollectionUtils.isEmpty(askInfoVo.getAskInfos())) {
+        if (CollectionUtils.isEmpty(applyVo.getAskInfos())) {
             throw new PamException("申请表单信息为空");
         }
     }
@@ -121,12 +121,12 @@ public class ApplyService extends BaseService<ApplyInfo, Long> {
     /**
      * <说明> 初始化事项主表信息
      *
-     * @param askInfoVo 申请信息
+     * @param applyVo 申请信息
      * @return cn.comesaday.avt.business.apply.model.AskInfo
      * @author ChenWei
      * @date 2021/3/29 19:52
      */
-    public ApplyInfo initAskMainInfo(AskInfoVo askInfoVo, Matter matter) {
+    public ApplyInfo initAskMainInfo(ApplyVo applyVo, Matter matter) {
         ApplyInfo applyInfo = new ApplyInfo();
         applyInfo.setMatterCode(matter.getCode());
         applyInfo.setMatterId(matter.getId());
@@ -145,20 +145,20 @@ public class ApplyService extends BaseService<ApplyInfo, Long> {
      * @author ChenWei
      * @date 2021/4/1 17:35
      */
-    public AskInfoVo queryDetail(Long askId) throws PamException {
-        AskInfoVo askInfoVo = new AskInfoVo();
+    public ApplyVo queryDetail(Long askId) throws PamException {
+        ApplyVo applyVo = new ApplyVo();
         ApplyInfo applyInfo = this.findOne(askId);
         if (null == applyInfo) {
             throw new PamException("申请信息不存在");
         }
-        askInfoVo.setAskId(askId);
-        askInfoVo.setApplyInfo(applyInfo);
-        askInfoVo.setMatter(matterService.findOne(applyInfo.getMatterId()));
-        askInfoVo.setApplyId(applyInfo.getApplyId());
-        askInfoVo.setApplyName(applyInfo.getApplyName());
-        askInfoVo.setAskTime(applyInfo.getCreateAt());
-        askInfoVo.setAskInfos(getAskDatas(askId));
-        return askInfoVo;
+        applyVo.setAskId(askId);
+        applyVo.setApplyInfo(applyInfo);
+        applyVo.setMatter(matterService.findOne(applyInfo.getMatterId()));
+        applyVo.setApplyId(applyInfo.getApplyId());
+        applyVo.setApplyName(applyInfo.getApplyName());
+        applyVo.setAskTime(applyInfo.getCreateAt());
+        applyVo.setAskInfos(getAskDatas(askId));
+        return applyVo;
     }
 
     /**

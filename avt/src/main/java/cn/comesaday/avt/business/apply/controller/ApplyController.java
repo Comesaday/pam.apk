@@ -1,7 +1,7 @@
 package cn.comesaday.avt.business.apply.controller;
 
 import cn.comesaday.avt.business.apply.service.ApplyService;
-import cn.comesaday.avt.business.apply.vo.AskInfoVo;
+import cn.comesaday.avt.business.apply.vo.ApplyVo;
 import cn.comesaday.avt.business.matter.service.MatterService;
 import cn.comesaday.avt.business.matter.vo.MatterVo;
 import cn.comesaday.coe.core.basic.bean.result.JsonResult;
@@ -49,15 +49,15 @@ public class ApplyController {
     /**
      * <说明> 保存申请信息
      * @param model Model
-     * @param askInfoVo 申请信息
+     * @param applyVo 申请信息
      * @author ChenWei
      * @date 2021/4/1 17:28
      * @return java.lang.String
      */
     @RequestMapping("/submit/info")
-    public String create(Model model, AskInfoVo askInfoVo) {
+    public String create(Model model, ApplyVo applyVo) {
         try {
-            JsonResult result = applyService.apply(askInfoVo);
+            JsonResult result = applyService.apply(applyVo);
             model.addAttribute("result", result);
         } catch (Exception e) {
             model.addAttribute("error", e.getMessage());
@@ -76,7 +76,7 @@ public class ApplyController {
     @RequestMapping("/view/{askInfoId}")
     public String view(Model model, @PathVariable(value = "askInfoId") Long askInfoId) {
         try {
-            AskInfoVo askInfo = applyService.queryDetail(askInfoId);
+            ApplyVo askInfo = applyService.queryDetail(askInfoId);
             model.addAttribute("askInfo", askInfo);
         } catch (Exception e) {
             model.addAttribute("error", e.getMessage());
