@@ -24,7 +24,7 @@ import java.util.stream.Collectors;
  * @CreateAt: 2021-04-14 19:47
  */
 @Component
-public class CandidateUserListener extends AbstractUserListener {
+public class CandidateUserListener extends UserListener {
 
     // 日志打印
     private final static Logger logger = LoggerFactory.getLogger(CandidateUserListener.class);

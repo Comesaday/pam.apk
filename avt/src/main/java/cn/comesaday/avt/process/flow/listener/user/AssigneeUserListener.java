@@ -23,7 +23,7 @@ import java.util.List;
  * @CreateAt: 2021-04-14 19:45
  */
 @Component
-public class AssigneeUserListener extends AbstractUserListener {
+public class AssigneeUserListener extends UserListener {
 
     // 日志打印
     private final static Logger logger = LoggerFactory.getLogger(AssigneeUserListener.class);

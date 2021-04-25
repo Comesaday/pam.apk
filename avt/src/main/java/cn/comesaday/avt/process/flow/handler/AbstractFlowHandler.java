@@ -1,4 +1,4 @@
-package cn.comesaday.avt.process.flow.service;
+package cn.comesaday.avt.process.flow.handler;
 
 import cn.comesaday.avt.process.flow.variable.ProcessVariable;
 import org.activiti.engine.delegate.DelegateTask;
@@ -14,7 +14,7 @@ import java.util.List;
  * @author: ChenWei
  * @CreateAt: 2021-04-25 17:52
  */
-public interface FlowService {
+public interface AbstractFlowHandler {
 
     /**
      * <说明> 创建流程模型

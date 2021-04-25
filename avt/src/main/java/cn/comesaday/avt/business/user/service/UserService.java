@@ -6,7 +6,7 @@ import cn.comesaday.avt.business.apply.vo.ApprovalVo;
 import cn.comesaday.avt.business.user.model.User;
 import cn.comesaday.avt.business.water.model.Water;
 import cn.comesaday.avt.business.water.service.WaterService;
-import cn.comesaday.avt.process.flow.service.FlowService;
+import cn.comesaday.avt.process.flow.handler.AbstractFlowHandler;
 import cn.comesaday.avt.process.flow.variable.ProcessVariable;
 import cn.comesaday.coe.common.constant.NumConstant;
 import cn.comesaday.coe.core.basic.service.BaseService;
@@ -35,7 +35,7 @@ public class UserService extends BaseService<User, Long> {
     private WaterService waterService;
 
     @Autowired
-    private FlowService flowService;
+    private AbstractFlowHandler abstractFlowHandler;
 
 
     /**
@@ -54,7 +54,7 @@ public class UserService extends BaseService<User, Long> {
             return;
         }
         // 获取流程变量
-        ProcessVariable variable = flowService.getVariable(taskId);
+        ProcessVariable variable = abstractFlowHandler.getVariable(taskId);
         Water water = waterService.getProcessWater(variable.getSessionId());
         // 更新历史表
         ApplyTrack applyTrack = this.updateRecords(variable, approvalRequest);
@@ -64,7 +64,7 @@ public class UserService extends BaseService<User, Long> {
                 record = applyTrack;
             }});
         waterService.saveSuccess(water, variable, "审批成功");
-        flowService.complete(taskId, variable);
+        abstractFlowHandler.complete(taskId, variable);
     }
 
 
@@ -96,6 +96,6 @@ public class UserService extends BaseService<User, Long> {
      * @return cn.comesaday.coe.core.basic.bean.result.JsonResult
      */
     public List<Task> getUserTask(String userId) {
-        return flowService.getUserTask(userId);
+        return abstractFlowHandler.getUserTask(userId);
     }
 }

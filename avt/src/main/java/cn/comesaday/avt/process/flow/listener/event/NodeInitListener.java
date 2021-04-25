@@ -4,7 +4,7 @@ import cn.comesaday.avt.business.apply.model.ApplyTrack;
 import cn.comesaday.avt.business.apply.service.ApplyTrackService;
 import cn.comesaday.avt.business.water.model.Water;
 import cn.comesaday.avt.business.water.service.WaterService;
-import cn.comesaday.avt.process.flow.service.FlowService;
+import cn.comesaday.avt.process.flow.handler.AbstractFlowHandler;
 import cn.comesaday.avt.process.flow.variable.ProcessVariable;
 import org.activiti.engine.delegate.DelegateTask;
 import org.slf4j.Logger;
@@ -30,7 +30,7 @@ public class NodeInitListener extends AbstractNodeListener {
     private WaterService waterService;
 
     @Autowired
-    private FlowService flowService;
+    private AbstractFlowHandler abstractFlowHandler;
 
 
     /**
@@ -42,7 +42,7 @@ public class NodeInitListener extends AbstractNodeListener {
      */
     @Override
     public void notify(DelegateTask delegateTask) {
-        ProcessVariable variable = flowService.getVariable(delegateTask);
+        ProcessVariable variable = abstractFlowHandler.getVariable(delegateTask);
         Water water = waterService.getProcessWater(variable.getSessionId());
         try {
             String linkCode = delegateTask.getTaskDefinitionKey();
@@ -60,7 +60,7 @@ public class NodeInitListener extends AbstractNodeListener {
             waterService.saveSuccess(water, variable, "审批节点初始化异常:" + e.getMessage());
             logger.error("审批节点初始化异常:{}", e.getMessage(), e);
         } finally {
-            flowService.resetVariable(delegateTask, variable);
+            abstractFlowHandler.resetVariable(delegateTask, variable);
         }
     }
 }
