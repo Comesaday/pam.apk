@@ -9,7 +9,7 @@ import org.activiti.engine.delegate.TaskListener;
  * @author: ChenWei
  * @CreateAt: 2021-04-14 19:44
  */
-public abstract class UserListener extends FlowHandler
+public abstract class AbstractUserListener extends FlowHandler
         implements TaskListener {
 
 }
