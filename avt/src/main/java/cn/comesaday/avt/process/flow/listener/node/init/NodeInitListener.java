@@ -1,10 +1,10 @@
-package cn.comesaday.avt.process.flow.listener.event;
+package cn.comesaday.avt.process.flow.listener.node.init;
 
 import cn.comesaday.avt.business.apply.model.ApplyTrack;
 import cn.comesaday.avt.business.apply.service.ApplyTrackService;
 import cn.comesaday.avt.business.water.model.Water;
 import cn.comesaday.avt.business.water.service.WaterService;
-import cn.comesaday.avt.process.flow.handler.AbstractFlowHandler;
+import cn.comesaday.avt.process.flow.listener.node.AbstractNodeListener;
 import cn.comesaday.avt.process.flow.variable.ProcessVariable;
 import org.activiti.engine.delegate.DelegateTask;
 import org.slf4j.Logger;
@@ -29,10 +29,6 @@ public class NodeInitListener extends AbstractNodeListener {
     @Autowired
     private WaterService waterService;
 
-    @Autowired
-    private AbstractFlowHandler abstractFlowHandler;
-
-
     /**
      * <说明> 审批节点初始化
      * @param delegateTask DelegateTask
@@ -42,12 +38,12 @@ public class NodeInitListener extends AbstractNodeListener {
      */
     @Override
     public void notify(DelegateTask delegateTask) {
-        ProcessVariable variable = abstractFlowHandler.getVariable(delegateTask);
+        ProcessVariable variable = super.getVariable(delegateTask);
         Water water = waterService.getProcessWater(variable.getSessionId());
         try {
             String linkCode = delegateTask.getTaskDefinitionKey();
             ApplyTrack applyTrack = new ApplyTrack();
-            applyTrack.setAskId(variable.getApplyInfo().getAskId());
+            applyTrack.setAskId(variable.getApplyVo().getAskId());
             applyTrack.setLinkCode(linkCode);
             applyTrack.setLinkName(delegateTask.getName());
             applyTrack = applyTrackService.save(applyTrack);
@@ -60,7 +56,7 @@ public class NodeInitListener extends AbstractNodeListener {
             waterService.saveSuccess(water, variable, "审批节点初始化异常:" + e.getMessage());
             logger.error("审批节点初始化异常:{}", e.getMessage(), e);
         } finally {
-            abstractFlowHandler.resetVariable(delegateTask, variable);
+            super.resetVariable(delegateTask, variable);
         }
     }
 }

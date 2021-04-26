@@ -13,13 +13,14 @@ import java.util.List;
  * @author: ChenWei
  * @CreateAt: 2021-04-07 19:43
  */
+// 必需实现序列化，否则操作流程变量会失败
 public class ProcessVariable implements Serializable {
 
     // sessionId
     private String sessionId;
 
     // 申请信息
-    private ApplyVo applyInfo;
+    private ApplyVo applyVo;
 
     // 审批记录
     private List<ApplyTrack> records;
@@ -33,12 +34,12 @@ public class ProcessVariable implements Serializable {
         }
     }
 
-    public ProcessVariable(String sessionId, ApplyVo applyInfo) {
+    public ProcessVariable(String sessionId, ApplyVo applyVo) {
         if (null == records) {
             this.records = new LinkedList<>();
         }
         this.sessionId = sessionId;
-        this.applyInfo = applyInfo;
+        this.applyVo = applyVo;
     }
 
     public ProcessVariable(String sessionId) {
@@ -53,12 +54,12 @@ public class ProcessVariable implements Serializable {
         this.sessionId = sessionId;
     }
 
-    public ApplyVo getApplyInfo() {
-        return applyInfo;
+    public ApplyVo getApplyVo() {
+        return applyVo;
     }
 
-    public void setApplyInfo(ApplyVo applyInfo) {
-        this.applyInfo = applyInfo;
+    public void setApplyVo(ApplyVo applyVo) {
+        this.applyVo = applyVo;
     }
 
     public List<ApplyTrack> getRecords() {

@@ -1,6 +1,6 @@
 package cn.comesaday.avt.process.flow.listener.user;
 
-import cn.comesaday.avt.process.flow.handler.FlowHandler;
+import cn.comesaday.avt.process.flow.handler.DefaultFlowHandler;
 import org.activiti.engine.delegate.TaskListener;
 
 /**
@@ -9,7 +9,7 @@ import org.activiti.engine.delegate.TaskListener;
  * @author: ChenWei
  * @CreateAt: 2021-04-14 19:44
  */
-public abstract class AbstractUserListener extends FlowHandler
+public abstract class UserListener extends DefaultFlowHandler
         implements TaskListener {
 
 }

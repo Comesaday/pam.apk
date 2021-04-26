@@ -66,12 +66,12 @@ public class ApplyDelegate extends AbstractApplyDelegate implements JavaDelegate
         String sessionId = variable.getSessionId();
         Water water = waterService.getProcessWater(sessionId);
         try {
-            Long matterId = variable.getApplyInfo().getMatterId();
+            Long matterId = variable.getApplyVo().getMatterId();
             Matter matter = matterService.getBasicMatter(matterId);
             // 检查事项配置
             matterService.checkMatterConfig(matter, MatterEnum.OPEN.getStatus(), Boolean.FALSE);
             // 将事项信息设置到流程变量
-            variable.getApplyInfo().setMatter(matter);
+            variable.getApplyVo().setMatter(matter);
             // 流程记录信息
             waterService.saveSuccess(water, variable, "检查事项配置成功");
             logger.info("检查事项配置成功,sessionId:{}", sessionId);
@@ -99,7 +99,7 @@ public class ApplyDelegate extends AbstractApplyDelegate implements JavaDelegate
         Water water = waterService.getProcessWater(sessionId);
         try {
             // 检查申请信息
-            applyService.checkAskInfo(variable.getApplyInfo());
+            applyService.checkAskInfo(variable.getApplyVo());
             // 流程记录信息
             waterService.saveSuccess(water, variable, "检查申请信息成功");
             logger.info("检查申请信息成功,sessionId:{}", sessionId);
@@ -126,7 +126,7 @@ public class ApplyDelegate extends AbstractApplyDelegate implements JavaDelegate
         String sessionId = variable.getSessionId();
         Water water = waterService.getProcessWater(sessionId);
         try {
-            ApplyVo applyVo = variable.getApplyInfo();
+            ApplyVo applyVo = variable.getApplyVo();
             // 保存申请表单信息
             List<ApplyFormData> formDatas = applyFormDataService.saveAll(applyVo.getAskInfos());
             // 初始化申请主表
@@ -166,7 +166,7 @@ public class ApplyDelegate extends AbstractApplyDelegate implements JavaDelegate
         Water water = waterService.getProcessWater(sessionId);
         try {
             // 初始化审批版本数据
-            ApplyInfo applyInfo = variable.getApplyInfo().getApplyInfo();
+            ApplyInfo applyInfo = variable.getApplyVo().getApplyInfo();
             ApplyTrack applyTrack = applyTrackService.initAskTrackInfo(applyInfo, delegateExecution);
             // 版本、主表数据关联
             applyService.createRelation(applyInfo, applyTrack.getId());
