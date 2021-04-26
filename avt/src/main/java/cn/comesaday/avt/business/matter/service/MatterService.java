@@ -6,8 +6,8 @@ import cn.comesaday.avt.business.matter.enums.MatterEnum;
 import cn.comesaday.avt.business.matter.model.Matter;
 import cn.comesaday.avt.business.matter.model.MatterFieldSetting;
 import cn.comesaday.avt.business.matter.model.MatterUserSetting;
-import cn.comesaday.avt.business.matter.vo.MatterSettingVo;
-import cn.comesaday.avt.business.matter.vo.MatterVo;
+import cn.comesaday.avt.business.matter.vo.MatterSettingRequest;
+import cn.comesaday.avt.business.matter.vo.MatterResponse;
 import cn.comesaday.avt.process.flow.handler.FlowHandler;
 import cn.comesaday.coe.common.constant.NumConstant;
 import cn.comesaday.coe.core.basic.exception.PamException;
@@ -52,7 +52,7 @@ public class MatterService extends BaseService<Matter, Long> {
      * @date 2021/4/15 14:05
      * @return void
      */
-    public void setting(MatterSettingVo settingVo) throws Exception {
+    public void setting(MatterSettingRequest settingVo) throws Exception {
         // 检查事项状态
         Long matterId = settingVo.getMatterId();
         Matter matter = this.getBasicMatter(matterId);
@@ -95,7 +95,7 @@ public class MatterService extends BaseService<Matter, Long> {
      * @date 2021/4/15 14:25
      * @return void
      */
-    public void removeSetting(MatterSettingVo settingVo) {
+    public void removeSetting(MatterSettingRequest settingVo) {
         // 字段配置id
         List<Long> elementIds = settingVo.getElementIds();
         // 为空不配置
@@ -228,13 +228,13 @@ public class MatterService extends BaseService<Matter, Long> {
      * @date 2021/3/29 19:39
      * @return cn.comesaday.avt.business.matter.vo.MatterVo
      */
-    public MatterVo getMatterInfo(Long matterId) throws PamException {
+    public MatterResponse getMatterInfo(Long matterId) throws PamException {
         Matter matter = this.getBasicMatter(matterId);
         List<MatterFieldSetting> settings = matterFieldSettingService
                 .findAllByProperty("matterId", matterId);
-        MatterVo matterVo = new MatterVo();
-        matterVo.setMatter(matter);
-        matterVo.setElements(settings);
-        return matterVo;
+        MatterResponse matterResponse = new MatterResponse();
+        matterResponse.setMatter(matter);
+        matterResponse.setElements(settings);
+        return matterResponse;
     }
 }

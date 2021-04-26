@@ -6,7 +6,7 @@ import cn.comesaday.avt.business.apply.model.ApplyTrack;
 import cn.comesaday.avt.business.apply.service.ApplyFormDataService;
 import cn.comesaday.avt.business.apply.service.ApplyService;
 import cn.comesaday.avt.business.apply.service.ApplyTrackService;
-import cn.comesaday.avt.business.apply.vo.ApplyVo;
+import cn.comesaday.avt.business.apply.vo.UserApplyRequest;
 import cn.comesaday.avt.business.matter.enums.MatterEnum;
 import cn.comesaday.avt.business.matter.model.Matter;
 import cn.comesaday.avt.business.matter.service.MatterService;
@@ -66,12 +66,12 @@ public class ApplyDelegate extends AbstractApplyDelegate implements JavaDelegate
         String sessionId = variable.getSessionId();
         Water water = waterService.getProcessWater(sessionId);
         try {
-            Long matterId = variable.getApplyVo().getMatterId();
+            Long matterId = variable.getUserApplyRequest().getMatterId();
             Matter matter = matterService.getBasicMatter(matterId);
             // 检查事项配置
             matterService.checkMatterConfig(matter, MatterEnum.OPEN.getStatus(), Boolean.FALSE);
             // 将事项信息设置到流程变量
-            variable.getApplyVo().setMatter(matter);
+            variable.getUserApplyRequest().setMatter(matter);
             // 流程记录信息
             waterService.saveSuccess(water, variable, "检查事项配置成功");
             logger.info("检查事项配置成功,sessionId:{}", sessionId);
@@ -99,7 +99,7 @@ public class ApplyDelegate extends AbstractApplyDelegate implements JavaDelegate
         Water water = waterService.getProcessWater(sessionId);
         try {
             // 检查申请信息
-            applyService.checkAskInfo(variable.getApplyVo());
+            applyService.checkAskInfo(variable.getUserApplyRequest());
             // 流程记录信息
             waterService.saveSuccess(water, variable, "检查申请信息成功");
             logger.info("检查申请信息成功,sessionId:{}", sessionId);
@@ -126,19 +126,19 @@ public class ApplyDelegate extends AbstractApplyDelegate implements JavaDelegate
         String sessionId = variable.getSessionId();
         Water water = waterService.getProcessWater(sessionId);
         try {
-            ApplyVo applyVo = variable.getApplyVo();
+            UserApplyRequest userApplyRequest = variable.getUserApplyRequest();
             // 保存申请表单信息
-            List<ApplyFormData> formDatas = applyFormDataService.saveAll(applyVo.getAskInfos());
+            List<ApplyFormData> formDatas = applyFormDataService.saveAll(userApplyRequest.getAskInfos());
             // 初始化申请主表
-            Matter matter = matterService.getBasicMatter(applyVo.getMatterId());
-            ApplyInfo applyInfo = applyService.initAskMainInfo(applyVo, matter);
+            Matter matter = matterService.getBasicMatter(userApplyRequest.getMatterId());
+            ApplyInfo applyInfo = applyService.initAskMainInfo(userApplyRequest, matter);
             // 表单数据&主表关联
             formDatas.stream().forEach(data -> data.setAskId(applyInfo.getId()));
             applyFormDataService.saveAll(formDatas);
             // 保存最新信息到流程变量
-            applyVo.setAskId(applyInfo.getId());
-            applyVo.setApplyInfo(applyInfo);
-            applyVo.setAskInfos(formDatas);
+            userApplyRequest.setAskId(applyInfo.getId());
+            userApplyRequest.setApplyInfo(applyInfo);
+            userApplyRequest.setAskInfos(formDatas);
             // 流程记录信息
             waterService.saveSuccess(water, variable,"初始化申请信息成功");
             logger.info("初始化申请信息成功,sessionId:{}", sessionId);
@@ -166,7 +166,7 @@ public class ApplyDelegate extends AbstractApplyDelegate implements JavaDelegate
         Water water = waterService.getProcessWater(sessionId);
         try {
             // 初始化审批版本数据
-            ApplyInfo applyInfo = variable.getApplyVo().getApplyInfo();
+            ApplyInfo applyInfo = variable.getUserApplyRequest().getApplyInfo();
             ApplyTrack applyTrack = applyTrackService.initAskTrackInfo(applyInfo, delegateExecution);
             // 版本、主表数据关联
             applyService.createRelation(applyInfo, applyTrack.getId());

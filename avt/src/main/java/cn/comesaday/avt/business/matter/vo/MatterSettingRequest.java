@@ -8,7 +8,7 @@ import java.util.List;
  * @author: ChenWei
  * @CreateAt: 2021-03-19 10:02
  */
-public class MatterSettingVo {
+public class MatterSettingRequest {
 
     // 事项ID
     private Long matterId;

@@ -1,9 +1,9 @@
 package cn.comesaday.avt.business.apply.controller;
 
 import cn.comesaday.avt.business.apply.service.ApplyService;
-import cn.comesaday.avt.business.apply.vo.ApplyVo;
+import cn.comesaday.avt.business.apply.vo.UserApplyRequest;
 import cn.comesaday.avt.business.matter.service.MatterService;
-import cn.comesaday.avt.business.matter.vo.MatterVo;
+import cn.comesaday.avt.business.matter.vo.MatterResponse;
 import cn.comesaday.coe.core.basic.bean.result.JsonResult;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
@@ -38,7 +38,7 @@ public class ApplyController {
     @RequestMapping("/matter/{matterId}")
     public String apply(Model model, @PathVariable(name = "matterId") Long matterId) {
         try {
-            MatterVo matterInfo = matterService.getMatterInfo(matterId);
+            MatterResponse matterInfo = matterService.getMatterInfo(matterId);
             model.addAttribute("matterInfo", matterInfo);
         } catch (Exception e) {
             model.addAttribute("error", e.getMessage());
@@ -49,15 +49,15 @@ public class ApplyController {
     /**
      * <说明> 保存申请信息
      * @param model Model
-     * @param applyVo 申请信息
+     * @param userApplyRequest 申请信息
      * @author ChenWei
      * @date 2021/4/1 17:28
      * @return java.lang.String
      */
     @RequestMapping("/submit/info")
-    public String create(Model model, ApplyVo applyVo) {
+    public String create(Model model, UserApplyRequest userApplyRequest) {
         try {
-            JsonResult result = applyService.apply(applyVo);
+            JsonResult result = applyService.apply(userApplyRequest);
             model.addAttribute("result", result);
         } catch (Exception e) {
             model.addAttribute("error", e.getMessage());
@@ -76,7 +76,7 @@ public class ApplyController {
     @RequestMapping("/view/{askInfoId}")
     public String view(Model model, @PathVariable(value = "askInfoId") Long askInfoId) {
         try {
-            ApplyVo askInfo = applyService.queryDetail(askInfoId);
+            UserApplyRequest askInfo = applyService.queryDetail(askInfoId);
             model.addAttribute("askInfo", askInfo);
         } catch (Exception e) {
             model.addAttribute("error", e.getMessage());

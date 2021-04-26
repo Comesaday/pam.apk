@@ -2,7 +2,7 @@ package cn.comesaday.avt.business.user.service;
 
 import cn.comesaday.avt.business.apply.model.ApplyTrack;
 import cn.comesaday.avt.business.apply.service.ApplyTrackService;
-import cn.comesaday.avt.business.apply.vo.ApprovalVo;
+import cn.comesaday.avt.business.apply.vo.ApprovalRequest;
 import cn.comesaday.avt.business.user.model.User;
 import cn.comesaday.avt.business.water.model.Water;
 import cn.comesaday.avt.business.water.service.WaterService;
@@ -45,7 +45,7 @@ public class UserService extends BaseService<User, Long> {
      * @date 2021/4/23 11:16
      * @return void
      */
-    public void approval(ApprovalVo approvalRequest) {
+    public void approval(ApprovalRequest approvalRequest) {
         String taskId = approvalRequest.getTaskId();
         String comment = approvalRequest.getComment();
         Boolean agree = approvalRequest.getAgree();
@@ -76,7 +76,7 @@ public class UserService extends BaseService<User, Long> {
      * @date 2021/4/23 15:01
      * @return ApplyTrack
      */
-    private ApplyTrack updateRecords(ProcessVariable variable, ApprovalVo approvalRequest) {
+    private ApplyTrack updateRecords(ProcessVariable variable, ApprovalRequest approvalRequest) {
         ApplyTrack applyTrack = variable.getRecords().stream().filter(record ->
                 record.getLinkCode().equals(variable.getCurLinkCode())
         ).findFirst().get();

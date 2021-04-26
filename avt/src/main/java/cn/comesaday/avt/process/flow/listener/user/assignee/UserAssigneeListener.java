@@ -41,7 +41,7 @@ public class UserAssigneeListener extends UserListener {
         String sessionId = variable.getSessionId();
         Water water = waterService.getProcessWater(sessionId);
         String actId = delegateTask.getId();
-        Long matterId = variable.getApplyVo().getMatterId();
+        Long matterId = variable.getUserApplyRequest().getMatterId();
         try {
             List<MatterUserSetting> settings = matterService.getMatterLinkUsers(matterId, actId);
             if (CollectionUtils.isEmpty(settings)) {

@@ -2,7 +2,7 @@ package cn.comesaday.avt.business.apply.service;
 
 import cn.comesaday.avt.business.apply.model.ApplyFormData;
 import cn.comesaday.avt.business.apply.model.ApplyInfo;
-import cn.comesaday.avt.business.apply.vo.ApplyVo;
+import cn.comesaday.avt.business.apply.vo.UserApplyRequest;
 import cn.comesaday.avt.business.matter.model.Matter;
 import cn.comesaday.avt.business.matter.service.MatterService;
 import cn.comesaday.avt.process.flow.constant.FlowConstant;
@@ -60,31 +60,31 @@ public class ApplyService extends BaseService<ApplyInfo, Long> {
     /**
      * <说明> 事项申请
      *
-     * @param applyVo 申请信息
+     * @param userApplyRequest 申请信息
      * @return cn.comesaday.avt.business.apply.model.AskInfo
      * @author ChenWei
      * @date 2021/3/29 19:52
      */
-    public JsonResult apply(ApplyVo applyVo) {
+    public JsonResult apply(UserApplyRequest userApplyRequest) {
         try {
             executorService.submit(new Runnable() {
                 @Override
                 public void run() {
-                    Authentication.setAuthenticatedUserId(String.valueOf(applyVo.getApplyId()));
+                    Authentication.setAuthenticatedUserId(String.valueOf(userApplyRequest.getApplyId()));
                     // 初始化流程变量数据
                     String sessionId = RandomStringUtils.randomNumeric(NumConstant.I10);
-                    ProcessVariable variable = new ProcessVariable(sessionId, applyVo);
+                    ProcessVariable variable = new ProcessVariable(sessionId, userApplyRequest);
                     Map<String, Object> variables = new HashMap<>();
                     variables.put(FlowConstant.PROCESS_VARIABLE, variable);
                     // 开启流程
-                    ProcessInstance processInstance = runtimeService.startProcessInstanceByKey(applyVo.getMatterCode(), variables);
+                    ProcessInstance processInstance = runtimeService.startProcessInstanceByKey(userApplyRequest.getMatterCode(), variables);
                     String instanceId = processInstance.getProcessInstanceId();
-                    logger.info("[提交申请]成功,流程实例ID:{},申请信息:{}", instanceId, JsonUtil.toJson(applyVo));
+                    logger.info("[提交申请]成功,流程实例ID:{},申请信息:{}", instanceId, JsonUtil.toJson(userApplyRequest));
                 }
             });
-            return Result.success("提交申请成功", applyVo);
+            return Result.success("提交申请成功", userApplyRequest);
         } catch (Exception e) {
-            logger.error("]提交申请]异常:{},申请信息:{}", e, JsonUtil.toJson(applyVo));
+            logger.error("]提交申请]异常:{},申请信息:{}", e, JsonUtil.toJson(userApplyRequest));
             return Result.fail("[提交申请]异常:" + e);
         }
     }
@@ -93,26 +93,26 @@ public class ApplyService extends BaseService<ApplyInfo, Long> {
     /**
      * <说明> 检查申请信息
      *
-     * @param applyVo AskInfoVo
+     * @param userApplyRequest AskInfoVo
      * @return void
      * @author ChenWei
      * @date 2021/4/7 15:38
      */
-    public void checkAskInfo(ApplyVo applyVo) throws PamException {
+    public void checkAskInfo(UserApplyRequest userApplyRequest) throws PamException {
         // 申请明细信息
-        applyVo.setApplyId(1L);
-        applyVo.setApplyName("11");
-        if (null == applyVo) {
+        userApplyRequest.setApplyId(1L);
+        userApplyRequest.setApplyName("11");
+        if (null == userApplyRequest) {
             throw new PamException("未查询到申请信息");
         }
-        if (null == applyVo.getMatter()) {
+        if (null == userApplyRequest.getMatter()) {
             throw new PamException("申请信息未关联事项");
         }
-        if (null == applyVo.getApplyId()
-                || StringUtils.isEmpty(applyVo.getApplyName())) {
+        if (null == userApplyRequest.getApplyId()
+                || StringUtils.isEmpty(userApplyRequest.getApplyName())) {
             throw new PamException("申请人信息为空");
         }
-        if (CollectionUtils.isEmpty(applyVo.getAskInfos())) {
+        if (CollectionUtils.isEmpty(userApplyRequest.getAskInfos())) {
             throw new PamException("申请表单信息为空");
         }
     }
@@ -121,12 +121,12 @@ public class ApplyService extends BaseService<ApplyInfo, Long> {
     /**
      * <说明> 初始化事项主表信息
      *
-     * @param applyVo 申请信息
+     * @param userApplyRequest 申请信息
      * @return cn.comesaday.avt.business.apply.model.AskInfo
      * @author ChenWei
      * @date 2021/3/29 19:52
      */
-    public ApplyInfo initAskMainInfo(ApplyVo applyVo, Matter matter) {
+    public ApplyInfo initAskMainInfo(UserApplyRequest userApplyRequest, Matter matter) {
         ApplyInfo applyInfo = new ApplyInfo();
         applyInfo.setMatterCode(matter.getCode());
         applyInfo.setMatterId(matter.getId());
@@ -145,20 +145,20 @@ public class ApplyService extends BaseService<ApplyInfo, Long> {
      * @author ChenWei
      * @date 2021/4/1 17:35
      */
-    public ApplyVo queryDetail(Long askId) throws PamException {
-        ApplyVo applyVo = new ApplyVo();
+    public UserApplyRequest queryDetail(Long askId) throws PamException {
+        UserApplyRequest userApplyRequest = new UserApplyRequest();
         ApplyInfo applyInfo = this.findOne(askId);
         if (null == applyInfo) {
             throw new PamException("申请信息不存在");
         }
-        applyVo.setAskId(askId);
-        applyVo.setApplyInfo(applyInfo);
-        applyVo.setMatter(matterService.findOne(applyInfo.getMatterId()));
-        applyVo.setApplyId(applyInfo.getApplyId());
-        applyVo.setApplyName(applyInfo.getApplyName());
-        applyVo.setAskTime(applyInfo.getCreateAt());
-        applyVo.setAskInfos(getAskDatas(askId));
-        return applyVo;
+        userApplyRequest.setAskId(askId);
+        userApplyRequest.setApplyInfo(applyInfo);
+        userApplyRequest.setMatter(matterService.findOne(applyInfo.getMatterId()));
+        userApplyRequest.setApplyId(applyInfo.getApplyId());
+        userApplyRequest.setApplyName(applyInfo.getApplyName());
+        userApplyRequest.setAskTime(applyInfo.getCreateAt());
+        userApplyRequest.setAskInfos(getAskDatas(askId));
+        return userApplyRequest;
     }
 
     /**

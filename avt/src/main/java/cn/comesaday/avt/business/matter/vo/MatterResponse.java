@@ -11,7 +11,7 @@ import java.util.List;
  * @author: ChenWei
  * @CreateAt: 2021-03-18 17:10
  */
-public class MatterVo {
+public class MatterResponse {
 
     // 事项
     private Matter matter;

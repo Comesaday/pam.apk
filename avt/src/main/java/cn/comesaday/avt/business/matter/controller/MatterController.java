@@ -2,7 +2,7 @@ package cn.comesaday.avt.business.matter.controller;
 
 import cn.comesaday.avt.business.matter.model.Matter;
 import cn.comesaday.avt.business.matter.service.MatterService;
-import cn.comesaday.avt.business.matter.vo.MatterSettingVo;
+import cn.comesaday.avt.business.matter.vo.MatterSettingRequest;
 import cn.comesaday.coe.core.basic.bean.result.JsonResult;
 import cn.comesaday.coe.core.basic.bean.result.Result;
 import org.activiti.engine.repository.Deployment;
@@ -41,7 +41,7 @@ public class MatterController {
      * @return java.lang.String
      */
     @RequestMapping("/setting")
-    public String setting(MatterSettingVo settingVo) {
+    public String setting(MatterSettingRequest settingVo) {
 //        matterService.setting(settingVo);
         return "redirect:/matter/index";
     }
@@ -54,7 +54,7 @@ public class MatterController {
      * @return java.lang.String
      */
     @RequestMapping("/removeSetting")
-    public String removeSetting(MatterSettingVo settingVo) {
+    public String removeSetting(MatterSettingRequest settingVo) {
         matterService.removeSetting(settingVo);
         return "redirect:/matter/index";
     }

@@ -1,6 +1,6 @@
 package cn.comesaday.avt.business.user.controller;
 
-import cn.comesaday.avt.business.apply.vo.ApprovalVo;
+import cn.comesaday.avt.business.apply.vo.ApprovalRequest;
 import cn.comesaday.avt.business.user.service.UserService;
 import cn.comesaday.coe.core.basic.bean.result.JsonResult;
 import cn.comesaday.coe.core.basic.bean.result.Result;
@@ -65,7 +65,7 @@ public class UserController {
      */
     @RequestMapping(value = "/task/approval", method = RequestMethod.POST, produces = "application/json")
     @ResponseBody
-    public JsonResult approval(@RequestBody ApprovalVo approvalRequest) {
+    public JsonResult approval(@RequestBody ApprovalRequest approvalRequest) {
         try {
             userService.approval(approvalRequest);
             return Result.success("审批成功");
