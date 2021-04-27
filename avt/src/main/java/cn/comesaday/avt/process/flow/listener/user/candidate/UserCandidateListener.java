@@ -4,7 +4,6 @@ import cn.comesaday.avt.business.matter.model.MatterUserSetting;
 import cn.comesaday.avt.business.matter.service.MatterService;
 import cn.comesaday.avt.business.user.service.UserGroupService;
 import cn.comesaday.avt.business.water.model.Water;
-import cn.comesaday.avt.business.water.service.WaterService;
 import cn.comesaday.avt.process.flow.listener.user.UserListener;
 import cn.comesaday.avt.process.flow.variable.ProcessVariable;
 import cn.comesaday.coe.core.basic.exception.PamException;
@@ -36,14 +35,11 @@ public class UserCandidateListener extends UserListener {
     @Autowired
     private UserGroupService userGroupService;
 
-    @Autowired
-    private WaterService waterService;
-
     @Override
     public void notify(DelegateTask delegateTask) {
         ProcessVariable variable = super.getVariable(delegateTask);
         String sessionId = variable.getSessionId();
-        Water water = waterService.getProcessWater(sessionId);
+        Water water = super.getProcessWater(sessionId);
         String actId = delegateTask.getTaskDefinitionKey();
         Long matterId = variable.getUserApplyRequest().getMatterId();
         try {
@@ -59,12 +55,12 @@ public class UserCandidateListener extends UserListener {
             List<String> stringUserIds = groupsUserIds.stream().map(userId -> {
                 return String.valueOf(userId);
             }).collect(Collectors.toList());
-            delegateTask.addCandidateUsers(stringUserIds);
-            waterService.saveSuccess(water, null, "节点"
+            super.addCandidateUsers(delegateTask, stringUserIds);
+            super.saveSuccess(water, null, "节点"
                     + actId + "审批组初始化成功");
             logger.info("审批组初始化成功,节点ID:{},sessinId:{}", actId, sessionId);
         } catch (Exception e) {
-            waterService.saveFail(water, null, "节点"
+            super.saveFail(water, null, "节点"
                     + actId + "审批组初始化异常");
             logger.error("[获取事项审批人]事项ID:{},节点ID:{},异常信息:{}", matterId, actId, e.getMessage(), e);
         }

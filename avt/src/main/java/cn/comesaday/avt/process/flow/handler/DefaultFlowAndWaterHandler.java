@@ -1,5 +1,6 @@
 package cn.comesaday.avt.process.flow.handler;
 
+import cn.comesaday.avt.business.water.service.WaterService;
 import cn.comesaday.avt.process.flow.constant.FlowConstant;
 import cn.comesaday.avt.process.flow.variable.ProcessVariable;
 import cn.comesaday.coe.common.constant.NumConstant;
@@ -13,12 +14,15 @@ import org.activiti.editor.constants.ModelDataJsonConstants;
 import org.activiti.editor.language.json.converter.BpmnJsonConverter;
 import org.activiti.engine.RepositoryService;
 import org.activiti.engine.TaskService;
+import org.activiti.engine.delegate.DelegateExecution;
 import org.activiti.engine.delegate.DelegateTask;
 import org.activiti.engine.repository.Deployment;
 import org.activiti.engine.repository.Model;
 import org.activiti.engine.task.Task;
+import org.activiti.engine.task.TaskQuery;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
+import org.springframework.util.CollectionUtils;
 
 import java.util.HashMap;
 import java.util.List;
@@ -31,7 +35,7 @@ import java.util.Map;
  * @CreateAt: 2021-04-25 17:31
  */
 @Service
-public class DefaultFlowHandler implements FlowHandler {
+public class DefaultFlowAndWaterHandler extends WaterService implements FlowHandler {
 
     @Autowired
     private TaskService taskService;
@@ -100,12 +104,13 @@ public class DefaultFlowHandler implements FlowHandler {
         byte[] bpmnBytes = new BpmnXMLConverter().convertToXML(bpmnModel);
         String processName = model.getName() + ".bpmn20.xml";
         Deployment deploy = repositoryService.createDeployment().name(processName)
-                .addString(processName, new String(bpmnBytes, "utf-8")).deploy();
+                .addString(processName, new String(bpmnBytes, FlowConstant.BPMN_UTF8)).deploy();
         // 保存部署信息
         model.setDeploymentId(deploy.getId());
         repositoryService.saveModel(model);
         return deploy;
     }
+
 
     /**
      * <说明> 获取流程变量
@@ -130,6 +135,34 @@ public class DefaultFlowHandler implements FlowHandler {
     @Override
     public ProcessVariable getVariable(String taskId) {
         return (ProcessVariable) taskService.getVariable(taskId, FlowConstant.PROCESS_VARIABLE);
+    }
+
+
+
+    /**
+     * <说明> 获取流程变量
+     * @param delegateExecution DelegateExecution
+     * @author ChenWei
+     * @date 2021/4/9 13:14
+     * @return cn.comesaday.avt.process.flow.variable.ProcessVariable
+     */
+    @Override
+    public ProcessVariable getVariable(DelegateExecution delegateExecution) {
+        return (ProcessVariable) delegateExecution.getVariable(FlowConstant.PROCESS_VARIABLE);
+    }
+
+
+    /**
+     * <说明> 设置流程变量
+     * @param delegateExecution DelegateExecution
+     * @param variable ProcessVariable
+     * @author ChenWei
+     * @date 2021/4/14 17:53
+     * @return void
+     */
+    @Override
+    public void resetVariable(DelegateExecution delegateExecution, ProcessVariable variable) {
+        delegateExecution.setVariable(FlowConstant.PROCESS_VARIABLE, variable);
     }
 
 
@@ -173,5 +206,190 @@ public class DefaultFlowHandler implements FlowHandler {
     @Override
     public List<Task> getUserTask(String userId) {
         return taskService.createTaskQuery().taskCandidateOrAssigned(userId).list();
+    }
+
+
+    /**
+     * <说明> 设置审批人
+     * @param taskId 任务ID
+     * @param userId 用户ID
+     * @author ChenWei
+     * @date 2021/4/26 19:06
+     * @return void
+     */
+    @Override
+    public void addAssigneeUser(String taskId, String userId) {
+        taskService.setAssignee(taskId, userId);
+    }
+
+
+    /**
+     * <说明> 设置审批人
+     * @param delegateTask DelegateTask
+     * @param userId 用户ID
+     * @author ChenWei
+     * @date 2021/4/27 15:29
+     * @return void
+     */
+    @Override
+    public void addAssigneeUser(DelegateTask delegateTask, String userId) {
+        delegateTask.setAssignee(userId);
+    }
+
+
+    /**
+     * <说明> 变更审批人
+     * @param taskId 任务ID
+     * @param userId 用户ID
+     * @author ChenWei
+     * @date 2021/4/26 19:06
+     * @return void
+     */
+    @Override
+    public void addCandidateUser(String taskId, String userId) {
+        taskService.addCandidateUser(taskId, userId);
+    }
+
+
+    /**
+     * <说明> 变更审批人
+     * @param taskId 任务ID
+     * @param userIds 用户IDS
+     * @author ChenWei
+     * @date 2021/4/26 19:07
+     * @return void
+     */
+    @Override
+    public void addCandidateUsers(String taskId, List<String> userIds) {
+        if (CollectionUtils.isEmpty(userIds)) {
+            return;
+        }
+        userIds.stream().forEach(userId -> {
+            this.addCandidateUser(taskId, userId);
+        });
+    }
+
+
+    /**
+     * <说明> 删除办理人
+     * @param taskId 任务ID
+     * @param userId 用户ID
+     * @author ChenWei
+     * @date 2021/4/27 15:11
+     * @return void
+     */
+    @Override
+    public void deleteCandidateUser(String taskId, String userId) {
+        taskService.deleteCandidateUser(taskId, userId);
+    }
+
+
+    /**
+     * <说明> 删除办理人
+     * @param taskId 任务ID
+     * @param userIds 用户IDS
+     * @author ChenWei
+     * @date 2021/4/27 15:11
+     * @return void
+     */
+    @Override
+    public void deleteCandidateUsers(String taskId, List<String> userIds) {
+        if (CollectionUtils.isEmpty(userIds)) {
+            return;
+        }
+        userIds.stream().forEach(userId -> {
+            this.deleteCandidateUser(taskId, userId);
+        });
+    }
+
+
+    /**
+     * <说明> 设置审批人
+     * @param delegateTask DelegateTask
+     * @param userIds 用户IDS
+     * @author ChenWei
+     * @date 2021/4/27 15:31
+     * @return void
+     */
+    @Override
+    public void addCandidateUsers(DelegateTask delegateTask, List<String> userIds) {
+        delegateTask.addCandidateUsers(userIds);
+    }
+
+
+    /**
+     * <说明> 任务变更审批人
+     * @param taskId 任务ID
+     * @param oldUserId 前任审批人ID
+     * @param userId 更换审批人ID
+     * @author ChenWei
+     * @date 2021/4/27 14:44
+     * @return void
+     */
+    @Override
+    public void changeUser(String taskId, String oldUserId, String userId) {
+        if (isAssigneeOrCandidateUser(taskId, oldUserId)) {
+            return;
+        }
+        if (isAssigneeUser(taskId, userId)) {
+            taskService.setAssignee(taskId, userId);
+        } else {
+            this.deleteCandidateUser(taskId, oldUserId);
+            this.addCandidateUser(taskId, userId);
+        }
+    }
+
+
+    /**
+     * <说明> 是否是办理人
+     * @param taskId 任务ID
+     * @param userId 审批人ID
+     * @author ChenWei
+     * @date 2021/4/27 15:18
+     * @return java.lang.Boolean
+     */
+    @Override
+    public Boolean isAssigneeUser(String taskId, String userId) {
+        return null != this.getTaskQuery(taskId).taskAssignee(userId).singleResult();
+    }
+
+
+    /**
+     * <说明> 是否是办理人
+     * @param taskId 任务ID
+     * @param userId 审批人ID
+     * @author ChenWei
+     * @date 2021/4/27 15:18
+     * @return java.lang.Boolean
+     */
+    @Override
+    public Boolean isCandidateUser(String taskId, String userId) {
+        return null != this.getTaskQuery(taskId).taskCandidateUser(userId).singleResult();
+    }
+
+
+    /**
+     * <说明> 是否是办理人
+     * @param taskId 任务ID
+     * @param userId 审批人ID
+     * @author ChenWei
+     * @date 2021/4/27 15:18
+     * @return java.lang.Boolean
+     */
+    @Override
+    public Boolean isAssigneeOrCandidateUser(String taskId, String userId) {
+        return null != this.getTaskQuery(taskId).taskCandidateOrAssigned(userId).singleResult();
+    }
+
+
+    /**
+     * <说明> 获取TaskQuery
+     * @param taskId 任务ID
+     * @author ChenWei
+     * @date 2021/4/27 15:16
+     * @return org.activiti.engine.task.TaskQuery
+     */
+    private TaskQuery getTaskQuery(String taskId) {
+        return taskService.createTaskQuery().taskId(taskId);
     }
 }

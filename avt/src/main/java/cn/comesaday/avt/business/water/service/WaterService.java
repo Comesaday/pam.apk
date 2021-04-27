@@ -1,7 +1,7 @@
 package cn.comesaday.avt.business.water.service;
 
-import cn.comesaday.avt.process.flow.variable.ProcessVariable;
 import cn.comesaday.avt.business.water.model.Water;
+import cn.comesaday.avt.process.flow.variable.ProcessVariable;
 import cn.comesaday.coe.common.util.JsonUtil;
 import cn.comesaday.coe.core.basic.service.BaseService;
 import org.springframework.stereotype.Service;
@@ -55,7 +55,10 @@ public class WaterService extends BaseService<Water, Long> {
      * @return cn.comesaday.avt.business.water.model.Water
      */
     public Water getProcessWater(String sessionId) {
-        Water water = new Water(sessionId);
-        return this.findOne(water);
+        Water water = this.findByProperty("sessionId", sessionId);
+        if (null == water) {
+            water = new Water(sessionId);
+        }
+        return water;
     }
 }

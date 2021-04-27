@@ -3,7 +3,6 @@ package cn.comesaday.avt.process.flow.listener.user.assignee;
 import cn.comesaday.avt.business.matter.model.MatterUserSetting;
 import cn.comesaday.avt.business.matter.service.MatterService;
 import cn.comesaday.avt.business.water.model.Water;
-import cn.comesaday.avt.business.water.service.WaterService;
 import cn.comesaday.avt.process.flow.listener.user.UserListener;
 import cn.comesaday.avt.process.flow.variable.ProcessVariable;
 import cn.comesaday.coe.common.constant.NumConstant;
@@ -32,14 +31,11 @@ public class UserAssigneeListener extends UserListener {
     @Autowired
     private MatterService matterService;
 
-    @Autowired
-    private WaterService waterService;
-
     @Override
     public void notify(DelegateTask delegateTask) {
         ProcessVariable variable = super.getVariable(delegateTask);
         String sessionId = variable.getSessionId();
-        Water water = waterService.getProcessWater(sessionId);
+        Water water = super.getProcessWater(sessionId);
         String actId = delegateTask.getId();
         Long matterId = variable.getUserApplyRequest().getMatterId();
         try {
@@ -48,12 +44,12 @@ public class UserAssigneeListener extends UserListener {
                 throw new PamException("未配置审批人");
             }
             Long userId = settings.get(NumConstant.I0).getUserId();
-            delegateTask.setAssignee(String.valueOf(userId));
-            waterService.saveSuccess(water, null, "节点"
+            super.addAssigneeUser(delegateTask, String.valueOf(userId));
+            super.saveSuccess(water, null, "节点"
                     + actId + "审批人初始化成功");
             logger.info("审批人初始化成功,节点ID:{},sessinId:{}", actId, sessionId);
         } catch (Exception e) {
-            waterService.saveSuccess(water, null, "节点"
+            super.saveSuccess(water, null, "节点"
                     + actId + "审批人初始化异常:" + e.getMessage());
             logger.error("[获取事项审批人]事项ID:{},节点ID:{},异常信息:{}", matterId, actId, e.getMessage(), e);
         }

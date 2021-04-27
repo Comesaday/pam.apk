@@ -1,6 +1,7 @@
 package cn.comesaday.avt.process.flow.handler;
 
 import cn.comesaday.avt.process.flow.variable.ProcessVariable;
+import org.activiti.engine.delegate.DelegateExecution;
 import org.activiti.engine.delegate.DelegateTask;
 import org.activiti.engine.repository.Deployment;
 import org.activiti.engine.repository.Model;
@@ -60,6 +61,27 @@ public interface FlowHandler {
 
 
     /**
+     * <说明> 获取流程变量
+     * @param delegateExecution DelegateExecution
+     * @author ChenWei
+     * @date 2021/4/9 13:14
+     * @return cn.comesaday.avt.process.flow.variable.ProcessVariable
+     */
+    ProcessVariable getVariable(DelegateExecution delegateExecution);
+
+
+    /**
+     * <说明> 设置流程变量
+     * @param delegateExecution DelegateExecution
+     * @param variable ProcessVariable
+     * @author ChenWei
+     * @date 2021/4/14 17:53
+     * @return void
+     */
+    void resetVariable(DelegateExecution delegateExecution, ProcessVariable variable);
+
+
+    /**
      * <说明> 重新设置流程变量
      * @param delegateTask DelegateTask
      * @param variable ProcessVariable
@@ -89,4 +111,126 @@ public interface FlowHandler {
      * @return java.util.List<org.activiti.engine.task.Task>
      */
     List<Task> getUserTask(String userId);
+
+
+    /**
+     * <说明> 变更审批人
+     * @param taskId 任务ID
+     * @param userId 用户ID
+     * @author ChenWei
+     * @date 2021/4/26 19:06
+     * @return void
+     */
+    void addAssigneeUser(String taskId, String userId);
+
+
+    /**
+     * <说明> 设置审批人
+     * @param delegateTask DelegateTask
+     * @param userId 用户ID
+     * @author ChenWei
+     * @date 2021/4/27 15:29
+     * @return void
+     */
+    void addAssigneeUser(DelegateTask delegateTask, String userId);
+
+
+    /**
+     * <说明> 变更审批人
+     * @param taskId 任务ID
+     * @param userId 用户ID
+     * @author ChenWei
+     * @date 2021/4/26 19:06
+     * @return void
+     */
+    void addCandidateUser(String taskId, String userId);
+
+
+    /**
+     * <说明> 变更审批人
+     * @param taskId 任务ID
+     * @param userIds 用户IDS
+     * @author ChenWei
+     * @date 2021/4/26 19:07
+     * @return void
+     */
+    void addCandidateUsers(String taskId, List<String> userIds);
+
+
+    /**
+     * <说明> 设置审批人
+     * @param delegateTask DelegateTask
+     * @param userIds 用户IDS
+     * @author ChenWei
+     * @date 2021/4/27 15:31
+     * @return void
+     */
+    void addCandidateUsers(DelegateTask delegateTask, List<String> userIds);
+
+
+    /**
+     * <说明> 删除流程办理人
+     * @param taskId 任务ID
+     * @param userId 用户ID
+     * @author ChenWei
+     * @date 2021/4/27 14:22
+     * @return void
+     */
+    void deleteCandidateUser(String taskId, String userId);
+
+
+    /**
+     * <说明> 删除流程办理人
+     * @param taskId 任务ID
+     * @param userIds 用户IDS
+     * @author ChenWei
+     * @date 2021/4/27 14:22
+     * @return void
+     */
+    void deleteCandidateUsers(String taskId, List<String> userIds);
+
+
+    /**
+     * <说明> 任务变更审批人
+     * @param taskId 任务ID
+     * @param oldUserId 前任审批人ID
+     * @param userId 更换审批人ID
+     * @author ChenWei
+     * @date 2021/4/27 14:44
+     * @return void
+     */
+    void changeUser(String taskId, String oldUserId, String userId);
+
+
+    /**
+     * <说明> 是否是办理人
+     * @param taskId 任务ID
+     * @param userId 审批人ID
+     * @author ChenWei
+     * @date 2021/4/27 15:18
+     * @return java.lang.Boolean
+     */
+    Boolean isAssigneeUser(String taskId, String userId);
+
+
+    /**
+     * <说明> 是否是办理人
+     * @param taskId 任务ID
+     * @param userId 审批人ID
+     * @author ChenWei
+     * @date 2021/4/27 15:18
+     * @return java.lang.Boolean
+     */
+    Boolean isCandidateUser(String taskId, String userId);
+
+
+    /**
+     * <说明> 是否是办理人
+     * @param taskId 任务ID
+     * @param userId 审批人ID
+     * @author ChenWei
+     * @date 2021/4/27 15:18
+     * @return java.lang.Boolean
+     */
+    Boolean isAssigneeOrCandidateUser(String taskId, String userId);
 }
