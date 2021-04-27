@@ -1,5 +1,7 @@
 package cn.comesaday.example.count;
 
+import java.util.concurrent.CountDownLatch;
+
 /**
  * <描述> ThreadCount
  * <详细背景>
@@ -8,37 +10,46 @@ package cn.comesaday.example.count;
  */
 public class ThreadCount {
 
+    private static final ThreadLocal<String> threadLocal = new ThreadLocal<>();
+
     public static void main(String[] args) throws Exception {
-//        CountDownLatch countDownLatch = new CountDownLatch(4);
-//        new Thread() {
-//            @Override
-//            public void run() {
-//                countDownLatch.countDown();
-//                System.out.println(Thread.currentThread().getName());
-//            }
-//        }.start();
-//        new Thread() {
-//            @Override
-//            public void run() {
-//                countDownLatch.countDown();
-//                System.out.println(Thread.currentThread().getName());
-//            }
-//        }.start();
-//        new Thread() {
-//            @Override
-//            public void run() {
-//                countDownLatch.countDown();
-//                System.out.println(Thread.currentThread().getName());
-//            }
-//        }.start();
-//        new Thread() {
-//            @Override
-//            public void run() {
-//                countDownLatch.countDown();
-//                System.out.println(Thread.currentThread().getName());
-//            }
-//        }.start();
-//        countDownLatch.await();
-//        System.out.println(countDownLatch.getCount());
+        CountDownLatch countDownLatch = new CountDownLatch(4);
+        new Thread() {
+            @Override
+            public void run() {
+                threadLocal.set(String.valueOf(countDownLatch.getCount()));
+                countDownLatch.countDown();
+                System.out.println(Thread.currentThread().getName());
+                System.out.println(threadLocal.get());
+            }
+        }.start();
+        new Thread() {
+            @Override
+            public void run() {
+                threadLocal.set(String.valueOf(countDownLatch.getCount()));
+                countDownLatch.countDown();
+                System.out.println(Thread.currentThread().getName());
+                System.out.println(threadLocal.get());
+            }
+        }.start();
+        new Thread() {
+            @Override
+            public void run() {
+                threadLocal.set(String.valueOf(countDownLatch.getCount()));
+                countDownLatch.countDown();
+                System.out.println(Thread.currentThread().getName());
+                System.out.println(threadLocal.get());
+            }
+        }.start();
+        new Thread() {
+            @Override
+            public void run() {
+                threadLocal.set(String.valueOf(countDownLatch.getCount()));
+                countDownLatch.countDown();
+                System.out.println(Thread.currentThread().getName());
+                System.out.println(threadLocal.get());
+            }
+        }.start();
+        countDownLatch.await();
     }
 }

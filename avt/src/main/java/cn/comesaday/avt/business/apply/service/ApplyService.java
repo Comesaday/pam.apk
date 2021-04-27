@@ -75,7 +75,7 @@ public class ApplyService extends BaseService<ApplyInfo, Long> {
                     String sessionId = RandomStringUtils.randomNumeric(NumConstant.I10);
                     ProcessVariable variable = new ProcessVariable(sessionId, userApplyRequest);
                     Map<String, Object> variables = new HashMap<>();
-                    variables.put(FlowConstant.PROCESS_VARIABLE, variable);
+                    variables.put(FlowConstant.VARIABLE, variable);
                     // 开启流程
                     ProcessInstance processInstance = runtimeService.startProcessInstanceByKey(userApplyRequest.getMatterCode(), variables);
                     String instanceId = processInstance.getProcessInstanceId();

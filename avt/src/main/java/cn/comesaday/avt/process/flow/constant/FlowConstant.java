@@ -9,11 +9,12 @@ package cn.comesaday.avt.process.flow.constant;
 public class FlowConstant {
 
     // 流程变量标识
-    public static final String PROCESS_VARIABLE = "flow";
+    public static final String VARIABLE = "flow";
 
     // 流程异常code
-    public static final String BPMNER_ERROR_EXCEPTION = "error";
+    public static final String BPMNER_ERROR = "error";
 
+    // 编码
     public static final String BPMN_UTF8 = "UTF-8";
 
 }

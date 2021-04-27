@@ -21,7 +21,7 @@ import org.activiti.engine.repository.Model;
 import org.activiti.engine.task.Task;
 import org.activiti.engine.task.TaskQuery;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.stereotype.Service;
+import org.springframework.stereotype.Component;
 import org.springframework.util.CollectionUtils;
 
 import java.util.HashMap;
@@ -34,7 +34,7 @@ import java.util.Map;
  * @author: ChenWei
  * @CreateAt: 2021-04-25 17:31
  */
-@Service
+@Component
 public class DefaultFlowAndWaterHandler extends WaterService implements FlowHandler {
 
     @Autowired
@@ -121,7 +121,7 @@ public class DefaultFlowAndWaterHandler extends WaterService implements FlowHand
      */
     @Override
     public ProcessVariable getVariable(DelegateTask delegateTask) {
-        return (ProcessVariable) delegateTask.getVariable(FlowConstant.PROCESS_VARIABLE);
+        return (ProcessVariable) delegateTask.getVariable(FlowConstant.VARIABLE);
     }
 
 
@@ -134,7 +134,7 @@ public class DefaultFlowAndWaterHandler extends WaterService implements FlowHand
      */
     @Override
     public ProcessVariable getVariable(String taskId) {
-        return (ProcessVariable) taskService.getVariable(taskId, FlowConstant.PROCESS_VARIABLE);
+        return (ProcessVariable) taskService.getVariable(taskId, FlowConstant.VARIABLE);
     }
 
 
@@ -148,7 +148,7 @@ public class DefaultFlowAndWaterHandler extends WaterService implements FlowHand
      */
     @Override
     public ProcessVariable getVariable(DelegateExecution delegateExecution) {
-        return (ProcessVariable) delegateExecution.getVariable(FlowConstant.PROCESS_VARIABLE);
+        return (ProcessVariable) delegateExecution.getVariable(FlowConstant.VARIABLE);
     }
 
 
@@ -162,7 +162,7 @@ public class DefaultFlowAndWaterHandler extends WaterService implements FlowHand
      */
     @Override
     public void resetVariable(DelegateExecution delegateExecution, ProcessVariable variable) {
-        delegateExecution.setVariable(FlowConstant.PROCESS_VARIABLE, variable);
+        delegateExecution.setVariable(FlowConstant.VARIABLE, variable);
     }
 
 
@@ -176,7 +176,7 @@ public class DefaultFlowAndWaterHandler extends WaterService implements FlowHand
      */
     @Override
     public void resetVariable(DelegateTask delegateTask, ProcessVariable variable) {
-        delegateTask.setVariable(FlowConstant.PROCESS_VARIABLE, variable);
+        delegateTask.setVariable(FlowConstant.VARIABLE, variable);
     }
 
 
@@ -191,7 +191,7 @@ public class DefaultFlowAndWaterHandler extends WaterService implements FlowHand
     @Override
     public void complete(String taskId, Object variable) {
         Map<String, Object> variables = new HashMap<>();
-        variables.put(FlowConstant.PROCESS_VARIABLE, variable);
+        variables.put(FlowConstant.VARIABLE, variable);
         taskService.complete(taskId, variables);
     }
 

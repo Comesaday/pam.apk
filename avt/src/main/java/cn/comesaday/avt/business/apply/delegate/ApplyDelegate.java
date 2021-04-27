@@ -15,7 +15,6 @@ import cn.comesaday.avt.process.flow.constant.FlowConstant;
 import cn.comesaday.avt.process.flow.variable.ProcessVariable;
 import org.activiti.engine.delegate.BpmnError;
 import org.activiti.engine.delegate.DelegateExecution;
-import org.activiti.engine.delegate.JavaDelegate;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -31,7 +30,7 @@ import java.util.List;
  * @CreateAt: 2021-04-09 11:08
  */
 @Component
-public class ApplyDelegate extends AbstractApplyDelegate implements JavaDelegate, Serializable {
+public class ApplyDelegate extends AbstractApplyDelegate implements Serializable {
 
     // 日志打印
     private final static Logger logger = LoggerFactory.getLogger(ApplyDelegate.class);
@@ -74,7 +73,7 @@ public class ApplyDelegate extends AbstractApplyDelegate implements JavaDelegate
         } catch (Exception e) {
             super.saveFail(water, variable, "检查事项配置异常:" + e);
             logger.error("检查事项配置异常,sessionId:{},异常信息:{}" + e, sessionId);
-            throw new BpmnError(FlowConstant.BPMNER_ERROR_EXCEPTION);
+            throw new BpmnError(FlowConstant.BPMNER_ERROR);
         } finally {
             super.resetVariable(delegateExecution, variable);
         }
@@ -102,7 +101,7 @@ public class ApplyDelegate extends AbstractApplyDelegate implements JavaDelegate
         } catch (Exception e) {
             super.saveFail(water, variable, "检查申请信息异常:" + e);
             logger.error("检查申请信息异常,sessionId:{},异常信息:{}" + e, sessionId);
-            throw new BpmnError(FlowConstant.BPMNER_ERROR_EXCEPTION);
+            throw new BpmnError(FlowConstant.BPMNER_ERROR);
         } finally {
             super.resetVariable(delegateExecution, variable);
         }
@@ -141,7 +140,7 @@ public class ApplyDelegate extends AbstractApplyDelegate implements JavaDelegate
         } catch (Exception e) {
             super.saveFail(water, variable, "初始化申请信息异常:" + e);
             logger.error("初始化申请信息异常,sessionId:{},异常信息:{}" + e, sessionId);
-            throw new BpmnError(FlowConstant.BPMNER_ERROR_EXCEPTION);
+            throw new BpmnError(FlowConstant.BPMNER_ERROR);
         } finally {
             super.resetVariable(delegateExecution, variable);
         }
@@ -174,7 +173,7 @@ public class ApplyDelegate extends AbstractApplyDelegate implements JavaDelegate
         } catch (Exception e) {
             super.saveFail(water, variable, "初始化版本信息异常:" + e);
             logger.error("初始化版本信息异常,sessionId:{},异常信息:{}" + e, sessionId);
-            throw new BpmnError(FlowConstant.BPMNER_ERROR_EXCEPTION);
+            throw new BpmnError(FlowConstant.BPMNER_ERROR);
         } finally {
             super.resetVariable(delegateExecution, variable);
         }
