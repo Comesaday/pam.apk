@@ -11,6 +11,7 @@ import cn.comesaday.avt.business.matter.enums.MatterEnum;
 import cn.comesaday.avt.business.matter.model.Matter;
 import cn.comesaday.avt.business.matter.service.MatterService;
 import cn.comesaday.avt.business.water.model.Water;
+import cn.comesaday.avt.business.water.service.WaterService;
 import cn.comesaday.avt.process.flow.constant.FlowConstant;
 import cn.comesaday.avt.process.flow.variable.ProcessVariable;
 import org.activiti.engine.delegate.BpmnError;
@@ -46,6 +47,9 @@ public class ApplyDelegate extends AbstractApplyDelegate implements Serializable
 
     @Autowired
     private ApplyTrackService applyTrackService;
+    
+    @Autowired
+    private WaterService waterService;
 
 
     /**
@@ -59,7 +63,7 @@ public class ApplyDelegate extends AbstractApplyDelegate implements Serializable
     public void checkMatterSetting(DelegateExecution delegateExecution) {
         ProcessVariable variable = super.getVariable(delegateExecution);
         String sessionId = variable.getSessionId();
-        Water water = super.getProcessWater(sessionId);
+        Water water = waterService.getProcessWater(sessionId);
         try {
             Long matterId = variable.getUserApplyRequest().getMatterId();
             Matter matter = matterService.getBasicMatter(matterId);
@@ -68,10 +72,10 @@ public class ApplyDelegate extends AbstractApplyDelegate implements Serializable
             // 将事项信息设置到流程变量
             variable.getUserApplyRequest().setMatter(matter);
             // 流程记录信息
-            super.saveSuccess(water, variable, "检查事项配置成功");
+            waterService.saveSuccess(water, variable, "检查事项配置成功");
             logger.info("检查事项配置成功,sessionId:{}", sessionId);
         } catch (Exception e) {
-            super.saveFail(water, variable, "检查事项配置异常:" + e);
+            waterService.saveFail(water, variable, "检查事项配置异常:" + e);
             logger.error("检查事项配置异常,sessionId:{},异常信息:{}" + e, sessionId);
             throw new BpmnError(FlowConstant.BPMNER_ERROR);
         } finally {
@@ -91,15 +95,15 @@ public class ApplyDelegate extends AbstractApplyDelegate implements Serializable
     public void checkUserFill(DelegateExecution delegateExecution) {
         ProcessVariable variable = super.getVariable(delegateExecution);
         String sessionId = variable.getSessionId();
-        Water water = super.getProcessWater(sessionId);
+        Water water = waterService.getProcessWater(sessionId);
         try {
             // 检查申请信息
             applyService.checkAskInfo(variable.getUserApplyRequest());
             // 流程记录信息
-            super.saveSuccess(water, variable, "检查申请信息成功");
+            waterService.saveSuccess(water, variable, "检查申请信息成功");
             logger.info("检查申请信息成功,sessionId:{}", sessionId);
         } catch (Exception e) {
-            super.saveFail(water, variable, "检查申请信息异常:" + e);
+            waterService.saveFail(water, variable, "检查申请信息异常:" + e);
             logger.error("检查申请信息异常,sessionId:{},异常信息:{}" + e, sessionId);
             throw new BpmnError(FlowConstant.BPMNER_ERROR);
         } finally {
@@ -119,7 +123,7 @@ public class ApplyDelegate extends AbstractApplyDelegate implements Serializable
     public void initAskInfo(DelegateExecution delegateExecution) {
         ProcessVariable variable = super.getVariable(delegateExecution);
         String sessionId = variable.getSessionId();
-        Water water = super.getProcessWater(sessionId);
+        Water water = waterService.getProcessWater(sessionId);
         try {
             UserApplyRequest userApplyRequest = variable.getUserApplyRequest();
             // 保存申请表单信息
@@ -135,10 +139,10 @@ public class ApplyDelegate extends AbstractApplyDelegate implements Serializable
             userApplyRequest.setApplyInfo(applyInfo);
             userApplyRequest.setAskInfos(formDatas);
             // 流程记录信息
-            super.saveSuccess(water, variable,"初始化申请信息成功");
+            waterService.saveSuccess(water, variable,"初始化申请信息成功");
             logger.info("初始化申请信息成功,sessionId:{}", sessionId);
         } catch (Exception e) {
-            super.saveFail(water, variable, "初始化申请信息异常:" + e);
+            waterService.saveFail(water, variable, "初始化申请信息异常:" + e);
             logger.error("初始化申请信息异常,sessionId:{},异常信息:{}" + e, sessionId);
             throw new BpmnError(FlowConstant.BPMNER_ERROR);
         } finally {
@@ -158,7 +162,7 @@ public class ApplyDelegate extends AbstractApplyDelegate implements Serializable
     public void initAskTrack(DelegateExecution delegateExecution) {
         ProcessVariable variable = super.getVariable(delegateExecution);
         String sessionId = variable.getSessionId();
-        Water water = super.getProcessWater(sessionId);
+        Water water = waterService.getProcessWater(sessionId);
         try {
             // 初始化审批版本数据
             ApplyInfo applyInfo = variable.getUserApplyRequest().getApplyInfo();
@@ -168,10 +172,10 @@ public class ApplyDelegate extends AbstractApplyDelegate implements Serializable
             // 保存审批记录
             variable.getRecords().add(applyTrack);
             // 流程记录信息
-            super.saveSuccess(water, variable, "初始化版本信息成功");
+            waterService.saveSuccess(water, variable, "初始化版本信息成功");
             logger.info("初始化版本信息成功,sessionId:{}", sessionId);
         } catch (Exception e) {
-            super.saveFail(water, variable, "初始化版本信息异常:" + e);
+            waterService.saveFail(water, variable, "初始化版本信息异常:" + e);
             logger.error("初始化版本信息异常,sessionId:{},异常信息:{}" + e, sessionId);
             throw new BpmnError(FlowConstant.BPMNER_ERROR);
         } finally {

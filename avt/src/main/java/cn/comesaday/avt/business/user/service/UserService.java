@@ -35,7 +35,7 @@ public class UserService extends BaseService<User, Long> {
     private WaterService waterService;
 
     @Autowired
-    private FlowHandler flowHandler;
+    private FlowHandler defaultFlowAndWaterHandler;
 
 
     /**
@@ -54,7 +54,7 @@ public class UserService extends BaseService<User, Long> {
             return;
         }
         // 获取流程变量
-        ProcessVariable variable = flowHandler.getVariable(taskId);
+        ProcessVariable variable = defaultFlowAndWaterHandler.getVariable(taskId);
         Water water = waterService.getProcessWater(variable.getSessionId());
         // 更新历史表
         ApplyTrack applyTrack = this.updateRecords(variable, approvalRequest);
@@ -64,7 +64,7 @@ public class UserService extends BaseService<User, Long> {
                 record = applyTrack;
             }});
         waterService.saveSuccess(water, variable, "审批成功");
-        flowHandler.complete(taskId, variable);
+        defaultFlowAndWaterHandler.complete(taskId, variable);
     }
 
 
@@ -96,6 +96,6 @@ public class UserService extends BaseService<User, Long> {
      * @return cn.comesaday.coe.core.basic.bean.result.JsonResult
      */
     public List<Task> getUserTask(String userId) {
-        return flowHandler.getUserTask(userId);
+        return defaultFlowAndWaterHandler.getUserTask(userId);
     }
 }

@@ -1,6 +1,5 @@
 package cn.comesaday.avt.process.flow.handler;
 
-import cn.comesaday.avt.business.water.service.WaterService;
 import cn.comesaday.avt.process.flow.constant.FlowConstant;
 import cn.comesaday.avt.process.flow.variable.ProcessVariable;
 import cn.comesaday.coe.common.constant.NumConstant;
@@ -35,7 +34,7 @@ import java.util.Map;
  * @CreateAt: 2021-04-25 17:31
  */
 @Component
-public class DefaultFlowAndWaterHandler extends WaterService implements FlowHandler {
+public class DefaultFlowAndWaterHandler implements FlowHandler {
 
     @Autowired
     private TaskService taskService;
