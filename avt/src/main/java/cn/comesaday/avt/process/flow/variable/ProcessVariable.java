@@ -28,6 +28,9 @@ public class ProcessVariable implements Serializable {
     // 当前审批环节
     private String curLinkCode;
 
+    // 检查结果
+    private ApplyCheck applyCheck = new ApplyCheck(Boolean.TRUE);
+
     public ProcessVariable() {
         if (null == records) {
             this.records = new LinkedList<>();
@@ -76,5 +79,13 @@ public class ProcessVariable implements Serializable {
 
     public void setCurLinkCode(String curLinkCode) {
         this.curLinkCode = curLinkCode;
+    }
+
+    public ApplyCheck getApplyCheck() {
+        return applyCheck;
+    }
+
+    public void setApplyCheck(ApplyCheck applyCheck) {
+        this.applyCheck = applyCheck;
     }
 }

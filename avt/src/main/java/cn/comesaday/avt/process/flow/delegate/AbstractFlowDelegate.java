@@ -36,7 +36,7 @@ public abstract class AbstractFlowDelegate extends DefaultFlowAndWaterHandler im
      * @date 2021/4/9 13:59
      * @return void
      */
-    public void processInit(DelegateExecution delegateExecution) {
+    public void init(DelegateExecution delegateExecution) {
         ProcessVariable variable = this.getVariable(delegateExecution);
         String sessionId = variable.getSessionId();
         Water water = waterService.getProcessWater(sessionId);
