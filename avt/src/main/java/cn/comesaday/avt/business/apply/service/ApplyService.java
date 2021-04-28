@@ -126,7 +126,7 @@ public class ApplyService extends BaseService<ApplyInfo, Long> {
      * @author ChenWei
      * @date 2021/3/29 19:52
      */
-    public ApplyInfo initAskMainInfo(UserApplyRequest userApplyRequest, Matter matter) {
+    public ApplyInfo initMainInfo(UserApplyRequest userApplyRequest, Matter matter) {
         ApplyInfo applyInfo = new ApplyInfo();
         applyInfo.setMatterCode(matter.getCode());
         applyInfo.setMatterId(matter.getId());
@@ -184,5 +184,28 @@ public class ApplyService extends BaseService<ApplyInfo, Long> {
     public void createRelation(ApplyInfo applyInfo, Long trackId) {
         applyInfo.setCurTrackId(trackId);
         this.save(applyInfo);
+    }
+
+    /**
+     * <说明> 保存主表数据
+     * @param userApplyRequest UserApplyRequest
+     * @author ChenWei
+     * @date 2021/4/28 14:19
+     * @return cn.comesaday.avt.business.apply.model.ApplyInfo
+     */
+    public ApplyInfo saveMainInfo(UserApplyRequest userApplyRequest) throws Exception {
+        // 保存申请表单信息
+        List<ApplyFormData> formDatas = applyFormDataService.saveAll(userApplyRequest.getAskInfos());
+        // 初始化申请主表
+        Matter matter = matterService.getBasicMatter(userApplyRequest.getMatterId());
+        ApplyInfo applyInfo = this.initMainInfo(userApplyRequest, matter);
+        // 表单数据&主表关联
+        formDatas.stream().forEach(data -> data.setAskId(applyInfo.getId()));
+        applyFormDataService.saveAll(formDatas);
+        // 保存最新信息到流程变量
+        userApplyRequest.setAskId(applyInfo.getId());
+        userApplyRequest.setApplyInfo(applyInfo);
+        userApplyRequest.setAskInfos(formDatas);
+        return applyInfo;
     }
 }

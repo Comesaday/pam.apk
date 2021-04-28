@@ -2,13 +2,15 @@ package cn.comesaday.avt.process.flow.variable;
 
 import cn.comesaday.coe.common.constant.NumConstant;
 
+import java.io.Serializable;
+
 /**
  * <描述> ApplyCheck
  * <详细背景>
  * @author: ChenWei
  * @CreateAt: 2021-04-27 19:43
  */
-public class ApplyCheck {
+public class ApplyCheck implements Serializable {
 
     private Boolean checked;
 

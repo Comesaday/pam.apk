@@ -49,7 +49,7 @@ public class ApplyTrackService extends BaseService<ApplyTrack, Long> {
      * @date 2021/4/8 11:08
      * @return AskInfoTrack
      */
-    public ApplyTrack initAskTrackInfo(ApplyInfo applyInfo, DelegateExecution execution) {
+    public ApplyTrack saveTrackInfo(ApplyInfo applyInfo, DelegateExecution execution) {
         ApplyTrack applyTrack = new ApplyTrack();
         applyTrack.setAskId(applyInfo.getId());
         applyInfo.setApplyId(applyInfo.getApplyId());

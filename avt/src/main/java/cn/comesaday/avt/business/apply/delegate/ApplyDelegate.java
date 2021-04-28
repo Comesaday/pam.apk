@@ -100,21 +100,9 @@ public class ApplyDelegate extends AbstractApplyDelegate implements Serializable
         Water water = waterService.getProcessWater(sessionId);
         try {
             UserApplyRequest userApplyRequest = variable.getUserApplyRequest();
-            // 保存申请表单信息
-            List<ApplyFormData> formDatas = applyFormDataService.saveAll(userApplyRequest.getAskInfos());
-            // 初始化申请主表
-            Matter matter = matterService.getBasicMatter(userApplyRequest.getMatterId());
-            ApplyInfo applyInfo = applyService.initAskMainInfo(userApplyRequest, matter);
-            // 表单数据&主表关联
-            formDatas.stream().forEach(data -> data.setAskId(applyInfo.getId()));
-            applyFormDataService.saveAll(formDatas);
-            // 保存最新信息到流程变量
-            userApplyRequest.setAskId(applyInfo.getId());
-            userApplyRequest.setApplyInfo(applyInfo);
-            userApplyRequest.setAskInfos(formDatas);
-
+            ApplyInfo applyInfo = applyService.saveMainInfo(userApplyRequest);
             // 初始化审批版本数据
-            ApplyTrack applyTrack = applyTrackService.initAskTrackInfo(applyInfo, delegateExecution);
+            ApplyTrack applyTrack = applyTrackService.saveTrackInfo(applyInfo, delegateExecution);
             // 版本、主表数据关联
             applyService.createRelation(applyInfo, applyTrack.getId());
             // 保存审批记录
@@ -130,7 +118,6 @@ public class ApplyDelegate extends AbstractApplyDelegate implements Serializable
             super.resetVariable(delegateExecution, variable);
         }
     }
-
 
     /**
      * <说明> 获取审核结果

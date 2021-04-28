@@ -1,6 +1,8 @@
 package cn.comesaday.avt.process.flow.listener.node.init;
 
+import cn.comesaday.avt.business.apply.model.ApplyInfo;
 import cn.comesaday.avt.business.apply.model.ApplyTrack;
+import cn.comesaday.avt.business.apply.service.ApplyService;
 import cn.comesaday.avt.business.apply.service.ApplyTrackService;
 import cn.comesaday.avt.business.water.model.Water;
 import cn.comesaday.avt.business.water.service.WaterService;
@@ -27,6 +29,9 @@ public class NodeInitListener extends AbstractNodeListener {
     private ApplyTrackService applyTrackService;
 
     @Autowired
+    private ApplyService applyService;
+
+    @Autowired
     private WaterService waterService;
 
     /**
@@ -50,6 +55,8 @@ public class NodeInitListener extends AbstractNodeListener {
             // 更新流程变量数据
             variable.getRecords().add(applyTrack);
             variable.setCurLinkCode(linkCode);
+            // 更新主表
+            this.updateMainInfo(variable.getUserApplyRequest().getApplyInfo(), applyTrack.getId());
             waterService.saveSuccess(water, variable, "审批节点初始化成功");
             logger.info("审批节点初始化成功,sessionId:{}", variable.getSessionId());
         } catch (Exception e) {
@@ -58,5 +65,19 @@ public class NodeInitListener extends AbstractNodeListener {
         } finally {
             super.resetVariable(delegateTask, variable);
         }
+    }
+
+    /**
+     * <说明> 更新主表数据
+     * @param applyInfo ApplyInfo
+     * @param applyTrackId 版本id
+     * @author ChenWei
+     * @date 2021/4/28 14:25
+     * @return void
+     */
+    @Override
+    protected void updateMainInfo(ApplyInfo applyInfo, Long applyTrackId) {
+        applyInfo.setCurTrackId(applyTrackId);
+        applyService.save(applyInfo);
     }
 }
