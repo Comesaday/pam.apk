@@ -14,13 +14,13 @@ import java.util.List;
  * @author: ChenWei
  * @CreateAt: 2021-03-17 14:37
  */
-public class UserApplyRequest implements Serializable {
+public class UserApply implements Serializable {
 
     // 申请人ID
-    private Long applyId;
+    private Long userId;
 
     // 申请人姓名
-    private String applyName;
+    private String userName;
 
     // 申请时间
     private Date askTime = new Date();
@@ -39,20 +39,20 @@ public class UserApplyRequest implements Serializable {
     // 申请表单数据
     private List<ApplyFormData> askInfos;
 
-    public Long getApplyId() {
-        return applyId;
+    public Long getUserId() {
+        return userId;
     }
 
-    public void setApplyId(Long applyId) {
-        this.applyId = applyId;
+    public void setUserId(Long userId) {
+        this.userId = userId;
     }
 
-    public String getApplyName() {
-        return applyName;
+    public String getUserName() {
+        return userName;
     }
 
-    public void setApplyName(String applyName) {
-        this.applyName = applyName;
+    public void setUserName(String userName) {
+        this.userName = userName;
     }
 
     public Date getAskTime() {

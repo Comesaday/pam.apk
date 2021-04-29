@@ -1,7 +1,7 @@
 package cn.comesaday.avt.process.flow.variable;
 
 import cn.comesaday.avt.business.apply.model.ApplyTrack;
-import cn.comesaday.avt.business.apply.vo.UserApplyRequest;
+import cn.comesaday.avt.business.apply.vo.UserApply;
 
 import java.io.Serializable;
 import java.util.LinkedList;
@@ -20,29 +20,35 @@ public class ProcessVariable implements Serializable {
     private String sessionId;
 
     // 申请信息
-    private UserApplyRequest userApplyRequest;
+    private UserApply userApply;
 
     // 审批记录
-    private List<ApplyTrack> records;
+    private List<ApplyTrack> auditRecords;
 
     // 当前审批环节
     private String curLinkCode;
 
     // 检查结果
-    private ApplyCheck applyCheck = new ApplyCheck(Boolean.TRUE);
+    private CheckInfo checkInfo;
 
     public ProcessVariable() {
-        if (null == records) {
-            this.records = new LinkedList<>();
+        if (null == auditRecords) {
+            this.auditRecords = new LinkedList<>();
+        }
+        if (null == checkInfo) {
+            checkInfo = new CheckInfo();
         }
     }
 
-    public ProcessVariable(String sessionId, UserApplyRequest userApplyRequest) {
-        if (null == records) {
-            this.records = new LinkedList<>();
+    public ProcessVariable(String sessionId, UserApply userApply) {
+        if (null == auditRecords) {
+            this.auditRecords = new LinkedList<>();
+        }
+        if (null == checkInfo) {
+            checkInfo = new CheckInfo();
         }
         this.sessionId = sessionId;
-        this.userApplyRequest = userApplyRequest;
+        this.userApply = userApply;
     }
 
     public ProcessVariable(String sessionId) {
@@ -57,20 +63,20 @@ public class ProcessVariable implements Serializable {
         this.sessionId = sessionId;
     }
 
-    public UserApplyRequest getUserApplyRequest() {
-        return userApplyRequest;
+    public UserApply getUserApply() {
+        return userApply;
     }
 
-    public void setUserApplyRequest(UserApplyRequest userApplyRequest) {
-        this.userApplyRequest = userApplyRequest;
+    public void setUserApply(UserApply userApply) {
+        this.userApply = userApply;
     }
 
-    public List<ApplyTrack> getRecords() {
-        return records;
+    public List<ApplyTrack> getAuditRecords() {
+        return auditRecords;
     }
 
-    public void setRecords(List<ApplyTrack> records) {
-        this.records = records;
+    public void setAuditRecords(List<ApplyTrack> auditRecords) {
+        this.auditRecords = auditRecords;
     }
 
     public String getCurLinkCode() {
@@ -81,11 +87,11 @@ public class ProcessVariable implements Serializable {
         this.curLinkCode = curLinkCode;
     }
 
-    public ApplyCheck getApplyCheck() {
-        return applyCheck;
+    public CheckInfo getCheckInfo() {
+        return checkInfo;
     }
 
-    public void setApplyCheck(ApplyCheck applyCheck) {
-        this.applyCheck = applyCheck;
+    public void setCheckInfo(CheckInfo checkInfo) {
+        this.checkInfo = checkInfo;
     }
 }

@@ -2,7 +2,7 @@ package cn.comesaday.avt.business.user.service;
 
 import cn.comesaday.avt.business.apply.model.ApplyTrack;
 import cn.comesaday.avt.business.apply.service.ApplyTrackService;
-import cn.comesaday.avt.business.apply.vo.ApprovalRequest;
+import cn.comesaday.avt.business.apply.vo.Approval;
 import cn.comesaday.avt.business.user.model.User;
 import cn.comesaday.avt.business.water.model.Water;
 import cn.comesaday.avt.business.water.service.WaterService;
@@ -40,15 +40,15 @@ public class UserService extends BaseService<User, Long> {
 
     /**
      * <说明> 任务审批
-     * @param approvalRequest ApprovalRequestVo
+     * @param approval ApprovalRequestVo
      * @author ChenWei
      * @date 2021/4/23 11:16
      * @return void
      */
-    public void approval(ApprovalRequest approvalRequest) {
-        String taskId = approvalRequest.getTaskId();
-        String comment = approvalRequest.getComment();
-        Boolean agree = approvalRequest.getAgree();
+    public void approval(Approval approval) {
+        String taskId = approval.getTaskId();
+        String comment = approval.getComment();
+        Boolean agree = approval.getAgree();
         // 检验必需参数
         if (StringUtils.isEmpty(taskId) || null == agree || StringUtils.isEmpty(comment)) {
             return;
@@ -57,13 +57,14 @@ public class UserService extends BaseService<User, Long> {
         ProcessVariable variable = defaultFlowAndWaterHandler.getVariable(taskId);
         Water water = waterService.getProcessWater(variable.getSessionId());
         // 更新历史表
-        ApplyTrack applyTrack = this.updateRecords(variable, approvalRequest);
+        ApplyTrack applyTrack = this.updateRecords(variable, approval);
         // 重新设置流程变量
-        variable.getRecords().stream().forEach(record -> {
+        variable.getAuditRecords().stream().forEach(record -> {
             if (record.getLinkCode().equals(variable.getCurLinkCode())) {
                 record = applyTrack;
             }});
         waterService.saveSuccess(water, variable, "审批成功");
+        // 完成审批-流程继续
         defaultFlowAndWaterHandler.complete(taskId, variable);
     }
 
@@ -71,17 +72,17 @@ public class UserService extends BaseService<User, Long> {
     /**
      * <说明> 更新历史表
      * @param variable 流程变量
-     * @param approvalRequest 审批参数
+     * @param approval 审批参数
      * @author ChenWei
      * @date 2021/4/23 15:01
      * @return ApplyTrack
      */
-    private ApplyTrack updateRecords(ProcessVariable variable, ApprovalRequest approvalRequest) {
-        ApplyTrack applyTrack = variable.getRecords().stream().filter(record ->
+    private ApplyTrack updateRecords(ProcessVariable variable, Approval approval) {
+        ApplyTrack applyTrack = variable.getAuditRecords().stream().filter(record ->
                 record.getLinkCode().equals(variable.getCurLinkCode())
         ).findFirst().get();
-        applyTrack.setAgree(approvalRequest.getAgree());
-        applyTrack.setComment(approvalRequest.getComment());
+        applyTrack.setAgree(approval.getAgree());
+        applyTrack.setComment(approval.getComment());
         applyTrack.setCheckId(NumConstant.L100);
         applyTrack.setCheckName("系统");
         return applyTrackService.save(applyTrack);

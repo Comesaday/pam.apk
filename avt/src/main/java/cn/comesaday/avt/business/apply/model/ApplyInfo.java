@@ -17,10 +17,10 @@ import java.io.Serializable;
 public class ApplyInfo extends IdEntity implements Serializable {
 
     // 申请人ID
-    private Long applyId;
+    private Long userId;
 
     // 申请人姓名
-    private String applyName;
+    private String userName;
 
     // 事项ID
     private Long matterId;
@@ -40,20 +40,20 @@ public class ApplyInfo extends IdEntity implements Serializable {
     // sessionId
     private String sessionId;
 
-    public Long getApplyId() {
-        return applyId;
+    public Long getUserId() {
+        return userId;
     }
 
-    public void setApplyId(Long applyId) {
-        this.applyId = applyId;
+    public void setUserId(Long userId) {
+        this.userId = userId;
     }
 
-    public String getApplyName() {
-        return applyName;
+    public String getUserName() {
+        return userName;
     }
 
-    public void setApplyName(String applyName) {
-        this.applyName = applyName;
+    public void setUserName(String userName) {
+        this.userName = userName;
     }
 
     public Long getMatterId() {

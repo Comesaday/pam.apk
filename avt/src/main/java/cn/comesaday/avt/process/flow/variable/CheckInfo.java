@@ -10,22 +10,17 @@ import java.io.Serializable;
  * @author: ChenWei
  * @CreateAt: 2021-04-27 19:43
  */
-public class ApplyCheck implements Serializable {
+public class CheckInfo implements Serializable {
 
     private Boolean checked;
 
-    private Integer code = NumConstant.I200;
+    private Integer code;
 
     private String reason;
 
-    public ApplyCheck(Boolean checked) {
-        this.checked = checked;
-    }
-
-    public ApplyCheck(Boolean checked, Integer code, String reason) {
-        this.checked = checked;
-        this.code = code;
-        this.reason = reason;
+    public CheckInfo() {
+        this.checked = Boolean.TRUE;
+        this.code = NumConstant.I200;
     }
 
     public Boolean getChecked() {

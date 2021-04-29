@@ -1,12 +1,11 @@
 package cn.comesaday.avt.business.apply.delegate;
 
-import cn.comesaday.avt.business.apply.model.ApplyFormData;
 import cn.comesaday.avt.business.apply.model.ApplyInfo;
 import cn.comesaday.avt.business.apply.model.ApplyTrack;
 import cn.comesaday.avt.business.apply.service.ApplyFormDataService;
 import cn.comesaday.avt.business.apply.service.ApplyService;
 import cn.comesaday.avt.business.apply.service.ApplyTrackService;
-import cn.comesaday.avt.business.apply.vo.UserApplyRequest;
+import cn.comesaday.avt.business.apply.vo.UserApply;
 import cn.comesaday.avt.business.matter.enums.MatterEnum;
 import cn.comesaday.avt.business.matter.model.Matter;
 import cn.comesaday.avt.business.matter.service.MatterService;
@@ -22,7 +21,6 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
 import java.io.Serializable;
-import java.util.List;
 
 /**
  * <描述> AskForDelegate
@@ -65,19 +63,19 @@ public class ApplyDelegate extends AbstractApplyDelegate implements Serializable
         String sessionId = variable.getSessionId();
         Water water = waterService.getProcessWater(sessionId);
         try {
-            Long matterId = variable.getUserApplyRequest().getMatterId();
+            Long matterId = variable.getUserApply().getMatterId();
             Matter matter = matterService.getBasicMatter(matterId);
             // 检查事项配置
             matterService.checkMatterConfig(matter, MatterEnum.OPEN.getStatus(), Boolean.FALSE);
             // 将事项信息设置到流程变量
-            variable.getUserApplyRequest().setMatter(matter);
+            variable.getUserApply().setMatter(matter);
             // 检查申请信息
-            applyService.checkAskInfo(variable.getUserApplyRequest());
+            applyService.checkAskInfo(variable.getUserApply());
             // 流程记录信息
             waterService.saveSuccess(water, variable, "检查通过");
             logger.info("检查事项配置成功,sessionId:{}", sessionId);
         } catch (Exception e) {
-            variable.getApplyCheck().setNotChecked("检查不通过:" + e);
+            variable.getCheckInfo().setNotChecked("检查不通过:" + e);
             waterService.saveFail(water, variable, "检查不通过:" + e);
             logger.error("检查不通过,sessionId:{},原因:{}" + e, sessionId);
         } finally {
@@ -99,14 +97,14 @@ public class ApplyDelegate extends AbstractApplyDelegate implements Serializable
         String sessionId = variable.getSessionId();
         Water water = waterService.getProcessWater(sessionId);
         try {
-            UserApplyRequest userApplyRequest = variable.getUserApplyRequest();
-            ApplyInfo applyInfo = applyService.saveMainInfo(userApplyRequest);
+            UserApply userApply = variable.getUserApply();
+            ApplyInfo applyInfo = applyService.saveMainInfo(userApply);
             // 初始化审批版本数据
             ApplyTrack applyTrack = applyTrackService.saveTrackInfo(applyInfo, delegateExecution);
             // 版本、主表数据关联
             applyService.createRelation(applyInfo, applyTrack.getId());
             // 保存审批记录
-            variable.getRecords().add(applyTrack);
+            variable.getAuditRecords().add(applyTrack);
             // 流程记录信息
             waterService.saveSuccess(water, variable,"初始化成功");
             logger.info("初始化成功,sessionId:{}", sessionId);
@@ -129,7 +127,7 @@ public class ApplyDelegate extends AbstractApplyDelegate implements Serializable
     @Override
     public Boolean approved(DelegateExecution delegateExecution) {
         ProcessVariable variable = super.getVariable(delegateExecution);
-        ApplyTrack applyTrack = variable.getRecords().stream().filter(record ->
+        ApplyTrack applyTrack = variable.getAuditRecords().stream().filter(record ->
             record.getLinkCode().equals(variable.getCurLinkCode())
         ).findFirst().get();
         return applyTrack.getAgree();
@@ -146,7 +144,7 @@ public class ApplyDelegate extends AbstractApplyDelegate implements Serializable
     @Override
     public Boolean checked(DelegateExecution delegateExecution) {
         ProcessVariable variable = super.getVariable(delegateExecution);
-        return variable.getApplyCheck().getChecked();
+        return variable.getCheckInfo().getChecked();
     }
 
     /**

@@ -1,6 +1,6 @@
 package cn.comesaday.avt.business.user.controller;
 
-import cn.comesaday.avt.business.apply.vo.ApprovalRequest;
+import cn.comesaday.avt.business.apply.vo.Approval;
 import cn.comesaday.avt.business.user.service.UserService;
 import cn.comesaday.coe.core.basic.bean.result.JsonResult;
 import cn.comesaday.coe.core.basic.bean.result.Result;
@@ -58,16 +58,16 @@ public class UserController {
 
     /**
      * <说明> 审批任务
-     * @param approvalRequest ApprovalRequestVo
+     * @param approval ApprovalRequestVo
      * @author ChenWei
      * @date 2021/4/23 10:59
      * @return cn.comesaday.coe.core.basic.bean.result.JsonResult
      */
     @RequestMapping(value = "/task/approval", method = RequestMethod.POST, produces = "application/json")
     @ResponseBody
-    public JsonResult approval(@RequestBody ApprovalRequest approvalRequest) {
+    public JsonResult approval(@RequestBody Approval approval) {
         try {
-            userService.approval(approvalRequest);
+            userService.approval(approval);
             return Result.success("审批成功");
         } catch (Exception e) {
             logger.error("审批异常:" + e.getMessage(), e);

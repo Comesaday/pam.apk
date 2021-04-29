@@ -2,7 +2,7 @@ package cn.comesaday.avt.business.apply.service;
 
 import cn.comesaday.avt.business.apply.model.ApplyFormData;
 import cn.comesaday.avt.business.apply.model.ApplyInfo;
-import cn.comesaday.avt.business.apply.vo.UserApplyRequest;
+import cn.comesaday.avt.business.apply.vo.UserApply;
 import cn.comesaday.avt.business.matter.model.Matter;
 import cn.comesaday.avt.business.matter.service.MatterService;
 import cn.comesaday.avt.process.flow.constant.FlowConstant;
@@ -60,31 +60,31 @@ public class ApplyService extends BaseService<ApplyInfo, Long> {
     /**
      * <说明> 事项申请
      *
-     * @param userApplyRequest 申请信息
+     * @param userApply 申请信息
      * @return cn.comesaday.avt.business.apply.model.AskInfo
      * @author ChenWei
      * @date 2021/3/29 19:52
      */
-    public JsonResult apply(UserApplyRequest userApplyRequest) {
+    public JsonResult apply(UserApply userApply) {
         try {
             executorService.submit(new Runnable() {
                 @Override
                 public void run() {
-                    Authentication.setAuthenticatedUserId(String.valueOf(userApplyRequest.getApplyId()));
+                    Authentication.setAuthenticatedUserId(String.valueOf(userApply.getUserId()));
                     // 初始化流程变量数据
                     String sessionId = RandomStringUtils.randomNumeric(NumConstant.I10);
-                    ProcessVariable variable = new ProcessVariable(sessionId, userApplyRequest);
+                    ProcessVariable variable = new ProcessVariable(sessionId, userApply);
                     Map<String, Object> variables = new HashMap<>();
                     variables.put(FlowConstant.VARIABLE, variable);
                     // 开启流程
-                    ProcessInstance processInstance = runtimeService.startProcessInstanceByKey(userApplyRequest.getMatterCode(), variables);
+                    ProcessInstance processInstance = runtimeService.startProcessInstanceByKey(userApply.getMatterCode(), variables);
                     String instanceId = processInstance.getProcessInstanceId();
-                    logger.info("[提交申请]成功,流程实例ID:{},申请信息:{}", instanceId, JsonUtil.toJson(userApplyRequest));
+                    logger.info("[提交申请]成功,流程实例ID:{},申请信息:{}", instanceId, JsonUtil.toJson(userApply));
                 }
             });
-            return Result.success("提交申请成功", userApplyRequest);
+            return Result.success("提交申请成功", userApply);
         } catch (Exception e) {
-            logger.error("]提交申请]异常:{},申请信息:{}", e, JsonUtil.toJson(userApplyRequest));
+            logger.error("]提交申请]异常:{},申请信息:{}", e, JsonUtil.toJson(userApply));
             return Result.fail("[提交申请]异常:" + e);
         }
     }
@@ -93,26 +93,26 @@ public class ApplyService extends BaseService<ApplyInfo, Long> {
     /**
      * <说明> 检查申请信息
      *
-     * @param userApplyRequest AskInfoVo
+     * @param userApply AskInfoVo
      * @return void
      * @author ChenWei
      * @date 2021/4/7 15:38
      */
-    public void checkAskInfo(UserApplyRequest userApplyRequest) throws PamException {
+    public void checkAskInfo(UserApply userApply) throws PamException {
         // 申请明细信息
-        userApplyRequest.setApplyId(1L);
-        userApplyRequest.setApplyName("11");
-        if (null == userApplyRequest) {
+        userApply.setUserId(1L);
+        userApply.setUserName("11");
+        if (null == userApply) {
             throw new PamException("未查询到申请信息");
         }
-        if (null == userApplyRequest.getMatter()) {
+        if (null == userApply.getMatter()) {
             throw new PamException("申请信息未关联事项");
         }
-        if (null == userApplyRequest.getApplyId()
-                || StringUtils.isEmpty(userApplyRequest.getApplyName())) {
+        if (null == userApply.getUserId()
+                || StringUtils.isEmpty(userApply.getUserName())) {
             throw new PamException("申请人信息为空");
         }
-        if (CollectionUtils.isEmpty(userApplyRequest.getAskInfos())) {
+        if (CollectionUtils.isEmpty(userApply.getAskInfos())) {
             throw new PamException("申请表单信息为空");
         }
     }
@@ -121,18 +121,18 @@ public class ApplyService extends BaseService<ApplyInfo, Long> {
     /**
      * <说明> 初始化事项主表信息
      *
-     * @param userApplyRequest 申请信息
+     * @param userApply 申请信息
      * @return cn.comesaday.avt.business.apply.model.AskInfo
      * @author ChenWei
      * @date 2021/3/29 19:52
      */
-    public ApplyInfo initMainInfo(UserApplyRequest userApplyRequest, Matter matter) {
+    public ApplyInfo initMainInfo(UserApply userApply, Matter matter) {
         ApplyInfo applyInfo = new ApplyInfo();
         applyInfo.setMatterCode(matter.getCode());
         applyInfo.setMatterId(matter.getId());
         applyInfo.setMatterName(matter.getName());
-        applyInfo.setApplyId(null);
-        applyInfo.setApplyName(null);
+        applyInfo.setUserId(null);
+        applyInfo.setUserName(null);
         applyInfo.setStatus(NumConstant.I1);
         return this.save(applyInfo);
     }
@@ -145,20 +145,20 @@ public class ApplyService extends BaseService<ApplyInfo, Long> {
      * @author ChenWei
      * @date 2021/4/1 17:35
      */
-    public UserApplyRequest queryDetail(Long askId) throws PamException {
-        UserApplyRequest userApplyRequest = new UserApplyRequest();
+    public UserApply queryDetail(Long askId) throws PamException {
+        UserApply userApply = new UserApply();
         ApplyInfo applyInfo = this.findOne(askId);
         if (null == applyInfo) {
             throw new PamException("申请信息不存在");
         }
-        userApplyRequest.setAskId(askId);
-        userApplyRequest.setApplyInfo(applyInfo);
-        userApplyRequest.setMatter(matterService.findOne(applyInfo.getMatterId()));
-        userApplyRequest.setApplyId(applyInfo.getApplyId());
-        userApplyRequest.setApplyName(applyInfo.getApplyName());
-        userApplyRequest.setAskTime(applyInfo.getCreateAt());
-        userApplyRequest.setAskInfos(getAskDatas(askId));
-        return userApplyRequest;
+        userApply.setAskId(askId);
+        userApply.setApplyInfo(applyInfo);
+        userApply.setMatter(matterService.findOne(applyInfo.getMatterId()));
+        userApply.setUserId(applyInfo.getUserId());
+        userApply.setUserName(applyInfo.getUserName());
+        userApply.setAskTime(applyInfo.getCreateAt());
+        userApply.setAskInfos(getAskDatas(askId));
+        return userApply;
     }
 
     /**
@@ -188,24 +188,24 @@ public class ApplyService extends BaseService<ApplyInfo, Long> {
 
     /**
      * <说明> 保存主表数据
-     * @param userApplyRequest UserApplyRequest
+     * @param userApply UserApplyRequest
      * @author ChenWei
      * @date 2021/4/28 14:19
      * @return cn.comesaday.avt.business.apply.model.ApplyInfo
      */
-    public ApplyInfo saveMainInfo(UserApplyRequest userApplyRequest) throws Exception {
+    public ApplyInfo saveMainInfo(UserApply userApply) throws Exception {
         // 保存申请表单信息
-        List<ApplyFormData> formDatas = applyFormDataService.saveAll(userApplyRequest.getAskInfos());
+        List<ApplyFormData> formDatas = applyFormDataService.saveAll(userApply.getAskInfos());
         // 初始化申请主表
-        Matter matter = matterService.getBasicMatter(userApplyRequest.getMatterId());
-        ApplyInfo applyInfo = this.initMainInfo(userApplyRequest, matter);
+        Matter matter = matterService.getBasicMatter(userApply.getMatterId());
+        ApplyInfo applyInfo = this.initMainInfo(userApply, matter);
         // 表单数据&主表关联
         formDatas.stream().forEach(data -> data.setAskId(applyInfo.getId()));
         applyFormDataService.saveAll(formDatas);
         // 保存最新信息到流程变量
-        userApplyRequest.setAskId(applyInfo.getId());
-        userApplyRequest.setApplyInfo(applyInfo);
-        userApplyRequest.setAskInfos(formDatas);
+        userApply.setAskId(applyInfo.getId());
+        userApply.setApplyInfo(applyInfo);
+        userApply.setAskInfos(formDatas);
         return applyInfo;
     }
 }

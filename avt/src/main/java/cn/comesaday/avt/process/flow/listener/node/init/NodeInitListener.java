@@ -48,15 +48,15 @@ public class NodeInitListener extends AbstractNodeListener {
         try {
             String linkCode = delegateTask.getTaskDefinitionKey();
             ApplyTrack applyTrack = new ApplyTrack();
-            applyTrack.setAskId(variable.getUserApplyRequest().getAskId());
+            applyTrack.setAskId(variable.getUserApply().getAskId());
             applyTrack.setLinkCode(linkCode);
             applyTrack.setLinkName(delegateTask.getName());
             applyTrack = applyTrackService.save(applyTrack);
             // 更新流程变量数据
-            variable.getRecords().add(applyTrack);
+            variable.getAuditRecords().add(applyTrack);
             variable.setCurLinkCode(linkCode);
             // 更新主表
-            this.updateMainInfo(variable.getUserApplyRequest().getApplyInfo(), applyTrack.getId());
+            this.updateMainInfo(variable.getUserApply().getApplyInfo(), applyTrack.getId());
             waterService.saveSuccess(water, variable, "审批节点初始化成功");
             logger.info("审批节点初始化成功,sessionId:{}", variable.getSessionId());
         } catch (Exception e) {

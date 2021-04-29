@@ -52,8 +52,8 @@ public class ApplyTrackService extends BaseService<ApplyTrack, Long> {
     public ApplyTrack saveTrackInfo(ApplyInfo applyInfo, DelegateExecution execution) {
         ApplyTrack applyTrack = new ApplyTrack();
         applyTrack.setAskId(applyInfo.getId());
-        applyInfo.setApplyId(applyInfo.getApplyId());
-        applyInfo.setApplyName(applyInfo.getApplyName());
+        applyInfo.setUserId(applyInfo.getUserId());
+        applyInfo.setUserName(applyInfo.getUserName());
         applyTrack.setLinkCode(execution.getCurrentActivityId());
         applyTrack.setLinkName(execution.getCurrentFlowElement().getName());
         applyTrack.setAgree(Boolean.TRUE);

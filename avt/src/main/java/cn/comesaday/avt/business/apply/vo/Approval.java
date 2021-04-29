@@ -6,7 +6,7 @@ package cn.comesaday.avt.business.apply.vo;
  * @author: ChenWei
  * @CreateAt: 2021-04-23 11:10
  */
-public class ApprovalRequest {
+public class Approval {
 
     // 任务ID
     private String taskId;
