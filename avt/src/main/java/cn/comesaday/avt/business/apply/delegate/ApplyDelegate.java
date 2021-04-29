@@ -2,7 +2,6 @@ package cn.comesaday.avt.business.apply.delegate;
 
 import cn.comesaday.avt.business.apply.model.ApplyInfo;
 import cn.comesaday.avt.business.apply.model.ApplyTrack;
-import cn.comesaday.avt.business.apply.service.ApplyFormDataService;
 import cn.comesaday.avt.business.apply.service.ApplyService;
 import cn.comesaday.avt.business.apply.service.ApplyTrackService;
 import cn.comesaday.avt.business.apply.vo.UserApply;
@@ -39,9 +38,6 @@ public class ApplyDelegate extends AbstractApplyDelegate implements Serializable
 
     @Autowired
     private MatterService matterService;
-
-    @Autowired
-    private ApplyFormDataService applyFormDataService;
 
     @Autowired
     private ApplyTrackService applyTrackService;

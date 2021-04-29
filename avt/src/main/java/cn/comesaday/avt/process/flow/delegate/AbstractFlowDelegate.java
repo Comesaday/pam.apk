@@ -43,7 +43,6 @@ public abstract class AbstractFlowDelegate extends DefaultFlowAndWaterHandler im
         try {
             String processInstanceId = delegateExecution.getProcessInstanceId();
             water.setProcessId(processInstanceId);
-            water.setSessionId(sessionId);
             water.setTimes(NumConstant.I0);
             waterService.saveSuccess(water, variable, "流程信息初始化成功");
             logger.info("流程信息初始化成功,sessionId:{},方法:{}", sessionId);

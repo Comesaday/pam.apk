@@ -70,9 +70,14 @@ public class ApplyService extends BaseService<ApplyInfo, Long> {
             executorService.submit(new Runnable() {
                 @Override
                 public void run() {
+                    // 设置流程发起人
                     Authentication.setAuthenticatedUserId(String.valueOf(userApply.getUserId()));
                     // 初始化流程变量数据
-                    String sessionId = RandomStringUtils.randomNumeric(NumConstant.I10);
+                    String sessionId = userApply.getSessionId();
+                    if (StringUtils.isEmpty(sessionId)) {
+                       sessionId = RandomStringUtils.randomNumeric(NumConstant.I10);
+                    }
+                    userApply.setSessionId(sessionId);
                     ProcessVariable variable = new ProcessVariable(sessionId, userApply);
                     Map<String, Object> variables = new HashMap<>();
                     variables.put(FlowConstant.VARIABLE, variable);

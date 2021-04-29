@@ -36,6 +36,8 @@ public class UserApply implements Serializable {
 
     private ApplyInfo applyInfo;
 
+    private String sessionId;
+
     // 申请表单数据
     private List<ApplyFormData> askInfos;
 
@@ -109,5 +111,13 @@ public class UserApply implements Serializable {
 
     public void setMatterCode(String matterCode) {
         this.matterCode = matterCode;
+    }
+
+    public String getSessionId() {
+        return sessionId;
+    }
+
+    public void setSessionId(String sessionId) {
+        this.sessionId = sessionId;
     }
 }
