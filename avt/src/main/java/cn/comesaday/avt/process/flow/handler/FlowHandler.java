@@ -5,6 +5,7 @@ import org.activiti.engine.delegate.DelegateExecution;
 import org.activiti.engine.delegate.DelegateTask;
 import org.activiti.engine.repository.Deployment;
 import org.activiti.engine.repository.Model;
+import org.activiti.engine.runtime.ProcessInstance;
 import org.activiti.engine.task.Task;
 
 import java.util.List;
@@ -233,4 +234,15 @@ public interface FlowHandler {
      * @return java.lang.Boolean
      */
     Boolean isAssigneeOrCandidateUser(String taskId, String userId);
+
+
+    /**
+     * <说明> 流程启动
+     * @param matterCode 流程key
+     * @param variable 流程变量
+     * @author ChenWei
+     * @date 2021/5/6 10:26
+     * @return org.activiti.engine.runtime.ProcessInstance
+     */
+    ProcessInstance startProcessByKey(String matterCode, ProcessVariable variable);
 }

@@ -3,7 +3,7 @@ package cn.comesaday.avt.process.flow.delegate;
 import cn.comesaday.avt.business.water.model.Water;
 import cn.comesaday.avt.business.water.service.WaterService;
 import cn.comesaday.avt.process.flow.constant.FlowConstant;
-import cn.comesaday.avt.process.flow.handler.DefaultFlowAndWaterHandler;
+import cn.comesaday.avt.process.flow.handler.DefaultFlowHandler;
 import cn.comesaday.avt.process.flow.variable.ProcessVariable;
 import cn.comesaday.coe.common.constant.NumConstant;
 import org.activiti.engine.delegate.BpmnError;
@@ -19,7 +19,7 @@ import org.springframework.beans.factory.annotation.Autowired;
  * @author: ChenWei
  * @CreateAt: 2021-04-14 19:50
  */
-public abstract class AbstractFlowDelegate extends DefaultFlowAndWaterHandler implements JavaDelegate {
+public abstract class AbstractFlowDelegate extends DefaultFlowHandler implements JavaDelegate {
 
 
     // 日志打印

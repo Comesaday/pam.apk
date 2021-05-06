@@ -12,11 +12,13 @@ import org.activiti.bpmn.model.BpmnModel;
 import org.activiti.editor.constants.ModelDataJsonConstants;
 import org.activiti.editor.language.json.converter.BpmnJsonConverter;
 import org.activiti.engine.RepositoryService;
+import org.activiti.engine.RuntimeService;
 import org.activiti.engine.TaskService;
 import org.activiti.engine.delegate.DelegateExecution;
 import org.activiti.engine.delegate.DelegateTask;
 import org.activiti.engine.repository.Deployment;
 import org.activiti.engine.repository.Model;
+import org.activiti.engine.runtime.ProcessInstance;
 import org.activiti.engine.task.Task;
 import org.activiti.engine.task.TaskQuery;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -34,13 +36,16 @@ import java.util.Map;
  * @CreateAt: 2021-04-25 17:31
  */
 @Component
-public class DefaultFlowAndWaterHandler implements FlowHandler {
+public class DefaultFlowHandler implements FlowHandler {
 
     @Autowired
     private TaskService taskService;
 
     @Autowired
     private RepositoryService repositoryService;
+
+    @Autowired
+    private RuntimeService runtimeService;
 
 
     /**
@@ -390,5 +395,21 @@ public class DefaultFlowAndWaterHandler implements FlowHandler {
      */
     private TaskQuery getTaskQuery(String taskId) {
         return taskService.createTaskQuery().taskId(taskId);
+    }
+
+
+    /**
+     * <说明> 流程启动
+     * @param matterCode 流程key
+     * @param variable 流程变量
+     * @author ChenWei
+     * @date 2021/5/6 10:26
+     * @return org.activiti.engine.runtime.ProcessInstance
+     */
+    @Override
+    public ProcessInstance startProcessByKey(String matterCode, ProcessVariable variable) {
+        Map<String, Object> variables = new HashMap<>();
+        variables.put(FlowConstant.VARIABLE, variable);
+        return runtimeService.startProcessInstanceByKey(matterCode, variables);
     }
 }

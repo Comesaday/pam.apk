@@ -48,7 +48,7 @@ public class NodeInitListener extends AbstractNodeListener {
         try {
             String linkCode = delegateTask.getTaskDefinitionKey();
             ApplyTrack applyTrack = new ApplyTrack();
-            applyTrack.setAskId(variable.getUserApply().getAskId());
+            applyTrack.setAskId(variable.getUserApply().getApplyInfo().getId());
             applyTrack.setLinkCode(linkCode);
             applyTrack.setLinkName(delegateTask.getName());
             applyTrack = applyTrackService.save(applyTrack);

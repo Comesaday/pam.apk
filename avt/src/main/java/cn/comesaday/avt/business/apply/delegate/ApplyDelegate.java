@@ -12,6 +12,7 @@ import cn.comesaday.avt.business.water.model.Water;
 import cn.comesaday.avt.business.water.service.WaterService;
 import cn.comesaday.avt.process.flow.constant.FlowConstant;
 import cn.comesaday.avt.process.flow.variable.ProcessVariable;
+import cn.comesaday.coe.core.basic.exception.PamException;
 import org.activiti.engine.delegate.BpmnError;
 import org.activiti.engine.delegate.DelegateExecution;
 import org.slf4j.Logger;
@@ -69,8 +70,8 @@ public class ApplyDelegate extends AbstractApplyDelegate implements Serializable
             applyService.checkAskInfo(variable.getUserApply());
             // 流程记录信息
             waterService.saveSuccess(water, variable, "检查通过");
-            logger.info("检查事项配置成功,sessionId:{}", sessionId);
-        } catch (Exception e) {
+            logger.info("检查事项配置通过,sessionId:{}", sessionId);
+        } catch (PamException e) {
             variable.getCheckInfo().setNotChecked("检查不通过:" + e);
             waterService.saveFail(water, variable, "检查不通过:" + e);
             logger.error("检查不通过,sessionId:{},原因:{}" + e, sessionId);

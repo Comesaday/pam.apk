@@ -5,7 +5,9 @@ import cn.comesaday.avt.business.apply.model.ApplyInfo;
 import cn.comesaday.avt.business.apply.vo.UserApply;
 import cn.comesaday.avt.business.matter.model.Matter;
 import cn.comesaday.avt.business.matter.service.MatterService;
-import cn.comesaday.avt.process.flow.constant.FlowConstant;
+import cn.comesaday.avt.business.water.model.Water;
+import cn.comesaday.avt.business.water.service.WaterService;
+import cn.comesaday.avt.process.flow.handler.FlowHandler;
 import cn.comesaday.avt.process.flow.variable.ProcessVariable;
 import cn.comesaday.coe.common.constant.NumConstant;
 import cn.comesaday.coe.common.util.JsonUtil;
@@ -13,7 +15,6 @@ import cn.comesaday.coe.core.basic.bean.result.JsonResult;
 import cn.comesaday.coe.core.basic.bean.result.Result;
 import cn.comesaday.coe.core.basic.exception.PamException;
 import cn.comesaday.coe.core.basic.service.BaseService;
-import org.activiti.engine.RuntimeService;
 import org.activiti.engine.impl.identity.Authentication;
 import org.activiti.engine.runtime.ProcessInstance;
 import org.apache.commons.lang.RandomStringUtils;
@@ -25,9 +26,7 @@ import org.springframework.transaction.annotation.Transactional;
 import org.springframework.util.CollectionUtils;
 import org.springframework.util.StringUtils;
 
-import java.util.HashMap;
 import java.util.List;
-import java.util.Map;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
 
@@ -49,7 +48,10 @@ public class ApplyService extends BaseService<ApplyInfo, Long> {
     private ApplyFormDataService applyFormDataService;
 
     @Autowired
-    private RuntimeService runtimeService;
+    private FlowHandler defaultFlowHandler;
+
+    @Autowired
+    private WaterService waterService;
 
     // 日志打印
     private final static Logger logger = LoggerFactory.getLogger(ApplyService.class);
@@ -66,31 +68,31 @@ public class ApplyService extends BaseService<ApplyInfo, Long> {
      * @date 2021/3/29 19:52
      */
     public JsonResult apply(UserApply userApply) {
+        // 初始化流程变量
+        final String sessionId = StringUtils.isEmpty(userApply.getSessionId())
+                ? RandomStringUtils.randomNumeric(NumConstant.I10) : userApply.getSessionId();
+        userApply.setSessionId(sessionId);
+        ProcessVariable variable = new ProcessVariable(sessionId, userApply);
+        logger.info("提交申请信息:{}", JsonUtil.toJson(userApply));
+        Water water = waterService.getProcessWater(sessionId);
         try {
             executorService.submit(new Runnable() {
                 @Override
                 public void run() {
                     // 设置流程发起人
                     Authentication.setAuthenticatedUserId(String.valueOf(userApply.getUserId()));
-                    // 初始化流程变量数据
-                    String sessionId = userApply.getSessionId();
-                    if (StringUtils.isEmpty(sessionId)) {
-                       sessionId = RandomStringUtils.randomNumeric(NumConstant.I10);
-                    }
-                    userApply.setSessionId(sessionId);
-                    ProcessVariable variable = new ProcessVariable(sessionId, userApply);
-                    Map<String, Object> variables = new HashMap<>();
-                    variables.put(FlowConstant.VARIABLE, variable);
                     // 开启流程
-                    ProcessInstance processInstance = runtimeService.startProcessInstanceByKey(userApply.getMatterCode(), variables);
+                    ProcessInstance processInstance = defaultFlowHandler.startProcessByKey(userApply.getMatterCode(), variable);
                     String instanceId = processInstance.getProcessInstanceId();
-                    logger.info("[提交申请]成功,流程实例ID:{},申请信息:{}", instanceId, JsonUtil.toJson(userApply));
+                    logger.info("提交申请成功,sessionId:{},流程实例ID:{}", sessionId, instanceId);
                 }
             });
+            waterService.saveSuccess(water, variable, "提交申请成功");
             return Result.success("提交申请成功", userApply);
         } catch (Exception e) {
-            logger.error("]提交申请]异常:{},申请信息:{}", e, JsonUtil.toJson(userApply));
-            return Result.fail("[提交申请]异常:" + e);
+            waterService.saveFail(water, variable, "提交申请异常:" + e.getMessage());
+            logger.error("提交申请异常:{}", e.getMessage(), e);
+            return Result.fail("提交申请异常:" + e.getMessage());
         }
     }
 
@@ -156,7 +158,6 @@ public class ApplyService extends BaseService<ApplyInfo, Long> {
         if (null == applyInfo) {
             throw new PamException("申请信息不存在");
         }
-        userApply.setAskId(askId);
         userApply.setApplyInfo(applyInfo);
         userApply.setMatter(matterService.findOne(applyInfo.getMatterId()));
         userApply.setUserId(applyInfo.getUserId());
@@ -199,16 +200,21 @@ public class ApplyService extends BaseService<ApplyInfo, Long> {
      * @return cn.comesaday.avt.business.apply.model.ApplyInfo
      */
     public ApplyInfo saveMainInfo(UserApply userApply) throws Exception {
+        Long applyId = userApply.getApplyInfo().getId();
+        List<ApplyFormData> datas = applyFormDataService.findAllByProperty("applyId", applyId);
+        if (!CollectionUtils.isEmpty(datas)) {
+            datas.stream().forEach(data -> {data.setDisabled(Boolean.TRUE);});
+        }
+
         // 保存申请表单信息
         List<ApplyFormData> formDatas = applyFormDataService.saveAll(userApply.getAskInfos());
         // 初始化申请主表
         Matter matter = matterService.getBasicMatter(userApply.getMatterId());
         ApplyInfo applyInfo = this.initMainInfo(userApply, matter);
         // 表单数据&主表关联
-        formDatas.stream().forEach(data -> data.setAskId(applyInfo.getId()));
+        formDatas.stream().forEach(data -> data.setApplyId(applyInfo.getId()));
         applyFormDataService.saveAll(formDatas);
         // 保存最新信息到流程变量
-        userApply.setAskId(applyInfo.getId());
         userApply.setApplyInfo(applyInfo);
         userApply.setAskInfos(formDatas);
         return applyInfo;

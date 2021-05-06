@@ -32,8 +32,6 @@ public class UserApply implements Serializable {
 
     private Matter matter;
 
-    private Long askId;
-
     private ApplyInfo applyInfo;
 
     private String sessionId;
@@ -87,14 +85,6 @@ public class UserApply implements Serializable {
 
     public void setMatter(Matter matter) {
         this.matter = matter;
-    }
-
-    public Long getAskId() {
-        return askId;
-    }
-
-    public void setAskId(Long askId) {
-        this.askId = askId;
     }
 
     public ApplyInfo getApplyInfo() {

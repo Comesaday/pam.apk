@@ -17,7 +17,7 @@ import java.io.Serializable;
 public class ApplyFormData extends IdEntity implements Serializable {
 
     // 申请主表ID
-    private Long askId;
+    private Long applyId;
 
     // 元素ID
     private Long dictId;
@@ -34,12 +34,12 @@ public class ApplyFormData extends IdEntity implements Serializable {
     // 申请人填写
     private String userFill;
 
-    public Long getAskId() {
-        return askId;
+    public Long getApplyId() {
+        return applyId;
     }
 
-    public void setAskId(Long askId) {
-        this.askId = askId;
+    public void setApplyId(Long applyId) {
+        this.applyId = applyId;
     }
 
     public Long getDictId() {

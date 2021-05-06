@@ -1,7 +1,7 @@
 package cn.comesaday.avt.process.flow.listener.node;
 
 import cn.comesaday.avt.business.apply.model.ApplyInfo;
-import cn.comesaday.avt.process.flow.handler.DefaultFlowAndWaterHandler;
+import cn.comesaday.avt.process.flow.handler.DefaultFlowHandler;
 import org.activiti.engine.delegate.TaskListener;
 
 /**
@@ -10,7 +10,7 @@ import org.activiti.engine.delegate.TaskListener;
  * @CreateAt 2021-04-22 21:29
  */
 public abstract class AbstractNodeListener
-        extends DefaultFlowAndWaterHandler implements TaskListener {
+        extends DefaultFlowHandler implements TaskListener {
 
     /**
      * <说明> 更新主表数据
