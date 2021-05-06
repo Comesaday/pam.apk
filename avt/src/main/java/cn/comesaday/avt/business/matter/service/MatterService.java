@@ -43,7 +43,7 @@ public class MatterService extends BaseService<Matter, Long> {
     private MatterUserSettingService matterUserSettingService;
 
     @Autowired
-    private FlowHandler defaultFlowAndWaterHandler;
+    private FlowHandler defaultFlowHandler;
 
     /**
      * <说明> 事项表单配置
@@ -119,7 +119,7 @@ public class MatterService extends BaseService<Matter, Long> {
         Matter matter = this.getBasicMatter(matterId);
         this.checkMatterConfig(matter, MatterEnum.DEFINED.getStatus(), Boolean.TRUE);
         // 创建新流程
-        Model model = defaultFlowAndWaterHandler.createModel(matter.getCode(),
+        Model model = defaultFlowHandler.createModel(matter.getCode(),
                 matter.getName(), matter.getRemark(), NumConstant.I1);
         // 保存流程定义信息
         matter.setModelId(model.getId());
@@ -140,7 +140,7 @@ public class MatterService extends BaseService<Matter, Long> {
         Matter matter = this.getBasicMatter(matterId);
         this.checkMatterConfig(matter, MatterEnum.DEPLOY.getStatus(), Boolean.TRUE);
         // 流程部署
-        Deployment deployment = defaultFlowAndWaterHandler.deploymentModel(matter.getModelId());
+        Deployment deployment = defaultFlowHandler.deploymentModel(matter.getModelId());
         // 保存流程部署信息
         matter.setDeployId(deployment.getId());
         matter.setStatus(MatterEnum.DEPLOY.getStatus());
