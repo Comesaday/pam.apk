@@ -114,6 +114,7 @@ public class ApplyDelegate extends AbstractApplyDelegate implements Serializable
         }
     }
 
+
     /**
      * <说明> 获取审核结果
      * @param delegateExecution DelegateExecution
@@ -143,6 +144,7 @@ public class ApplyDelegate extends AbstractApplyDelegate implements Serializable
         ProcessVariable variable = super.getVariable(delegateExecution);
         return variable.getCheckInfo().getChecked();
     }
+
 
     /**
      * <说明> execute

@@ -11,6 +11,7 @@ import org.activiti.engine.delegate.DelegateExecution;
  */
 public abstract class AbstractApplyDelegate extends AbstractFlowDelegate {
 
+
     /**
      * <说明> 检查事项配置
      * @param delegateExecution DelegateExecution
@@ -20,6 +21,7 @@ public abstract class AbstractApplyDelegate extends AbstractFlowDelegate {
      */
     public abstract void check(DelegateExecution delegateExecution);
 
+
     /**
      * <说明> 初始化申请信息
      * @param delegateExecution DelegateExecution
@@ -28,6 +30,7 @@ public abstract class AbstractApplyDelegate extends AbstractFlowDelegate {
      * @return void
      */
     public abstract void apply(DelegateExecution delegateExecution);
+
 
     /**
      * <说明> 获取审批结果

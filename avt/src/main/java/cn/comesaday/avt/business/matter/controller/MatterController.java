@@ -33,6 +33,7 @@ public class MatterController {
     @Autowired
     private MatterService matterService;
 
+
     /**
      * <说明> 事项表单配置
      * @param settingVo MatterSettingVo
@@ -46,6 +47,7 @@ public class MatterController {
         return "redirect:/matter/index";
     }
 
+
     /**
      * <说明> 移除事项表单配置
      * @param settingVo MatterSettingVo
@@ -58,6 +60,7 @@ public class MatterController {
         matterService.removeSetting(settingVo);
         return "redirect:/matter/index";
     }
+
 
     /**
      * <说明> 事项主页面
@@ -73,6 +76,7 @@ public class MatterController {
         model.addAttribute("matters", matters);
         return "matter/index";
     }
+
 
     /**
      * <说明> 事项编辑页面
@@ -94,6 +98,7 @@ public class MatterController {
         return "matter/edit";
     }
 
+
     /**
      * <说明> 保存事项
      * @param matter Matter
@@ -105,6 +110,7 @@ public class MatterController {
         matterService.save(matter);
         return "redirect:/matter/index";
     }
+
 
     /**
      * <说明> 事项创建流程
@@ -125,6 +131,7 @@ public class MatterController {
             return Result.fail("流程创建失败：" + e);
         }
     }
+
 
     /**
      * <说明> 事项流程部署

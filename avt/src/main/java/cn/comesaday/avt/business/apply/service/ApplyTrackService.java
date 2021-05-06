@@ -22,6 +22,7 @@ import java.util.List;
 @Service
 public class ApplyTrackService extends BaseService<ApplyTrack, Long> {
 
+
     /**
      * <说明> 获取版本数据
      * @param askId 申请主数据id
@@ -40,6 +41,7 @@ public class ApplyTrackService extends BaseService<ApplyTrack, Long> {
         }
         return applyTrack;
     }
+
 
     /**
      * <说明> 初始化版本数据

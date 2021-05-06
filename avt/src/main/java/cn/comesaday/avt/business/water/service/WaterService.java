@@ -17,6 +17,7 @@ import org.springframework.transaction.annotation.Transactional;
 @Transactional
 public class WaterService extends BaseService<Water, Long> {
 
+
     /**
      * <说明> 记录流程成功信息
      * @param water Water
@@ -32,6 +33,7 @@ public class WaterService extends BaseService<Water, Long> {
         return this.save(water);
     }
 
+
     /**
      * <说明> 记录流程失败信息
      * @param water Water
@@ -46,6 +48,7 @@ public class WaterService extends BaseService<Water, Long> {
         water.setParam(JsonUtil.toJson(variable));
         return this.save(water);
     }
+
 
     /**
      * <说明> 查询流程流水记录

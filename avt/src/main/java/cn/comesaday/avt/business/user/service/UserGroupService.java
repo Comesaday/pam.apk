@@ -25,6 +25,7 @@ public class UserGroupService extends BaseService<UserGroup, Long> {
     @Autowired
     private UserGroupRelationService userGroupRelationService;
 
+
     /**
      * <说明> 获取用户组用户
      * @param groupCode 组id
@@ -39,6 +40,7 @@ public class UserGroupService extends BaseService<UserGroup, Long> {
         }
         return relations.stream().map(relation -> {return relation.getUserId();}).collect(Collectors.toList());
     }
+
 
     /**
      * <说明> 获取用户组用户

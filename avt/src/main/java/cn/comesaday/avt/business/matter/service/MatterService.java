@@ -45,6 +45,7 @@ public class MatterService extends BaseService<Matter, Long> {
     @Autowired
     private FlowHandler defaultFlowHandler;
 
+
     /**
      * <说明> 事项表单配置
      * @param settingVo MatterSettingVo
@@ -69,6 +70,7 @@ public class MatterService extends BaseService<Matter, Long> {
         }
     }
 
+
     /**
      * <说明> 生成事项表单配置信息
      * @param setting MatterFieldSetting
@@ -88,6 +90,7 @@ public class MatterService extends BaseService<Matter, Long> {
         return setting;
     }
 
+
     /**
      * <说明> 移除事项表单配置
      * @param settingVo MatterSettingVo
@@ -106,6 +109,7 @@ public class MatterService extends BaseService<Matter, Long> {
             matterFieldSettingService.deleteById(settingId);
         }
     }
+
 
     /**
      * <说明> 检查事项配置并创建流程
@@ -128,6 +132,7 @@ public class MatterService extends BaseService<Matter, Long> {
         return model;
     }
 
+
     /**
      * <说明> 部署事项流程
      * @param matterId 事项id
@@ -147,6 +152,7 @@ public class MatterService extends BaseService<Matter, Long> {
         this.save(matter);
         return deployment;
     }
+
 
     /**
      * <说明> 检查事项
@@ -180,6 +186,7 @@ public class MatterService extends BaseService<Matter, Long> {
         }
     }
 
+
     /**
      * <说明> 获取事项配置的所有人
      * @param matterId 事项id
@@ -190,6 +197,7 @@ public class MatterService extends BaseService<Matter, Long> {
     public List<MatterUserSetting> getMatterUsers(Long matterId) {
         return matterUserSettingService.findAllByProperty("matterId", matterId);
     }
+
 
     /**
      * <说明> 获取事项环节审批人
@@ -206,6 +214,7 @@ public class MatterService extends BaseService<Matter, Long> {
         return matterUserSettingService.findAll(setting);
     }
 
+
     /**
      * <说明> 事项是否存在
      * @param matterId 事项id
@@ -220,6 +229,7 @@ public class MatterService extends BaseService<Matter, Long> {
         }
         return matter;
     }
+
 
     /**
      * <说明> 查事项表单

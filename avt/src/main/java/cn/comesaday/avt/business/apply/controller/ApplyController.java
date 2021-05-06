@@ -27,6 +27,7 @@ public class ApplyController {
     @Autowired
     private MatterService matterService;
 
+
     /**
      * <说明> 事项申请页面
      * @param model Model
@@ -46,6 +47,7 @@ public class ApplyController {
         return "apply/apply-edit";
     }
 
+
     /**
      * <说明> 保存申请信息
      * @param model Model
@@ -64,6 +66,7 @@ public class ApplyController {
         }
         return "apply/apply-view";
     }
+
 
     /**
      * <说明> 查看申请信息

@@ -23,6 +23,7 @@ public class DictController {
     @Autowired
     private DictService dictService;
 
+
     /**
      * <说明> 数据字典主页面
      * @param model Model
@@ -38,6 +39,7 @@ public class DictController {
         return "dict/index";
     }
 
+
     /**
      * <说明> 编辑数据字典
      * @param dictId Long
@@ -52,6 +54,7 @@ public class DictController {
         return "dict/edit";
     }
 
+
     /**
      * <说明> 保存数据字典
      * @param dict Dict
@@ -65,6 +68,7 @@ public class DictController {
         return "formard:/dict/index";
     }
 
+
     /**
      * <说明> 删除数据字典
      * @param dictId Long
@@ -77,6 +81,7 @@ public class DictController {
         dictService.deleteById(dictId);
         return "formard:/dict/index";
     }
+
 
     /**
      * <说明> 查询事项
