@@ -15,7 +15,6 @@ import cn.comesaday.coe.core.basic.bean.result.JsonResult;
 import cn.comesaday.coe.core.basic.bean.result.Result;
 import cn.comesaday.coe.core.basic.exception.PamException;
 import cn.comesaday.coe.core.basic.service.BaseService;
-import org.activiti.engine.impl.identity.Authentication;
 import org.activiti.engine.runtime.ProcessInstance;
 import org.activiti.engine.task.Task;
 import org.apache.commons.lang.RandomStringUtils;
@@ -87,6 +86,7 @@ public class ApplyService extends BaseService<ApplyInfo, Long> {
                     String processKey = userApply.getMatterCode();
                     ProcessInstance processInstance = defaultFlowHandler.startProcessByKey(processKey, applyId);
                     String instanceId = processInstance.getProcessInstanceId();
+                    water.setProcessId(instanceId);
                     logger.info("申请流程开启,sessionId:{},流程实例ID:{}", sessionId, instanceId);
                     // 提交申请信息
                     List<Task> tasks = defaultFlowHandler.getUserTask(instanceId, applyId);
@@ -95,7 +95,6 @@ public class ApplyService extends BaseService<ApplyInfo, Long> {
                         task = tasks.get(NumConstant.I0);
                     }
                     defaultFlowHandler.complete(task.getId(), variable);
-                    logger.info("申请提交成功,sessionId:{}", sessionId);
                 }
             });
             waterService.saveSuccess(water, variable, "申请提交处理中");
@@ -150,6 +149,7 @@ public class ApplyService extends BaseService<ApplyInfo, Long> {
         applyInfo.setUserId(null);
         applyInfo.setUserName(null);
         applyInfo.setStatus(NumConstant.I1);
+        applyInfo.setSessionId(userApply.getSessionId());
         return this.save(applyInfo);
     }
 
@@ -198,25 +198,51 @@ public class ApplyService extends BaseService<ApplyInfo, Long> {
      * @date 2021/4/28 14:19
      * @return cn.comesaday.avt.business.apply.model.ApplyInfo
      */
-    public ApplyInfo saveMainInfo(UserApply userApply) throws Exception {
-        Long applyId = userApply.getApplyInfo().getId();
-        if (null != applyId) {
-            List<ApplyFormData> datas = applyFormDataService.getFormDatas(applyId);
-            if (!CollectionUtils.isEmpty(datas)) {
-                datas.stream().forEach(data -> {data.setDeleted(Boolean.TRUE);});
-            }
+    public ApplyInfo saveMainInfo(UserApply userApply) {
+        ApplyInfo applyInfo = userApply.getApplyInfo();
+        if (null != applyInfo) {
+            this.deleteOldFormDatas(applyInfo.getId());
         }
         // 保存申请表单信息
         List<ApplyFormData> formDatas = applyFormDataService.saveAll(userApply.getAskInfos());
         // 初始化申请主表
-        Matter matter = matterService.getBasicMatter(userApply.getMatterId());
-        ApplyInfo applyInfo = this.initMainInfo(userApply, matter);
+        applyInfo = this.initMainInfo(userApply, userApply.getMatter());
         // 表单数据&主表关联
-        formDatas.stream().forEach(data -> data.setApplyId(applyInfo.getId()));
-        applyFormDataService.saveAll(formDatas);
+        this.createRelationWithFormData(applyInfo, formDatas);
         // 保存最新信息到流程变量
         userApply.setApplyInfo(applyInfo);
         userApply.setAskInfos(formDatas);
         return applyInfo;
+    }
+
+
+    /**
+     * <说明> 删除旧的申请表单
+     * @param applyId Long 主表ID
+     * @author ChenWei
+     * @date 2021/5/7 17:14
+     * @return void
+     */
+    private void deleteOldFormDatas(Long applyId) {
+        List<ApplyFormData> datas = applyFormDataService.getFormDatas(applyId);
+        if (!CollectionUtils.isEmpty(datas)) {
+            datas.stream().forEach(data -> {data.setDeleted(Boolean.TRUE);});
+        }
+        applyFormDataService.saveAll(datas);
+    }
+
+
+    /**
+     * <说明> 保存表单数据关联
+     * @param applyInfo ApplyInfo
+     * @param formDatas List<ApplyFormData>
+     * @author ChenWei
+     * @date 2021/5/7 17:13
+     * @return void
+     */
+    private void createRelationWithFormData(ApplyInfo applyInfo, List<ApplyFormData> formDatas) {
+        final Long applyId = applyInfo.getId();
+        formDatas.stream().forEach(data -> data.setApplyId(applyId));
+        applyFormDataService.saveAll(formDatas);
     }
 }
