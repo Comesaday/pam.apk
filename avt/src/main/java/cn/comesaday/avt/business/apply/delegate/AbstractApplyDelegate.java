@@ -29,7 +29,7 @@ public abstract class AbstractApplyDelegate extends AbstractFlowDelegate {
      * @date 2021/4/9 11:11
      * @return void
      */
-    public abstract void apply(DelegateExecution delegateExecution);
+    public abstract void init(DelegateExecution delegateExecution);
 
 
     /**
@@ -39,7 +39,7 @@ public abstract class AbstractApplyDelegate extends AbstractFlowDelegate {
      * @date 2021/4/9 15:04
      * @return void
      */
-    public abstract Boolean approved(DelegateExecution delegateExecution);
+    public abstract Boolean agree(DelegateExecution delegateExecution);
 
 
     /**

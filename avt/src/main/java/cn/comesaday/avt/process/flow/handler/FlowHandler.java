@@ -115,6 +115,17 @@ public interface FlowHandler {
 
 
     /**
+     * <说明> 获取人员任务
+     * @param userId 人员ID
+     * @param instanceId 流程实例ID
+     * @author ChenWei
+     * @date 2021/4/25 17:42
+     * @return java.util.List<org.activiti.engine.task.Task>
+     */
+    List<Task> getUserTask(String instanceId, String userId);
+
+
+    /**
      * <说明> 变更审批人
      * @param taskId 任务ID
      * @param userId 用户ID
@@ -239,10 +250,10 @@ public interface FlowHandler {
     /**
      * <说明> 流程启动
      * @param matterCode 流程key
-     * @param variable 流程变量
+     * @param applyId String
      * @author ChenWei
      * @date 2021/5/6 10:26
      * @return org.activiti.engine.runtime.ProcessInstance
      */
-    ProcessInstance startProcessByKey(String matterCode, ProcessVariable variable);
+    ProcessInstance startProcessByKey(String matterCode, String applyId);
 }

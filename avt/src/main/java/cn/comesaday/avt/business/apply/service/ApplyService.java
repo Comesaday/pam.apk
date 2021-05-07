@@ -17,6 +17,7 @@ import cn.comesaday.coe.core.basic.exception.PamException;
 import cn.comesaday.coe.core.basic.service.BaseService;
 import org.activiti.engine.impl.identity.Authentication;
 import org.activiti.engine.runtime.ProcessInstance;
+import org.activiti.engine.task.Task;
 import org.apache.commons.lang.RandomStringUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -72,27 +73,37 @@ public class ApplyService extends BaseService<ApplyInfo, Long> {
         final String sessionId = StringUtils.isEmpty(userApply.getSessionId())
                 ? RandomStringUtils.randomNumeric(NumConstant.I10) : userApply.getSessionId();
         userApply.setSessionId(sessionId);
+        userApply.setUserId(17L);
+        userApply.setUserName("11");
         ProcessVariable variable = new ProcessVariable(sessionId, userApply);
-        logger.info("提交申请信息:{}", JsonUtil.toJson(userApply));
+        logger.info("打印申请信息:{},sessionId:{}", JsonUtil.toJson(userApply), sessionId);
         Water water = waterService.getProcessWater(sessionId);
         try {
             executorService.submit(new Runnable() {
                 @Override
                 public void run() {
-                    // 设置流程发起人
-                    Authentication.setAuthenticatedUserId(String.valueOf(userApply.getUserId()));
+                    String applyId = String.valueOf(userApply.getUserId());
                     // 开启流程
-                    ProcessInstance processInstance = defaultFlowHandler.startProcessByKey(userApply.getMatterCode(), variable);
+                    String processKey = userApply.getMatterCode();
+                    ProcessInstance processInstance = defaultFlowHandler.startProcessByKey(processKey, applyId);
                     String instanceId = processInstance.getProcessInstanceId();
-                    logger.info("提交申请成功,sessionId:{},流程实例ID:{}", sessionId, instanceId);
+                    logger.info("申请流程开启,sessionId:{},流程实例ID:{}", sessionId, instanceId);
+                    // 提交申请信息
+                    List<Task> tasks = defaultFlowHandler.getUserTask(instanceId, applyId);
+                    Task task = null;
+                    if (!CollectionUtils.isEmpty(tasks)) {
+                        task = tasks.get(NumConstant.I0);
+                    }
+                    defaultFlowHandler.complete(task.getId(), variable);
+                    logger.info("申请提交成功,sessionId:{}", sessionId);
                 }
             });
-            waterService.saveSuccess(water, variable, "提交申请成功");
-            return Result.success("提交申请成功", userApply);
+            waterService.saveSuccess(water, variable, "申请提交处理中");
+            return Result.success("申请提交处理中", userApply);
         } catch (Exception e) {
-            waterService.saveFail(water, variable, "提交申请异常:" + e.getMessage());
-            logger.error("提交申请异常:{}", e.getMessage(), e);
-            return Result.fail("提交申请异常:" + e.getMessage());
+            waterService.saveFail(water, variable, "申请提交异常:" + e.getMessage());
+            logger.error("申请提交异常:{},sessionId:{}", e.getMessage(), sessionId, e);
+            return Result.fail("申请提交异常:" + e.getMessage());
         }
     }
 
@@ -107,8 +118,6 @@ public class ApplyService extends BaseService<ApplyInfo, Long> {
      */
     public void checkAskInfo(UserApply userApply) throws PamException {
         // 申请明细信息
-        userApply.setUserId(1L);
-        userApply.setUserName("11");
         if (null == userApply) {
             throw new PamException("未查询到申请信息");
         }
@@ -147,14 +156,14 @@ public class ApplyService extends BaseService<ApplyInfo, Long> {
     /**
      * <说明> 查询申请信息
      *
-     * @param askId Long
+     * @param applyId Long
      * @return cn.comesaday.avt.business.apply.vo.AskInfoVo
      * @author ChenWei
      * @date 2021/4/1 17:35
      */
-    public UserApply queryDetail(Long askId) throws PamException {
+    public UserApply queryDetail(Long applyId) throws PamException {
         UserApply userApply = new UserApply();
-        ApplyInfo applyInfo = this.findOne(askId);
+        ApplyInfo applyInfo = this.findOne(applyId);
         if (null == applyInfo) {
             throw new PamException("申请信息不存在");
         }
@@ -163,21 +172,10 @@ public class ApplyService extends BaseService<ApplyInfo, Long> {
         userApply.setUserId(applyInfo.getUserId());
         userApply.setUserName(applyInfo.getUserName());
         userApply.setAskTime(applyInfo.getCreateAt());
-        userApply.setAskInfos(getAskDatas(askId));
+        userApply.setAskInfos(applyFormDataService.getFormDatas(applyId));
         return userApply;
     }
 
-    /**
-     * <说明> 获取申请表单信息
-     *
-     * @param askId Long
-     * @return java.util.List<cn.comesaday.avt.business.apply.model.AskFormData>
-     * @author ChenWei
-     * @date 2021/4/15 17:20
-     */
-    public List<ApplyFormData> getAskDatas(Long askId) {
-        return applyFormDataService.findAllByProperty("askId", askId);
-    }
 
     /**
      * <说明> 实时更新主申请表关联关系
@@ -192,6 +190,7 @@ public class ApplyService extends BaseService<ApplyInfo, Long> {
         this.save(applyInfo);
     }
 
+
     /**
      * <说明> 保存主表数据
      * @param userApply UserApplyRequest
@@ -201,11 +200,12 @@ public class ApplyService extends BaseService<ApplyInfo, Long> {
      */
     public ApplyInfo saveMainInfo(UserApply userApply) throws Exception {
         Long applyId = userApply.getApplyInfo().getId();
-        List<ApplyFormData> datas = applyFormDataService.findAllByProperty("applyId", applyId);
-        if (!CollectionUtils.isEmpty(datas)) {
-            datas.stream().forEach(data -> {data.setDisabled(Boolean.TRUE);});
+        if (null != applyId) {
+            List<ApplyFormData> datas = applyFormDataService.getFormDatas(applyId);
+            if (!CollectionUtils.isEmpty(datas)) {
+                datas.stream().forEach(data -> {data.setDeleted(Boolean.TRUE);});
+            }
         }
-
         // 保存申请表单信息
         List<ApplyFormData> formDatas = applyFormDataService.saveAll(userApply.getAskInfos());
         // 初始化申请主表

@@ -8,8 +8,6 @@ import cn.comesaday.avt.business.apply.vo.UserApply;
 import cn.comesaday.avt.business.matter.enums.MatterEnum;
 import cn.comesaday.avt.business.matter.model.Matter;
 import cn.comesaday.avt.business.matter.service.MatterService;
-import cn.comesaday.avt.business.water.model.Water;
-import cn.comesaday.avt.business.water.service.WaterService;
 import cn.comesaday.avt.process.flow.constant.FlowConstant;
 import cn.comesaday.avt.process.flow.variable.ProcessVariable;
 import cn.comesaday.coe.core.basic.exception.PamException;
@@ -43,10 +41,6 @@ public class ApplyDelegate extends AbstractApplyDelegate implements Serializable
     @Autowired
     private ApplyTrackService applyTrackService;
     
-    @Autowired
-    private WaterService waterService;
-
-
     /**
      * <说明> 检查事项配置
      * @param delegateExecution DelegateExecution
@@ -58,7 +52,6 @@ public class ApplyDelegate extends AbstractApplyDelegate implements Serializable
     public void check(DelegateExecution delegateExecution) {
         ProcessVariable variable = super.getVariable(delegateExecution);
         String sessionId = variable.getSessionId();
-        Water water = waterService.getProcessWater(sessionId);
         try {
             Long matterId = variable.getUserApply().getMatterId();
             Matter matter = matterService.getBasicMatter(matterId);
@@ -69,12 +62,10 @@ public class ApplyDelegate extends AbstractApplyDelegate implements Serializable
             // 检查申请信息
             applyService.checkAskInfo(variable.getUserApply());
             // 流程记录信息
-            waterService.saveSuccess(water, variable, "检查通过");
             logger.info("检查事项配置通过,sessionId:{}", sessionId);
         } catch (PamException e) {
-            variable.getCheckInfo().setNotChecked("检查不通过:" + e);
-            waterService.saveFail(water, variable, "检查不通过:" + e);
-            logger.error("检查不通过,sessionId:{},原因:{}" + e, sessionId);
+            variable.getCheckInfo().setNotChecked("检查不通过:" + e.getMessage());
+            logger.error("检查不通过,sessionId:{},原因:{}", sessionId, e.getMessage());
         } finally {
             super.resetVariable(delegateExecution, variable);
         }
@@ -89,10 +80,9 @@ public class ApplyDelegate extends AbstractApplyDelegate implements Serializable
      * @return void
      */
     @Override
-    public void apply(DelegateExecution delegateExecution) {
+    public void init(DelegateExecution delegateExecution) {
         ProcessVariable variable = super.getVariable(delegateExecution);
         String sessionId = variable.getSessionId();
-        Water water = waterService.getProcessWater(sessionId);
         try {
             UserApply userApply = variable.getUserApply();
             ApplyInfo applyInfo = applyService.saveMainInfo(userApply);
@@ -102,12 +92,9 @@ public class ApplyDelegate extends AbstractApplyDelegate implements Serializable
             applyService.createRelation(applyInfo, applyTrack.getId());
             // 保存审批记录
             variable.getAuditRecords().add(applyTrack);
-            // 流程记录信息
-            waterService.saveSuccess(water, variable,"初始化成功");
             logger.info("初始化成功,sessionId:{}", sessionId);
         } catch (Exception e) {
-            waterService.saveFail(water, variable, "初始化失败:" + e);
-            logger.error("初始化失败,sessionId:{},异常信息:{}" + e, sessionId);
+            logger.error("初始化失败,sessionId:{},异常信息:{}", sessionId, e.getMessage());
             throw new BpmnError(FlowConstant.BPMNER_ERROR);
         } finally {
             super.resetVariable(delegateExecution, variable);
@@ -123,7 +110,7 @@ public class ApplyDelegate extends AbstractApplyDelegate implements Serializable
      * @return java.lang.Boolean
      */
     @Override
-    public Boolean approved(DelegateExecution delegateExecution) {
+    public Boolean agree(DelegateExecution delegateExecution) {
         ProcessVariable variable = super.getVariable(delegateExecution);
         ApplyTrack applyTrack = variable.getAuditRecords().stream().filter(record ->
             record.getLinkCode().equals(variable.getCurLinkCode())

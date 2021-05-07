@@ -5,6 +5,8 @@ import cn.comesaday.coe.core.basic.service.BaseService;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import java.util.List;
+
 /**
  * <描述> AskFormDataService
  * <详细背景>
@@ -15,4 +17,7 @@ import org.springframework.transaction.annotation.Transactional;
 @Service
 public class ApplyFormDataService extends BaseService<ApplyFormData, Long> {
 
+    public List<ApplyFormData> getFormDatas(Long applyId) {
+        return this.findAllByProperty("applyId", applyId);
+    }
 }

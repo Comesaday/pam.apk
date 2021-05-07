@@ -1,6 +1,7 @@
-package cn.comesaday.avt.process.flow.handler;
+package cn.comesaday.avt.process.flow.handler.impl;
 
 import cn.comesaday.avt.process.flow.constant.FlowConstant;
+import cn.comesaday.avt.process.flow.handler.FlowHandler;
 import cn.comesaday.avt.process.flow.variable.ProcessVariable;
 import cn.comesaday.coe.common.constant.NumConstant;
 import cn.comesaday.coe.core.basic.exception.PamException;
@@ -16,6 +17,7 @@ import org.activiti.engine.RuntimeService;
 import org.activiti.engine.TaskService;
 import org.activiti.engine.delegate.DelegateExecution;
 import org.activiti.engine.delegate.DelegateTask;
+import org.activiti.engine.impl.identity.Authentication;
 import org.activiti.engine.repository.Deployment;
 import org.activiti.engine.repository.Model;
 import org.activiti.engine.runtime.ProcessInstance;
@@ -214,6 +216,20 @@ public class DefaultFlowHandler implements FlowHandler {
 
 
     /**
+     * <说明> 获取人员任务
+     * @param userId 人员ID
+     * @param instanceId 流程实例ID
+     * @author ChenWei
+     * @date 2021/4/25 17:42
+     * @return java.util.List<org.activiti.engine.task.Task>
+     */
+    @Override
+    public List<Task> getUserTask(String instanceId, String userId) {
+        return taskService.createTaskQuery().processInstanceId(instanceId).taskCandidateOrAssigned(userId).list();
+    }
+
+
+    /**
      * <说明> 设置审批人
      * @param taskId 任务ID
      * @param userId 用户ID
@@ -401,15 +417,18 @@ public class DefaultFlowHandler implements FlowHandler {
     /**
      * <说明> 流程启动
      * @param matterCode 流程key
-     * @param variable 流程变量
+     * @param applyId String
      * @author ChenWei
      * @date 2021/5/6 10:26
      * @return org.activiti.engine.runtime.ProcessInstance
      */
     @Override
-    public ProcessInstance startProcessByKey(String matterCode, ProcessVariable variable) {
+    public ProcessInstance startProcessByKey(String matterCode, String applyId) {
+        // 设置发起人
+        Authentication.setAuthenticatedUserId(applyId);
+        // 设置流程变量
         Map<String, Object> variables = new HashMap<>();
-        variables.put(FlowConstant.VARIABLE, variable);
+        variables.put(FlowConstant.APPLYID, applyId);
         return runtimeService.startProcessInstanceByKey(matterCode, variables);
     }
 }
