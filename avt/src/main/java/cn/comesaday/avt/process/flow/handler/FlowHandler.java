@@ -58,7 +58,17 @@ public interface FlowHandler {
      * @date 2021/4/25 17:28
      * @return cn.comesaday.avt.process.flow.variable.ProcessVariable
      */
-    ProcessVariable getVariable(String taskId);
+    ProcessVariable getVariableByTaskId(String taskId);
+
+
+    /**
+     * <说明> 获取流程变量
+     * @param instanceId 流程实例ID
+     * @author ChenWei
+     * @date 2021/4/25 17:28
+     * @return cn.comesaday.avt.process.flow.variable.ProcessVariable
+     */
+    ProcessVariable getVariableByInstanceId(String instanceId);
 
 
     /**

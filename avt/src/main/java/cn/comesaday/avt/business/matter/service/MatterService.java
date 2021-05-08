@@ -208,10 +208,10 @@ public class MatterService extends BaseService<Matter, Long> {
      * @return java.util.List<cn.comesaday.avt.business.matter.model.MatterUserSetting>
      */
     public List<MatterUserSetting> getMatterLinkUsers(Long matterId, String actId) {
-        MatterUserSetting setting = new MatterUserSetting();
-        setting.setMatterId(matterId);
-        setting.setLinkCode(actId);
-        return matterUserSettingService.findAll(setting);
+        MatterUserSetting matterUserSetting = new MatterUserSetting();
+        matterUserSetting.setMatterId(matterId);
+        matterUserSetting.setLinkCode(actId);
+        return matterUserSettingService.findAll(matterUserSetting);
     }
 
 

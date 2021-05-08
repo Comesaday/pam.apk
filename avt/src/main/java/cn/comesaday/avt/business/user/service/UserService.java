@@ -3,20 +3,24 @@ package cn.comesaday.avt.business.user.service;
 import cn.comesaday.avt.business.apply.model.ApplyTrack;
 import cn.comesaday.avt.business.apply.service.ApplyTrackService;
 import cn.comesaday.avt.business.apply.vo.Approval;
+import cn.comesaday.avt.business.matter.model.MatterUserSetting;
+import cn.comesaday.avt.business.matter.service.MatterService;
+import cn.comesaday.avt.business.matter.service.MatterUserSettingService;
 import cn.comesaday.avt.business.user.model.User;
 import cn.comesaday.avt.business.water.model.Water;
 import cn.comesaday.avt.business.water.service.WaterService;
 import cn.comesaday.avt.process.flow.handler.FlowHandler;
 import cn.comesaday.avt.process.flow.variable.ProcessVariable;
-import cn.comesaday.coe.common.constant.NumConstant;
 import cn.comesaday.coe.core.basic.service.BaseService;
 import org.activiti.engine.task.Task;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
+import org.springframework.util.CollectionUtils;
 import org.springframework.util.StringUtils;
 
 import java.util.List;
+import java.util.stream.Collectors;
 
 /**
  * <描述> UserService
@@ -37,6 +41,18 @@ public class UserService extends BaseService<User, Long> {
     @Autowired
     private FlowHandler defaultFlowHandler;
 
+    @Autowired
+    private UserGroupService userGroupService;
+
+    @Autowired
+    private UserService userService;
+
+    @Autowired
+    private MatterService matterService;
+
+    @Autowired
+    private MatterUserSettingService matterUserSettingService;
+
 
     /**
      * <说明> 任务审批
@@ -54,11 +70,11 @@ public class UserService extends BaseService<User, Long> {
             return;
         }
         // 获取流程变量
-        ProcessVariable variable = defaultFlowHandler.getVariable(taskId);
+        ProcessVariable variable = defaultFlowHandler.getVariableByTaskId(taskId);
         Water water = waterService.getProcessWater(variable.getSessionId());
         // 更新历史表
         ApplyTrack applyTrack = this.updateRecords(variable, approval);
-        // 重新设置流程变量
+        // 更新流程变量
         variable.getAuditRecords().stream().forEach(record -> {
             if (record.getLinkCode().equals(variable.getCurLinkCode())) {
                 record = applyTrack;
@@ -83,8 +99,8 @@ public class UserService extends BaseService<User, Long> {
         ).findFirst().get();
         applyTrack.setAgree(approval.getAgree());
         applyTrack.setComment(approval.getComment());
-        applyTrack.setCheckId(NumConstant.L100);
-        applyTrack.setCheckName("系统");
+        applyTrack.setCheckId(approval.getUserId());
+        applyTrack.setCheckName(approval.getUserName());
         return applyTrackService.save(applyTrack);
     }
 
@@ -98,5 +114,38 @@ public class UserService extends BaseService<User, Long> {
      */
     public List<Task> getUserTask(String userId) {
         return defaultFlowHandler.getUserTask(userId);
+    }
+
+
+    /**
+     * <说明> 获取事项当前环节审批人
+     * @param matterId 事项ID
+     * @param curLinkCode 当前环节Code
+     * @author ChenWei
+     * @date 2021/5/8 11:35
+     * @return java.util.List<cn.comesaday.avt.business.user.model.User>
+     */
+    public List<User> getAuditPersons(Long matterId, String curLinkCode) {
+        if (null == matterId || StringUtils.isEmpty(curLinkCode)) {
+            return null;
+        }
+        // 获取事项环节配置
+        List<MatterUserSetting> userSettingList = matterService.getMatterLinkUsers(matterId, curLinkCode);
+        if (CollectionUtils.isEmpty(userSettingList)) {
+            return null;
+        }
+        // 获取审批人
+        List<Long> userIds = userSettingList.stream().filter(userSetting ->
+                null != userSetting.getUserId()).map(userSetting -> {
+                    return userSetting.getUserId();}).collect(Collectors.toList());
+        // 获取审批组的人
+        List<String> groupCodes = userSettingList.stream().filter(userSetting ->
+                null == userSetting.getUserId()).map(userSetting -> {
+            return userSetting.getGroupCode();
+        }).collect(Collectors.toList());
+        if (!CollectionUtils.isEmpty(groupCodes)) {
+            userIds.addAll(userGroupService.getGroupsUserIds(groupCodes));
+        }
+        return userService.findAllById(userIds);
     }
 }

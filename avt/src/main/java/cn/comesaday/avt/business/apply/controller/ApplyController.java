@@ -1,10 +1,13 @@
 package cn.comesaday.avt.business.apply.controller;
 
 import cn.comesaday.avt.business.apply.service.ApplyService;
+import cn.comesaday.avt.business.apply.vo.DynamicApplyInfo;
+import cn.comesaday.avt.business.apply.vo.StaticApplyInfo;
 import cn.comesaday.avt.business.apply.vo.UserApply;
 import cn.comesaday.avt.business.matter.service.MatterService;
 import cn.comesaday.avt.business.matter.vo.MatterResponse;
 import cn.comesaday.coe.core.basic.bean.result.JsonResult;
+import cn.comesaday.coe.core.basic.exception.PamException;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
@@ -71,17 +74,57 @@ public class ApplyController {
     /**
      * <说明> 查看申请信息
      * @param model Model
-     * @param askInfoId 申请id
+     * @param askId 申请id
      * @author ChenWei
      * @date 2021/4/1 17:34
      * @return java.lang.String
      */
-    @RequestMapping("/view/{askInfoId}")
-    public String view(Model model, @PathVariable(value = "askInfoId") Long askInfoId) {
+    @RequestMapping("/query/basic/{askId}")
+    public String getBasicInfo(Model model, @PathVariable(value = "askId") Long askId) {
         try {
-            UserApply askInfo = applyService.queryDetail(askInfoId);
+            UserApply askInfo = applyService.getBasic(askId);
             model.addAttribute("askInfo", askInfo);
-        } catch (Exception e) {
+        } catch (PamException e) {
+            model.addAttribute("error", e.getMessage());
+        }
+        return "apply/apply-view";
+    }
+
+
+    /**
+     * <说明> 获取静态申请信息
+     * @param model Model
+     * @param askId 申请id
+     * @author ChenWei
+     * @date 2021/5/8 9:39
+     * @return java.lang.String
+     */
+    @RequestMapping("/query/static/{askId}")
+    public String getStaticInfo(Model model, @PathVariable(value = "askId") Long askId) {
+        try {
+            StaticApplyInfo staticApplyInfo = applyService.getStatic(askId);
+            model.addAttribute("staticApplyInfo", staticApplyInfo);
+        } catch (PamException e) {
+            model.addAttribute("error", e.getMessage());
+        }
+        return "apply/apply-view";
+    }
+
+
+    /**
+     * <说明> 获取动态申请信息
+     * @param model Model
+     * @param askId Long
+     * @author ChenWei
+     * @date 2021/5/8 9:39
+     * @return java.lang.String
+     */
+    @RequestMapping("/query/dynamic/{askId}")
+    public String getDynamicInfo(Model model, @PathVariable(value = "askId") Long askId) {
+        try {
+            DynamicApplyInfo dynamicApplyInfo = applyService.getDynamic(askId);
+            model.addAttribute("dynamicApplyInfo", dynamicApplyInfo);
+        } catch (PamException e) {
             model.addAttribute("error", e.getMessage());
         }
         return "apply/apply-view";

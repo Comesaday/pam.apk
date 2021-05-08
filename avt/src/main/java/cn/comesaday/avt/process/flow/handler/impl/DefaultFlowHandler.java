@@ -18,6 +18,7 @@ import org.activiti.engine.TaskService;
 import org.activiti.engine.delegate.DelegateExecution;
 import org.activiti.engine.delegate.DelegateTask;
 import org.activiti.engine.impl.identity.Authentication;
+import org.activiti.engine.impl.persistence.entity.ExecutionEntity;
 import org.activiti.engine.repository.Deployment;
 import org.activiti.engine.repository.Model;
 import org.activiti.engine.runtime.ProcessInstance;
@@ -139,10 +140,25 @@ public class DefaultFlowHandler implements FlowHandler {
      * @return cn.comesaday.avt.process.flow.variable.ProcessVariable
      */
     @Override
-    public ProcessVariable getVariable(String taskId) {
+    public ProcessVariable getVariableByTaskId(String taskId) {
         return (ProcessVariable) taskService.getVariable(taskId, FlowConstant.VARIABLE);
     }
 
+
+    /**
+     * <说明> 根据流程实例ID获取流程变量
+     * @param instanceId 流程实例ID
+     * @author ChenWei
+     * @date 2021/5/8 10:39
+     * @return cn.comesaday.avt.process.flow.variable.ProcessVariable
+     */
+    @Override
+    public ProcessVariable getVariableByInstanceId(String instanceId) {
+        // 当前活动节点
+        ExecutionEntity execution = (ExecutionEntity) runtimeService.createProcessInstanceQuery()
+                .processInstanceId(instanceId).singleResult();
+        return (ProcessVariable) execution.getVariable(FlowConstant.VARIABLE);
+    }
 
 
     /**

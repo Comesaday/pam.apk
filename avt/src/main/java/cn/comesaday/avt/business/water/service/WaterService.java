@@ -64,4 +64,17 @@ public class WaterService extends BaseService<Water, Long> {
         }
         return water;
     }
+
+
+    /**
+     * <说明> 获取流程实例ID
+     * @param sessionId String
+     * @author ChenWei
+     * @date 2021/5/8 9:57
+     * @return java.lang.String
+     */
+    public String getInstanceId(String sessionId) {
+        Water water = this.findByProperty("sessionId", sessionId);
+        return null == water ? null : water.getProcessId();
+    }
 }

@@ -2,9 +2,14 @@ package cn.comesaday.avt.business.apply.service;
 
 import cn.comesaday.avt.business.apply.model.ApplyFormData;
 import cn.comesaday.avt.business.apply.model.ApplyInfo;
+import cn.comesaday.avt.business.apply.model.ApplyTrack;
+import cn.comesaday.avt.business.apply.vo.DynamicApplyInfo;
+import cn.comesaday.avt.business.apply.vo.StaticApplyInfo;
 import cn.comesaday.avt.business.apply.vo.UserApply;
 import cn.comesaday.avt.business.matter.model.Matter;
 import cn.comesaday.avt.business.matter.service.MatterService;
+import cn.comesaday.avt.business.user.model.User;
+import cn.comesaday.avt.business.user.service.UserService;
 import cn.comesaday.avt.business.water.model.Water;
 import cn.comesaday.avt.business.water.service.WaterService;
 import cn.comesaday.avt.process.flow.handler.FlowHandler;
@@ -26,6 +31,7 @@ import org.springframework.transaction.annotation.Transactional;
 import org.springframework.util.CollectionUtils;
 import org.springframework.util.StringUtils;
 
+import java.util.Date;
 import java.util.List;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
@@ -48,10 +54,16 @@ public class ApplyService extends BaseService<ApplyInfo, Long> {
     private ApplyFormDataService applyFormDataService;
 
     @Autowired
+    private ApplyTrackService applyTrackService;
+
+    @Autowired
     private FlowHandler defaultFlowHandler;
 
     @Autowired
     private WaterService waterService;
+
+    @Autowired
+    private UserService userService;
 
     // 日志打印
     private final static Logger logger = LoggerFactory.getLogger(ApplyService.class);
@@ -156,23 +168,28 @@ public class ApplyService extends BaseService<ApplyInfo, Long> {
     /**
      * <说明> 查询申请信息
      *
-     * @param applyId Long
+     * @param askId Long
      * @return cn.comesaday.avt.business.apply.vo.AskInfoVo
      * @author ChenWei
      * @date 2021/4/1 17:35
      */
-    public UserApply queryDetail(Long applyId) throws PamException {
+    public UserApply getBasic(Long askId) throws PamException {
         UserApply userApply = new UserApply();
-        ApplyInfo applyInfo = this.findOne(applyId);
+        ApplyInfo applyInfo = this.findOne(askId);
         if (null == applyInfo) {
             throw new PamException("申请信息不存在");
         }
+        Matter matter = matterService.findOne(applyInfo.getMatterId());
         userApply.setApplyInfo(applyInfo);
-        userApply.setMatter(matterService.findOne(applyInfo.getMatterId()));
+        userApply.setSessionId(applyInfo.getSessionId());
+        userApply.setMatter(matter);
+        userApply.setMatterId(matter.getId());
+        userApply.setMatterCode(matter.getCode());
         userApply.setUserId(applyInfo.getUserId());
         userApply.setUserName(applyInfo.getUserName());
         userApply.setAskTime(applyInfo.getCreateAt());
-        userApply.setAskInfos(applyFormDataService.getFormDatas(applyId));
+        List<ApplyFormData> formDatas = applyFormDataService.getFormDatas(askId);
+        userApply.setAskInfos(formDatas);
         return userApply;
     }
 
@@ -244,5 +261,53 @@ public class ApplyService extends BaseService<ApplyInfo, Long> {
         final Long applyId = applyInfo.getId();
         formDatas.stream().forEach(data -> data.setApplyId(applyId));
         applyFormDataService.saveAll(formDatas);
+    }
+
+
+    /**
+     * <说明> 获取静态申请信息
+     * @param askId 申请id
+     * @author ChenWei
+     * @date 2021/5/8 9:48
+     * @return cn.comesaday.avt.business.apply.vo.StaticApplyInfo
+     */
+    public StaticApplyInfo getStatic(Long askId) throws PamException {
+        StaticApplyInfo staticApplyInfo = new StaticApplyInfo();
+        staticApplyInfo.setTime(new Date());
+
+        UserApply userApply = this.getBasic(askId);
+        staticApplyInfo.setUserApply(userApply);
+
+        List<ApplyTrack> auditRecords = applyTrackService.getAuditRecords(askId);
+        staticApplyInfo.setAuditRecords(auditRecords);
+
+        return staticApplyInfo;
+    }
+
+
+    /**
+     * <说明> 动态获取申请信息
+     * @param askId 申请ID
+     * @author ChenWei
+     * @date 2021/5/8 10:43
+     * @return cn.comesaday.avt.business.apply.vo.DynamicApplyInfo
+     */
+    public DynamicApplyInfo getDynamic(Long askId) throws PamException {
+        // 获取静态申请信息
+        DynamicApplyInfo dynamicApplyInfo = new DynamicApplyInfo();
+        StaticApplyInfo staticApplyInfo = this.getStatic(askId);
+        dynamicApplyInfo.setStaticApplyInfo(staticApplyInfo);
+
+        // 获取当前流程节点
+        UserApply userApply = staticApplyInfo.getUserApply();
+        String instanceId = waterService.getInstanceId(userApply.getSessionId());
+        ProcessVariable variable = defaultFlowHandler.getVariableByInstanceId(instanceId);
+        String curLinkCode = variable.getCurLinkCode();
+        dynamicApplyInfo.setCurLinkCode(curLinkCode);
+
+        // 获取当前环节审批人
+        List<User> auditPersons = userService.getAuditPersons(userApply.getMatterId(), curLinkCode);
+        dynamicApplyInfo.setAuditPersons(auditPersons);
+        return dynamicApplyInfo;
     }
 }

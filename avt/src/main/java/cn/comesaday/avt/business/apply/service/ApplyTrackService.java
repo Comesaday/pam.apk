@@ -66,4 +66,16 @@ public class ApplyTrackService extends BaseService<ApplyTrack, Long> {
         applyTrack.setUpdateAt(new Date());
         return this.save(applyTrack);
     }
+
+
+    /**
+     * <说明> 获取申请的审批记录
+     * @param askId Long
+     * @author ChenWei
+     * @date 2021/5/8 9:48
+     * @return java.util.List<cn.comesaday.avt.business.apply.model.ApplyTrack>
+     */
+    public List<ApplyTrack> getAuditRecords(Long askId) {
+        return this.findAllByProperty("askId", askId);
+    }
 }
