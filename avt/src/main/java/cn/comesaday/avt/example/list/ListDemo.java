@@ -1,4 +1,4 @@
-package cn.comesaday.example.list;
+package cn.comesaday.avt.example.list;
 
 import org.springframework.util.CollectionUtils;
 

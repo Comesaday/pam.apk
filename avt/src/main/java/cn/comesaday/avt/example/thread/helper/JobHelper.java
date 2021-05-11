@@ -1,4 +1,4 @@
-package cn.comesaday.example.thread.helper;
+package cn.comesaday.avt.example.thread.helper;
 
 import cn.comesaday.coe.common.util.JsonUtil;
 import cn.comesaday.coe.enhance.redis.RedisEnhance;

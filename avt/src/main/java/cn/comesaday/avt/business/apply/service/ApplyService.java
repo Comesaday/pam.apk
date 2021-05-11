@@ -158,10 +158,10 @@ public class ApplyService extends BaseService<ApplyInfo, Long> {
         applyInfo.setMatterCode(matter.getCode());
         applyInfo.setMatterId(matter.getId());
         applyInfo.setMatterName(matter.getName());
-        applyInfo.setUserId(null);
-        applyInfo.setUserName(null);
-        applyInfo.setStatus(NumConstant.I1);
+        applyInfo.setUserId(userApply.getUserId());
+        applyInfo.setUserName(userApply.getUserName());
         applyInfo.setSessionId(userApply.getSessionId());
+        applyInfo.setStatus(NumConstant.I1);
         return this.save(applyInfo);
     }
 

@@ -1,7 +1,7 @@
-package cn.comesaday.example.mode.celue.sevice.impl;
+package cn.comesaday.avt.example.mode.celue.sevice.impl;
 
+import cn.comesaday.avt.example.mode.celue.sevice.CelueService;
 import cn.comesaday.coe.common.constant.NumConstant;
-import cn.comesaday.example.mode.celue.sevice.ExampleService;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -13,15 +13,15 @@ import org.springframework.transaction.annotation.Transactional;
  */
 @Service
 @Transactional
-public class EatServiceImpl implements ExampleService {
+public class WorkServiceImpl implements CelueService {
 
     @Override
     public boolean matching(Integer factor) {
-        return NumConstant.I2 == factor;
+        return NumConstant.I1 == factor;
     }
 
     @Override
     public String apply() {
-        return "ExampleServiceImpl2";
+        return "WorkServiceImpl";
     }
 }

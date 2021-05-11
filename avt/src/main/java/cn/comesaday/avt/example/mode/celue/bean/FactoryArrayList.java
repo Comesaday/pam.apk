@@ -1,4 +1,4 @@
-package cn.comesaday.example.mode.celue.bean;
+package cn.comesaday.avt.example.mode.celue.bean;
 
 import org.springframework.beans.factory.InitializingBean;
 import org.springframework.core.OrderComparator;

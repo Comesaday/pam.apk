@@ -1,7 +1,7 @@
-package cn.comesaday.example.mode.controller;
+package cn.comesaday.avt.example.mode.controller;
 
-import cn.comesaday.example.mode.celue.bean.FactoryList;
-import cn.comesaday.example.mode.celue.sevice.ExampleService;
+import cn.comesaday.avt.example.mode.celue.bean.FactoryList;
+import cn.comesaday.avt.example.mode.celue.sevice.CelueService;
 import cn.comesaday.coe.core.spring.loader.ApplicationContextLoader;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
@@ -20,18 +20,18 @@ import org.springframework.web.bind.annotation.ResponseBody;
 public class ModeController extends ApplicationContextLoader {
 
     @Autowired
-    private FactoryList<ExampleService, Integer> exampleServiceFactory;
+    private FactoryList<CelueService, Integer> celueServiceFactory;
 
     @RequestMapping("/test/{number}")
     @ResponseBody
     public String test(@PathVariable(name = "number") Integer number) {
-        return exampleServiceFactory.getBean(number).apply();
+        return celueServiceFactory.getBean(number).apply();
     }
 
     @RequestMapping("/context")
     @ResponseBody
     public String context() {
-        ExampleService exampleService = super.getBean("eatServiceImpl");
-        return exampleService.apply();
+        CelueService celueService = super.getBean("eatServiceImpl");
+        return celueService.apply();
     }
 }

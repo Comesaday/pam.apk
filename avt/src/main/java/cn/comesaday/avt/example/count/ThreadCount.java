@@ -1,4 +1,4 @@
-package cn.comesaday.example.count;
+package cn.comesaday.avt.example.count;
 
 import java.util.concurrent.CountDownLatch;
 

@@ -1,6 +1,6 @@
-package cn.comesaday.example.mode.celue.sevice;
+package cn.comesaday.avt.example.mode.celue.sevice;
 
-import cn.comesaday.example.mode.celue.bean.MatchingBean;
+import cn.comesaday.avt.example.mode.celue.bean.MatchingBean;
 
 /**
  * <描述> ExampleService
@@ -8,7 +8,7 @@ import cn.comesaday.example.mode.celue.bean.MatchingBean;
  * @author: ChenWei
  * @CreateAt: 2021-04-13 20:01
  */
-public interface ExampleService extends MatchingBean<Integer> {
+public interface CelueService extends MatchingBean<Integer> {
 
     String apply();
 
