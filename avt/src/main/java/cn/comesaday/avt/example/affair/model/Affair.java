@@ -4,6 +4,7 @@ import cn.comesaday.coe.core.basic.model.IdEntity;
 
 import javax.persistence.Entity;
 import javax.persistence.Table;
+import javax.persistence.Version;
 
 /**
  * <描述> Example
@@ -20,6 +21,17 @@ public class Affair extends IdEntity {
     private Integer age;
 
     private Long time;
+
+    @Version
+    private int version;
+
+    public int getVersion() {
+        return version;
+    }
+
+    public void setVersion(int version) {
+        this.version = version;
+    }
 
     public String getName() {
         return name;

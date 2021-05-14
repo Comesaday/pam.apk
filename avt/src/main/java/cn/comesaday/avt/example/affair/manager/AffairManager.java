@@ -4,6 +4,7 @@ import cn.comesaday.avt.example.affair.model.Affair;
 import cn.comesaday.coe.core.jpa.bean.repository.MyRepository;
 import org.springframework.data.jpa.repository.Lock;
 import org.springframework.data.jpa.repository.Query;
+import org.springframework.data.repository.query.Param;
 import org.springframework.stereotype.Repository;
 
 import javax.persistence.LockModeType;
@@ -17,7 +18,7 @@ import javax.persistence.LockModeType;
 @Repository
 public interface AffairManager extends MyRepository<Affair, Long> {
 
-    @Lock(LockModeType.PESSIMISTIC_READ)
-    @Query(value = "select a from Affair a where a.Id = 1")
-    Affair findForTest();
+    @Lock(LockModeType.OPTIMISTIC)
+    @Query(value = "select a from Affair a where a.id = :id")
+    Affair findForTest(@Param(value = "id") Long id);
 }
