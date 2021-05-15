@@ -1,8 +1,8 @@
-package cn.comesaday.avt.example.affair.service.impl;
+package cn.comesaday.avt.example.lock.affair.service.impl;
 
-import cn.comesaday.avt.example.affair.manager.AffairManager;
-import cn.comesaday.avt.example.affair.model.Affair;
-import cn.comesaday.avt.example.affair.service.AffairService;
+import cn.comesaday.avt.example.lock.affair.manager.AffairManager;
+import cn.comesaday.avt.example.lock.affair.model.Affair;
+import cn.comesaday.avt.example.lock.affair.service.AffairService;
 import cn.comesaday.coe.core.basic.service.BaseService;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -26,21 +26,13 @@ public class AffairServiceImpl extends BaseService<Affair, Long> implements Affa
     private AffairManager affairManager;
 
     @Override
-    public void test1() {
+    public void test1() throws Exception {
         Affair affair = affairManager.findForTest(1L);
         logger.info("test1读取完成");
         affair.setAge(200);
-        try {
-            Thread.sleep(10 * 1000);
-        } catch (InterruptedException e) {
-            e.printStackTrace();
-        }
-        try {
-            Affair save = affairManager.save(affair);
-            logger.info("test1插入完成");
-        } catch (Exception e) {
-            logger.info("test1插入失败");
-        }
+        Thread.sleep(10 * 1000);
+        Affair save = affairManager.save(affair);
+        logger.info("test1插入完成");
     }
 
     @Override

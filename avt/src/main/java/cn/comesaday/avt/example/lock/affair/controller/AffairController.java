@@ -1,6 +1,7 @@
-package cn.comesaday.avt.example.affair.controller;
+package cn.comesaday.avt.example.lock.affair.controller;
 
-import cn.comesaday.avt.example.affair.service.AffairService;
+import cn.comesaday.avt.example.lock.affair.service.AffairService;
+import org.hibernate.StaleObjectStateException;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
@@ -25,7 +26,15 @@ public class AffairController {
 
     @RequestMapping("/test1")
     public void test1() {
-        affairService.test1();
+        try {
+            affairService.test1();
+        }  catch (Exception e) {
+            if (e instanceof StaleObjectStateException) {
+                // 乐观锁
+                // @Lock(LockModeType.OPTIMISTIC)
+            }
+            e.printStackTrace();
+        }
     }
 
     @RequestMapping("/test2")

@@ -1,6 +1,6 @@
-package cn.comesaday.avt.example.lock.thread;
+package cn.comesaday.avt.example.lock.local.thread;
 
-import cn.comesaday.avt.example.lock.controller.LockController;
+import cn.comesaday.avt.example.lock.local.controller.LockController;
 
 /**
  * <描述>

@@ -1,4 +1,4 @@
-package cn.comesaday.avt.example.affair.model;
+package cn.comesaday.avt.example.lock.affair.model;
 
 import cn.comesaday.coe.core.basic.model.IdEntity;
 
