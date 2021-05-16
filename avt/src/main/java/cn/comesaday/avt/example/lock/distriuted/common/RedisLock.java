@@ -27,22 +27,31 @@ public class RedisLock  {
     private RedisTemplate redisTemplate;
 
 
-    public Boolean lock(String key, String value, Long expireTime) {
+    public Boolean lock(String key, Long expireTime) {
         Boolean lock = false;
         try {
             lock = (Boolean) redisTemplate.execute(new RedisCallback() {
                 @Override
                 public Object doInRedis(RedisConnection connection) throws DataAccessException {
+                    Long expireAt = System.currentTimeMillis() + expireTime;
                     // set if not exist
-                    Boolean lock = connection.setNX(key.getBytes(), value.getBytes());
-                    connection.close();
-                    if (lock) {
-                        redisTemplate.expire(key, expireTime, TimeUnit.MILLISECONDS);
-                    }
+                    Boolean lock = connection.setNX(key.getBytes(), String.valueOf(expireAt).getBytes());
+                    redisTemplate.expire(key, expireTime, TimeUnit.MILLISECONDS);
                     if (!lock) {
-                        // 加锁失败则续签
-//                        connection.getSet(key.getBytes(), String.valueOf(expireAt).getBytes());
+                        byte[] bytes = connection.get(key.getBytes());
+                        if (Objects.nonNull(bytes) && bytes.length > 0) {
+                            // 死锁解决方案-重新加锁，防止死锁
+                            String string = new String(bytes);
+                            if (Long.parseLong(string) < System.currentTimeMillis()) {
+                                logger.info(Thread.currentThread().getName() + "死锁出现...");
+                                expireAt = System.currentTimeMillis() + expireTime;
+                                connection.getSet(key.getBytes(), String.valueOf(expireAt).getBytes());
+                                redisTemplate.expire(key, expireTime, TimeUnit.MILLISECONDS);
+                                lock = true;
+                            }
+                        }
                     }
+                    connection.close();
                     return lock;
                 }
             });

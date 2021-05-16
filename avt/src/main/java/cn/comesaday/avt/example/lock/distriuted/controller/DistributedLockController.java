@@ -35,7 +35,7 @@ public class DistributedLockController {
             executorService.submit(new Runnable() {
                 @Override
                 public void run() {
-                    Boolean lock = redisLock.lock("aaa","222", 4L);
+                    Boolean lock = redisLock.lock("aaa",5000L);
                     if (lock) {
                         logger.info("线程:{},获取到锁", Thread.currentThread().getName());
                     } else {
