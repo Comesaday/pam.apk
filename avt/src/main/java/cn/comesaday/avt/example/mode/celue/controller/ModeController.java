@@ -1,4 +1,4 @@
-package cn.comesaday.avt.example.mode.controller;
+package cn.comesaday.avt.example.mode.celue.controller;
 
 import cn.comesaday.avt.example.mode.celue.bean.FactoryList;
 import cn.comesaday.avt.example.mode.celue.sevice.CelueService;
