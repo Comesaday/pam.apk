@@ -1,5 +1,7 @@
 package cn.comesaday.avt.example.count;
 
+import java.util.ArrayList;
+import java.util.LinkedList;
 import java.util.concurrent.CountDownLatch;
 
 /**
@@ -13,6 +15,8 @@ public class ThreadCount {
     private static final ThreadLocal<String> threadLocal = new ThreadLocal<>();
 
     public static void main(String[] args) throws Exception {
+        ArrayList<Integer> integers = new ArrayList<>();
+        LinkedList<Integer> integers1 = new LinkedList<>();
         CountDownLatch countDownLatch = new CountDownLatch(4);
         new Thread() {
             @Override
