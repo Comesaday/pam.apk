@@ -5,6 +5,7 @@ import cn.comesaday.avt.example.collection.list.MyLinkedList;
 import cn.comesaday.avt.example.collection.map.MyHashMap;
 
 import java.util.HashMap;
+import java.util.Map;
 
 /**
  * <描述>
@@ -39,9 +40,20 @@ public class CollectionTest {
         System.out.println(Math.log(1) / Math.log(2));
 
         MyHashMap<Integer, Integer> myHashMap = new MyHashMap<>();
-        myHashMap.put(11, 11);
-        myHashMap.put(22, 22);
-        myHashMap.put(22, 22);
-        System.out.println("");
+        long start = System.currentTimeMillis();
+        for (int i = 0; i < 100000; i++) {
+            myHashMap.put(i, i);
+        }
+        long end = System.currentTimeMillis();
+        System.out.println("myHashMap耗时:" + (end - start));
+
+        Map<Integer, Integer> map = new HashMap<>();
+        long start1 = System.currentTimeMillis();
+        for (int i = 0; i < 100000; i++) {
+            map.put(i, i);
+        }
+        long end1 = System.currentTimeMillis();
+        System.out.println("map耗时:" + (end1 - start1));
+        System.out.println(myHashMap.get(12));
     }
 }

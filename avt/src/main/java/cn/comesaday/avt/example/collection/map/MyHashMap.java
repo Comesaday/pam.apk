@@ -27,16 +27,16 @@ public class MyHashMap<K, V> implements MapInfance<K, V> {
     private float loadFactor = DEFAULT_LOAD_FACTOR;
 
     // 链表数组
-    private Node[] nodes;
+    private Node[] elements;
 
     public MyHashMap(int size)  {
         size = resize(size);
-        this.nodes = new Node[size];
+        this.elements = new Node[size];
         this.threshold = Math.round(size * DEFAULT_LOAD_FACTOR);
     }
 
     public MyHashMap() {
-        this.nodes = new Node[capacity];
+        this.elements = new Node[capacity];
         this.threshold = Math.round(capacity * loadFactor);
     }
 
@@ -76,57 +76,70 @@ public class MyHashMap<K, V> implements MapInfance<K, V> {
         putData(hash(key), key, value);
     }
 
-    static final int hash(Object key) {
+    private int hash(K key) {
         int h;
         return (key == null) ? 0 : (h = key.hashCode()) ^ (h >>> 16);
     }
 
     private void putData(int hash, K key, V value) {
-        if (this.size + 1 > this.threshold) {
-            // 扩容
-            expandCapacity();
-        }
         // 计算元素在数据组中存放的位置
         int index = (hash % this.capacity);
-        Node currentNode = this.nodes[index];
+        Node currentNode = this.elements[index];
         if (null == currentNode) {
             // 当前位置未开始存放
-            currentNode = new Node(hash, key, value, null);
-            this.nodes[index] = currentNode;
+            Node newNode = new Node(hash, key, value, null);
+            this.elements[index] = newNode;
             this.size++;
-        } else {
-            // 元素是否已存在
-            boolean exist = false;
-            // 当前位置已开始存放
-            currentNode = this.nodes[index];
-            while (null != currentNode) {
-                if (currentNode.hash == hash && currentNode.key == key) {
-                    // 数据重复,更新
-                    exist = true;
-                    currentNode.key = key;
-                    currentNode.value = value;
-                    break;
-                }
-                currentNode = currentNode.next;
-            }
-            // 数据非重复,尾插
-            if (!exist) {
-                while (null != currentNode.next) {
-                    currentNode = currentNode.next;
-                }
-                Node node = new Node(hash, key, value, null);
-                currentNode.next = node;
-                this.size++;
+            return;
+        }
+        // 当前位置已开始存放
+        for (Node node = currentNode; null != node; node = node.next) {
+            if (currentNode.hash == hash && currentNode.key == key) {
+                // 数据重复,更新
+                currentNode.key = key;
+                currentNode.value = value;
+                return;
             }
         }
+        // 数据非重复,尾插-哈希碰撞
+        expandCapacity();
+        Node newNode = new Node(hash, key, value, currentNode);
+        this.elements[index] = newNode;
+        this.size++;
     }
 
     private void expandCapacity() {
+        if (this.size < this.threshold) {
+            // 不会超过阈值-不扩容
+            return;
+        }
+        // 更新容量
+        this.capacity = this.capacity * 2;
+        // 扩容阈值
+        this.threshold = Math.round(this.capacity * DEFAULT_LOAD_FACTOR);
+        Node[] oldElements = this.elements;
+        Node[] newElements = new Node[this.capacity];
+        System.arraycopy(oldElements, 0, newElements, 0, oldElements.length);
+        this.elements = newElements;
     }
 
 
     @Override
-    public void get(K key) {
-
+    public V get(K key) {
+        int hash = hash(key);
+        int index = hash % this.capacity;
+        if (index < 0 || index > this.elements.length) {
+            return null;
+        }
+        Node head = this.elements[index];
+        if (null == head) {
+            return null;
+        }
+        for (Node node = head; null != node; node = node.next) {
+            if (node.hash == hash && node.key == key) {
+                return (V) node;
+            }
+        }
+        return null;
     }
 }

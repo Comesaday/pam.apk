@@ -12,5 +12,5 @@ public interface MapInfance<K, V> extends CollectionInterface {
 
     void put(K key, V value);
 
-    void get(K key);
+    V get(K key);
 }
