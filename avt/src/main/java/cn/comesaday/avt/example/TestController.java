@@ -4,6 +4,7 @@ import cn.comesaday.avt.example.collection.test.CollectionTest;
 import cn.comesaday.avt.example.mode.celue.bean.FactoryList;
 import cn.comesaday.avt.example.mode.celue.sevice.CelueService;
 import cn.comesaday.avt.example.proxy.*;
+import cn.comesaday.avt.example.schedule.ThreadPoolTaskSchedulerService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -24,6 +25,9 @@ public class TestController {
 
     @Autowired
     private FactoryList<CelueService, Integer> celueServiceFactory;
+
+    @Autowired
+    private ThreadPoolTaskSchedulerService threadPoolTaskSchedulerService;
 
     @RequestMapping("/mode/celue/{number}")
     public String test(@PathVariable(name = "number") Integer number) {
@@ -51,7 +55,8 @@ public class TestController {
                 developer.getClass().getInterfaces(), handler);
         proxy1.debug();
 
-        Developer proxy2 = (Developer) Proxy.newProxyInstance(developer.getClass().getClassLoader(), developer.getClass().getInterfaces(), ((proxy, method, args) -> {
+        Developer proxy2 = (Developer) Proxy.newProxyInstance(developer.getClass().getClassLoader(),
+                developer.getClass().getInterfaces(), ((proxy, method, args) -> {
             System.out.println("start...");
             Object invoke = method.invoke(developer, args);
             System.out.println("end...");
@@ -65,5 +70,16 @@ public class TestController {
         CglibDynamicJavaDeveloperProxy cglibDynamicJavaDeveloperProxy = new CglibDynamicJavaDeveloperProxy();
         Developer developer = (JavaDeveloper) cglibDynamicJavaDeveloperProxy.newProxyInstance(JavaDeveloper.class);
         developer.debug();
+    }
+
+    @RequestMapping("/schedule/start")
+    public void scheduleStart(String message) {
+        message = "schedule start...";
+        threadPoolTaskSchedulerService.execute(message);
+    }
+
+    @RequestMapping("/schedule/end")
+    public void scheduleEnd() {
+        threadPoolTaskSchedulerService.stop();
     }
 }
