@@ -1,8 +1,15 @@
 package cn.comesaday.avt.example.collection.test;
 
+import cn.comesaday.avt.business.apply.service.ApplyService;
 import cn.comesaday.avt.example.collection.list.MyArrayList;
 import cn.comesaday.avt.example.collection.list.MyLinkedList;
 import cn.comesaday.avt.example.collection.map.MyHashMap;
+import cn.comesaday.coe.core.spring.loader.ApplicationContextLoader;
+import org.springframework.beans.BeansException;
+import org.springframework.context.ApplicationContext;
+import org.springframework.context.ApplicationContextAware;
+import org.springframework.stereotype.Component;
+import org.springframework.web.context.support.WebApplicationContextUtils;
 
 import java.util.HashMap;
 import java.util.Map;
@@ -10,13 +17,17 @@ import java.util.Map;
 /**
  * <描述>
  * <详细背景>
- *
  * @author: ChenWei
  * @CreateAt: 2021-05-24 11:27
  */
-public class CollectionTest {
+@Component
+public class CollectionTest extends ApplicationContextLoader {
 
-    public static void main(String[] args) {
+    private ApplyService applyService;
+
+    public void test() {
+        applyService = super.getBean("applyService");
+        applyService.save(null);
         MyArrayList<Integer> myArrayList = new MyArrayList<>();
         myArrayList.add(11);
         myArrayList.add(22);
