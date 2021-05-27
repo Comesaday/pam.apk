@@ -1,12 +1,10 @@
-package cn.comesaday.avt.example.count;
+package cn.comesaday.avt.example.thread.counter;
 
-import java.util.ArrayList;
-import java.util.LinkedList;
 import java.util.concurrent.CountDownLatch;
 
 /**
  * <描述> ThreadCount
- * <详细背景>
+ * <详细背景> 线程计数器，线程执行完计数器减一。主线程await等待子线程都执行完成
  * @author: ChenWei
  * @CreateAt: 2021-04-21 18:34
  */
@@ -15,8 +13,6 @@ public class ThreadCount {
     private static final ThreadLocal<String> threadLocal = new ThreadLocal<>();
 
     public static void main(String[] args) throws Exception {
-        ArrayList<Integer> integers = new ArrayList<>();
-        LinkedList<Integer> integers1 = new LinkedList<>();
         CountDownLatch countDownLatch = new CountDownLatch(4);
         new Thread() {
             @Override

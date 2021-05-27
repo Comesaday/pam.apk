@@ -1,10 +1,12 @@
 package cn.comesaday.avt.example;
 
-import cn.comesaday.avt.example.collection.test.CollectionTest;
+import cn.comesaday.avt.example.collection.CollectionTest;
 import cn.comesaday.avt.example.mode.celue.bean.FactoryList;
 import cn.comesaday.avt.example.mode.celue.sevice.CelueService;
 import cn.comesaday.avt.example.proxy.*;
+import cn.comesaday.avt.example.retry.BuyTicketService;
 import cn.comesaday.avt.example.schedule.ThreadPoolTaskSchedulerService;
+import cn.comesaday.coe.core.basic.bean.result.JsonResult;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -28,6 +30,12 @@ public class TestController {
 
     @Autowired
     private ThreadPoolTaskSchedulerService threadPoolTaskSchedulerService;
+
+    @Autowired
+    private BuyTicketService modelBuyTicketServiceImpl;
+
+    @Autowired
+    private BuyTicketService aopBuyTicketServiceImpl;
 
     @RequestMapping("/mode/celue/{number}")
     public String test(@PathVariable(name = "number") Integer number) {
@@ -81,5 +89,15 @@ public class TestController {
     @RequestMapping("/schedule/end")
     public void scheduleEnd() {
         threadPoolTaskSchedulerService.stop();
+    }
+
+    @RequestMapping("/retry/template")
+    public JsonResult retry() throws Exception {
+        return modelBuyTicketServiceImpl.buy();
+    }
+
+    @RequestMapping("/retry/aop")
+    public JsonResult aop() throws Exception {
+        return aopBuyTicketServiceImpl.buy();
     }
 }

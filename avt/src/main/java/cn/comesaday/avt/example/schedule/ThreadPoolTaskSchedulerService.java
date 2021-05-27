@@ -9,7 +9,7 @@ import java.util.concurrent.ScheduledFuture;
 
 /**
  * <描述> ThreadPoolTaskSchedulerService
- * <详细背景>
+ * <详细背景> dynamic schedule动态定时计划。使用前配置ThreadPoolTaskScheduler bean，开启EnableScheduling
  * @author: ChenWei
  * @CreateAt: 2021-05-26 19:37
  */

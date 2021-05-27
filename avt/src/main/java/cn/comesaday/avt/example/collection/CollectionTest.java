@@ -1,4 +1,4 @@
-package cn.comesaday.avt.example.collection.test;
+package cn.comesaday.avt.example.collection;
 
 import cn.comesaday.avt.business.apply.service.ApplyService;
 import cn.comesaday.avt.example.collection.list.MyArrayList;
