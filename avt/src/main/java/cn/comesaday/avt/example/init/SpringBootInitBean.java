@@ -1,6 +1,6 @@
 package cn.comesaday.avt.example.init;
 
-import cn.comesaday.avt.example.schedule.ThreadPoolTaskSchedulerService;
+import cn.comesaday.avt.example.schedule.manual.ThreadPoolTaskSchedulerService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.CommandLineRunner;
 import org.springframework.core.annotation.Order;

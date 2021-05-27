@@ -1,4 +1,4 @@
-package cn.comesaday.avt.example.schedule;
+package cn.comesaday.avt.example.schedule.manual;
 
 /**
  * <描述> SchedulePlan

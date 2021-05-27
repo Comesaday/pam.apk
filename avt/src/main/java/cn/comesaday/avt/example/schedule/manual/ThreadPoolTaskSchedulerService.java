@@ -1,5 +1,6 @@
-package cn.comesaday.avt.example.schedule;
+package cn.comesaday.avt.example.schedule.manual;
 
+import cn.comesaday.avt.example.schedule.ScheduleThread;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.scheduling.concurrent.ThreadPoolTaskScheduler;
 import org.springframework.scheduling.support.CronTrigger;

@@ -1,6 +1,6 @@
 package cn.comesaday.avt.example.init;
 
-import cn.comesaday.avt.example.schedule.ThreadPoolTaskSchedulerService;
+import cn.comesaday.avt.example.schedule.manual.ThreadPoolTaskSchedulerService;
 import org.springframework.beans.BeansException;
 import org.springframework.beans.factory.InitializingBean;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -8,7 +8,6 @@ import org.springframework.context.ApplicationContext;
 import org.springframework.context.ApplicationContextAware;
 import org.springframework.context.ApplicationListener;
 import org.springframework.context.event.ContextRefreshedEvent;
-import org.springframework.stereotype.Component;
 import org.springframework.web.context.ServletContextAware;
 
 import javax.servlet.ServletContext;

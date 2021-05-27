@@ -1,4 +1,4 @@
-package cn.comesaday.avt.example.schedule;
+package cn.comesaday.avt.example.schedule.manual;
 
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;

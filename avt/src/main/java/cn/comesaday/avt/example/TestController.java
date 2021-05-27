@@ -5,7 +5,7 @@ import cn.comesaday.avt.example.mode.celue.bean.FactoryList;
 import cn.comesaday.avt.example.mode.celue.sevice.CelueService;
 import cn.comesaday.avt.example.proxy.*;
 import cn.comesaday.avt.example.retry.BuyTicketService;
-import cn.comesaday.avt.example.schedule.ThreadPoolTaskSchedulerService;
+import cn.comesaday.avt.example.schedule.manual.ThreadPoolTaskSchedulerService;
 import cn.comesaday.coe.core.basic.bean.result.JsonResult;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.PathVariable;
@@ -43,9 +43,10 @@ public class TestController {
     }
 
     @RequestMapping("/collection/test")
-    public void test() {
+    public String test() {
         CollectionTest test = new CollectionTest();
         test.test();
+        return "44444444";
     }
 
     @RequestMapping("/static/proxy")
@@ -80,13 +81,13 @@ public class TestController {
         developer.debug();
     }
 
-    @RequestMapping("/schedule/start")
+    @RequestMapping("/schedule/pool/start")
     public void scheduleStart(String message) {
         message = "schedule start...";
         threadPoolTaskSchedulerService.execute(message);
     }
 
-    @RequestMapping("/schedule/end")
+    @RequestMapping("/schedule/pool/end")
     public void scheduleEnd() {
         threadPoolTaskSchedulerService.stop();
     }
