@@ -1,4 +1,4 @@
-package cn.comesaday.avt.example.mode.celue.bean;
+package cn.comesaday.avt.example.designmode.celue.bean;
 
 import java.util.List;
 

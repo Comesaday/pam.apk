@@ -1,6 +1,6 @@
-package cn.comesaday.avt.example.mode.celue.sevice.impl;
+package cn.comesaday.avt.example.designmode.celue.sevice.impl;
 
-import cn.comesaday.avt.example.mode.celue.sevice.CelueService;
+import cn.comesaday.avt.example.designmode.celue.sevice.CelueService;
 import cn.comesaday.coe.common.constant.NumConstant;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;

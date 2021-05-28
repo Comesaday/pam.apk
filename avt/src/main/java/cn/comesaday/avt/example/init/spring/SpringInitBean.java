@@ -1,4 +1,4 @@
-package cn.comesaday.avt.example.init;
+package cn.comesaday.avt.example.init.spring;
 
 import cn.comesaday.avt.example.schedule.manual.ThreadPoolTaskSchedulerService;
 import org.springframework.beans.BeansException;

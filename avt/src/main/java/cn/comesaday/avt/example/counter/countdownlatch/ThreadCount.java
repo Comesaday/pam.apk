@@ -1,4 +1,4 @@
-package cn.comesaday.avt.example.thread.counter;
+package cn.comesaday.avt.example.counter.countdownlatch;
 
 import java.util.concurrent.CountDownLatch;
 

@@ -1,8 +1,8 @@
 package cn.comesaday.avt.example;
 
 import cn.comesaday.avt.example.collection.CollectionTest;
-import cn.comesaday.avt.example.mode.celue.bean.FactoryList;
-import cn.comesaday.avt.example.mode.celue.sevice.CelueService;
+import cn.comesaday.avt.example.designmode.celue.bean.FactoryList;
+import cn.comesaday.avt.example.designmode.celue.sevice.CelueService;
 import cn.comesaday.avt.example.proxy.*;
 import cn.comesaday.avt.example.retry.BuyTicketService;
 import cn.comesaday.avt.example.schedule.manual.ThreadPoolTaskSchedulerService;

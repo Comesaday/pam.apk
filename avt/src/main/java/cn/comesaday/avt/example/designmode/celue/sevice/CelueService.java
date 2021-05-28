@@ -1,6 +1,6 @@
-package cn.comesaday.avt.example.mode.celue.sevice;
+package cn.comesaday.avt.example.designmode.celue.sevice;
 
-import cn.comesaday.avt.example.mode.celue.bean.MatchingBean;
+import cn.comesaday.avt.example.designmode.celue.bean.MatchingBean;
 
 /**
  * <描述> ExampleService

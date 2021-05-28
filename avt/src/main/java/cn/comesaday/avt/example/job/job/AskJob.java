@@ -1,4 +1,4 @@
-package cn.comesaday.avt.example.thread.job;
+package cn.comesaday.avt.example.job.job;
 
 import cn.comesaday.avt.business.apply.model.ApplyInfo;
 import cn.comesaday.avt.business.apply.service.ApplyService;
@@ -7,7 +7,7 @@ import cn.comesaday.coe.common.constant.NumConstant;
 import cn.comesaday.coe.common.util.DateUtil;
 import cn.comesaday.coe.core.basic.bean.result.JsonResult;
 import cn.comesaday.coe.core.basic.bean.result.Result;
-import cn.comesaday.avt.example.thread.helper.JobHelper;
+import cn.comesaday.avt.example.job.helper.JobHelper;
 import org.activiti.engine.TaskService;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
