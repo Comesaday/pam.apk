@@ -1,7 +1,6 @@
 package cn.comesaday.avt.example.retry.aop;
 
 import cn.comesaday.avt.example.retry.RetryTemplate;
-import cn.comesaday.coe.common.util.JsonUtil;
 import cn.comesaday.coe.core.basic.bean.result.JsonResult;
 import org.aspectj.lang.JoinPoint;
 import org.aspectj.lang.ProceedingJoinPoint;
@@ -9,11 +8,6 @@ import org.aspectj.lang.annotation.*;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.stereotype.Component;
-import org.springframework.web.context.request.RequestContextHolder;
-import org.springframework.web.context.request.ServletRequestAttributes;
-
-import javax.servlet.http.HttpServletRequest;
-import java.util.Arrays;
 
 /**
  * <描述> RetryAspect
@@ -37,18 +31,7 @@ public class RetryAspect implements AspectDefine {
     @Before("webLog()")
     @Override
     public void before(JoinPoint joinPoint) {
-        ServletRequestAttributes requestAttributes = (ServletRequestAttributes) RequestContextHolder.getRequestAttributes();
-        if (null == requestAttributes) {
-            return;
-        }
-        HttpServletRequest request = requestAttributes.getRequest();
-        //打印请求内容
-        System.out.println("========================请求内容======================");
-        System.out.println("请求地址:" + request.getRequestURI().toString());
-        System.out.println("请求方式" + request.getMethod());
-        System.out.println("请求类方法" + joinPoint.getSignature());
-        System.out.println("请求类方法参数" + Arrays.toString(joinPoint.getArgs()));
-        System.out.println("========================请求内容======================");
+        System.out.println("========================AOP进入======================");
     }
 
     @Around("@annotation(retry)")
@@ -68,9 +51,7 @@ public class RetryAspect implements AspectDefine {
         if (null == o) {
             return;
         }
-        System.out.println("--------------返回内容----------------");
-        System.out.println("Response内容:" + JsonUtil.toJson(o));
-        System.out.println("--------------返回内容----------------");
+        System.out.println("========================AOP出去======================");
     }
 
     @After("webLog()")

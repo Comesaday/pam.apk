@@ -14,7 +14,7 @@ import org.springframework.stereotype.Service;
 public class AopBuyTicketServiceImpl implements BuyTicketService {
 
     @Override
-    @Retry(time = 5, sleep = 10)
+    @Retry(time = 20, sleep = 20)
     public JsonResult buy() throws Exception {
         JsonResult result = new JsonResult(false);
         if (!result.isSuccess()) {

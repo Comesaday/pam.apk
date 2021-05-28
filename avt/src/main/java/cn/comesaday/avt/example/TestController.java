@@ -37,6 +37,9 @@ public class TestController {
     @Autowired
     private BuyTicketService aopBuyTicketServiceImpl;
 
+    @Autowired
+    private BuyTicketService springRetryBuyTicketServiceImpl;
+
     @RequestMapping("/mode/celue/{number}")
     public String test(@PathVariable(name = "number") Integer number) {
         return celueServiceFactory.getBean(number).apply();
@@ -100,5 +103,10 @@ public class TestController {
     @RequestMapping("/retry/aop")
     public JsonResult aop() throws Exception {
         return aopBuyTicketServiceImpl.buy();
+    }
+
+    @RequestMapping("/retry/spring")
+    public JsonResult spring() throws Exception {
+        return springRetryBuyTicketServiceImpl.buy();
     }
 }
